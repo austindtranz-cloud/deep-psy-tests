@@ -472,34 +472,67 @@
   window.deepRenderCatalog = function (containerId) {
     var container = document.getElementById(containerId);
     if (!container) return;
+    
     var data = window.DEEP_CATEGORY_DATA;
-    if (!data) return;
+    if (!data || !data.categoryId) {
+      console.warn("DEEP_CATEGORY_DATA or categoryId is missing.");
+      return;
+    }
 
-    data.subcategories.forEach(function (sub) {
+    // Fallback: if DEEP_TESTS is empty, populate it from the registry
+    if (Object.keys(window.DEEP_TESTS || {}).length === 0 && window.DEEP_TEST_REGISTRY) {
+      window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
+      TESTS = window.DEEP_TESTS; // update local ref
+    }
+
+    // Determine subcategories
+    var subcategoriesToRender = data.subcategories;
+
+    // If subcategories are not explicitly provided, build them from the global registry
+    if (!subcategoriesToRender && window.DEEP_TEST_REGISTRY) {
+      var grouped = {};
+      Object.keys(window.DEEP_TEST_REGISTRY).forEach(function(id) {
+        var t = window.DEEP_TEST_REGISTRY[id];
+        if (t.categoryId === data.categoryId) {
+          var subTitle = t.subcategoryTitle || "Общие тесты";
+          if (!grouped[subTitle]) grouped[subTitle] = { subTitle: subTitle, tests: [] };
+          grouped[subTitle].tests.push(t);
+        }
+      });
+      subcategoriesToRender = Object.keys(grouped).map(function(k){ return grouped[k]; });
+    }
+
+    if (!subcategoriesToRender || subcategoriesToRender.length === 0) {
+      container.innerHTML = '<div class="deep-tests-note">Тесты этой категории в данный момент недоступны.</div>';
+      return;
+    }
+
+    subcategoriesToRender.forEach(function (sub) {
       var sec = document.createElement("div");
       sec.className = "deep-subcategory";
       sec.innerHTML = '<h2>' + sub.subTitle + '</h2><div class="deep-tests-grid"></div>';
       var grid = sec.querySelector(".deep-tests-grid");
 
       sub.tests.forEach(function (test) {
-        var isProp = test.legalStatus.indexOf("proprietary") !== -1;
-        var isRest = test.legalStatus.indexOf("restricted") !== -1;
+        var status = test.legalStatus || "public";
+        var isProp = status.indexOf("proprietary") !== -1;
+        var isRest = status.indexOf("restricted") !== -1;
         var badge = isProp ? { c: "deep-tests-pill--proprietary", t: "Закрытая методика" } :
                     isRest ? { c: "deep-tests-pill--restricted", t: "Клиническая методика" } :
                     { c: "deep-tests-pill--public", t: "Открытая методика" };
 
-        var ctaHtml = test.isRunnable
+        var isRunnable = test.isRunnable !== false;
+        var ctaHtml = isRunnable
           ? '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.deepTestsOpen(\'' + test.id + '\')">Пройти тест</button>'
           : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'' + (test.replacement ? 'Рекомендуемый аналог: ' + test.replacement : 'Методика с ограниченным доступом') + '\')">Информация</button>';
 
-        /* Badge: check localStorage for test status */
         var statusBadge = "";
         try {
-          var stored = JSON.parse(localStorage.getItem("deep-tests-engine-v4") || "{}");
+          var stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
           var sess = stored.sessions && stored.sessions[test.id];
           if (sess && sess.mode === "result") {
             statusBadge = '<span class="deep-tests-card-badge deep-tests-card-badge--ok" title="Тест пройден">' + BADGE_CHECK + '</span>';
-          } else if (sess && (sess.mode === "quiz" || Object.keys(sess.answers || {}).length > 0)) {
+          } else if (sess && (sess.mode === "quiz" || (sess.answers && Object.keys(sess.answers).length > 0))) {
             statusBadge = '<span class="deep-tests-card-badge deep-tests-card-badge--wip" title="В процессе">' + BADGE_WIP + '</span>';
           }
         } catch (e) {}
@@ -509,8 +542,8 @@
         card.innerHTML = statusBadge +
           '<div class="deep-tests-card-meta"><span class="deep-tests-pill ' + badge.c + '">' + badge.t + '</span></div>' +
           '<h3 class="deep-tests-card-title">' + test.title + '</h3>' +
-          '<div class="deep-tests-card-text">' + test.measures + '</div>' +
-          '<div class="deep-tests-card-meta" style="margin-bottom:20px"><span style="font-size:12px;color:var(--dt-muted)">' + test.time + ' • ' + test.items + ' вопр.</span></div>' +
+          '<div class="deep-tests-card-text">' + (test.measures || "") + '</div>' +
+          '<div class="deep-tests-card-meta" style="margin-bottom:20px"><span style="font-size:12px;color:var(--dt-muted)">' + (test.time || "?") + ' • ' + (test.items || "?") + ' вопр.</span></div>' +
           '<div class="deep-tests-actions">' + ctaHtml + '</div>';
         grid.appendChild(card);
       });
