@@ -247,11 +247,19 @@
 
   /* ── Inject sidebar HTML + CSS ── */
   function injectSidebar() {
-    if (document.getElementById("deep-sidebar")) return;
+    // 1. Автоматическая зачистка (self-healing): удаляем старые жестко закодированные элементы
+    var oldSb = document.getElementById("deep-sidebar");
+    if (oldSb && oldSb.parentElement) oldSb.parentElement.removeChild(oldSb);
+    
+    var oldBtn = document.getElementById("deep-sidebar-toggle");
+    if (oldBtn && oldBtn.parentElement) oldBtn.parentElement.removeChild(oldBtn);
 
-    var css = document.createElement("style");
-    css.textContent =
-      '#deep-sidebar{position:fixed;bottom:20px;right:20px;width:320px;max-height:80vh;z-index:9999990;font-family:"Manrope",Arial,sans-serif;color:var(--dt-text,#F4EEE3);}' +
+    // 2. Внедряем CSS единовременно
+    if (!document.getElementById("deep-sidebar-css")) {
+      var css = document.createElement("style");
+      css.id = "deep-sidebar-css";
+      css.textContent =
+        '#deep-sidebar{position:fixed;bottom:20px;right:20px;width:320px;max-height:80vh;z-index:9999990;font-family:"Manrope",Arial,sans-serif;color:var(--dt-text,#F4EEE3);}' +
       '#deep-sidebar *{box-sizing:border-box}' +
       '.deep-sb-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:rgba(15,17,19,.96);border:1px solid rgba(232,214,179,.14);border-radius:16px;cursor:pointer;user-select:none;transition:border-color .2s,background .2s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}' +
       '.deep-sb-header:hover{border-color:rgba(232,214,179,.28);background:rgba(15,17,19,.98)}' +
@@ -317,7 +325,8 @@
       '.deep-sb-alphabet-test{font-size:13px;color:#F4EEE3;padding:4px 0;cursor:pointer;transition:color .2s}' +
       '.deep-sb-alphabet-test:hover{color:#E8D6B3}' +
       '@media(max-width:639px){.deep-sb-overlay{padding:10px}.deep-sb-modal{max-width:100%;max-height:calc(100dvh - 20px);padding:24px 16px 16px;border-radius:14px}}';
-    document.head.appendChild(css);
+      document.head.appendChild(css);
+    }
 
     var sidebar = document.createElement("div");
     sidebar.id = "deep-sidebar";
