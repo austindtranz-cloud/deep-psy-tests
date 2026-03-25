@@ -67,21 +67,42 @@
   var cachedV = null;
   try { cachedV = sessionStorage.getItem(CACHE_KEY); } catch(e) {}
 
+  // Внедряем скелетную загрузку (Skeleton Loader) до монтирования реальных тестов
+  function showPreloader() {
+    var container = document.querySelector("[data-category-id]") || document.getElementById("personality-categories-container");
+    if (!container || container.innerHTML.trim() !== "") return; // Если уже есть контент — не трогаем
+
+    var pulse = '<style>@keyframes dps-pulse { 0% {opacity:0.03;} 50% {opacity:0.08;} 100% {opacity:0.03;} }</style>';
+    var card = '<div style="height:220px; border-radius:32px; background:#fff; animation: dps-pulse 1.5s infinite ease-in-out;"></div>';
+    container.innerHTML = pulse + '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:24px; padding: 20px 0;">' + card + card + card + '</div>';
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", showPreloader);
+  } else {
+    showPreloader();
+  }
+
   if (cachedV) {
     loadResources(cachedV);
   } else {
-    // Делаем микро-запрос к GitHub API (лимит 60/час с IP), чтобы узнать SHA последнего коммита.
-    // Если на сайте много трафика, 60 уников с одного IP может упереться в лимит,
-    // но Fallback сработает безопасно.
-    fetch("https://api.github.com/repos/austindtranz-cloud/deep-psy-tests/commits/main")
-      .then(function(r) { return r.json(); })
+    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timeoutId;
+    if (controller) {
+      timeoutId = setTimeout(function() { controller.abort(); }, 2500); // Максимум 2.5с на ответ API
+    }
+    
+    var fetchOpts = controller ? { signal: controller.signal } : {};
+    fetch("https://api.github.com/repos/austindtranz-cloud/deep-psy-tests/commits/main", fetchOpts)
+      .then(function(r) { if(timeoutId) clearTimeout(timeoutId); return r.json(); })
       .then(function(data) {
         var commitSha = (data && data.sha) ? data.sha.substring(0, 8) : "live";
         try { sessionStorage.setItem(CACHE_KEY, commitSha); } catch(e) {}
         loadResources(commitSha);
       })
       .catch(function() {
-        // Ошибка сети или лимит Github API — грузим актуальное без кэшбастера (браузер сам решит)
+        // Ошибка или таймаут — грузим актуальное без кэшбастера
+        if(timeoutId) clearTimeout(timeoutId);
         loadResources("");
       });
   }
