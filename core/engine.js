@@ -281,9 +281,9 @@
         window.deepSubmitToCRM(payload, function(success) {
            if (success) {
              btn.innerHTML = "Отправлено";
-             btn.style.backgroundColor = "#52b788";
-             btn.style.borderColor = "#52b788";
-             btn.style.color = "#fff";
+             btn.style.setProperty("background", "#52b788", "important");
+             btn.style.setProperty("border-color", "#52b788", "important");
+             btn.style.setProperty("color", "#fff", "important");
              if (typeof window.deepShowSuccessModal === "function") {
                window.deepShowSuccessModal(
                  "Результаты отправлены!",
