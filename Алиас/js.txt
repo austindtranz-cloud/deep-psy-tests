@@ -1,10 +1,16 @@
 <script>
 /* ═══════════════════════════════════════════
-   DEEP PSY TESTS — ENGINE v10c (Universal Loader)
+   DEEP PSY TESTS — ENGINE v10d (Universal Loader)
+   HOTFIX: window.TESTS для обхода бага в старом engine.js
    ═══════════════════════════════════════════ */
 (function() {
   var baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
-  var v = "?v=" + Date.now(); // автоматический сброс кеша при каждой загрузке страницы
+  var v = "?v=" + Date.now();
+
+  /* HOTFIX: engine.js (старая версия на сервере) делает window.DEEP_TESTS = TESTS;
+     где TESTS не объявлен → ReferenceError → deepRenderCatalog не создаётся.
+     Объявляем TESTS в глобальной области ДО загрузки engine.js — ошибка исчезает. */
+  window.TESTS = window.DEEP_TESTS || {};
 
   var resources = [
     { type: "style",  url: baseUrl + "core/style.css" + v },
@@ -33,12 +39,11 @@
 
   resources.forEach(loadResource);
 
-  /* Инициализация — работает даже если DOMContentLoaded уже прошёл */
   function init() {
     var attempts = 0;
     var checkReady = setInterval(function() {
       attempts++;
-      if (attempts > 100) { clearInterval(checkReady); return; } // таймаут 10 сек
+      if (attempts > 100) { clearInterval(checkReady); return; }
 
       if (window.deepRenderCatalog && window.DEEP_MASTER_REGISTRY) {
         clearInterval(checkReady);
@@ -59,7 +64,6 @@
     }, 100);
   }
 
-  // Если DOM уже загружен — стартуем сразу, иначе ждём
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
