@@ -420,7 +420,7 @@
   window.deepOpenTestById = openTest;
   window.deepTestsRender = render;
   window.deepTestsResetSession = resetSession;
-  window.DEEP_TESTS = TESTS;
+  /* DEEP_TESTS is populated by data/test_registry.js — no reassignment needed */
 
   /**
    * Universal CRM submission method (for Bpium/Webhooks)
