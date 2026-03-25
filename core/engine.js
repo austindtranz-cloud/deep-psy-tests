@@ -83,7 +83,8 @@
       alert(PUBLISHERS[testId] + " В данном каталоге такие тесты несут исключительно информирующий характер.");
       return;
     }
-    if (!(window.DEEP_TESTS || {})[testId]) {
+    var testObj = (window.DEEP_TESTS || {})[testId];
+    if (!testObj || !testObj.questions || testObj.questions.length === 0) {
       alert("Оцифровка вопросов для теста «" + testId + "» ещё не завершена. Попробуйте один из доступных тестов.");
       return;
     }
@@ -204,6 +205,7 @@
               '</button>';
             }).join("") +
           '</div>' +
+          '<div class="deep-tests-hint" style="text-align:center;margin-top:8px;font-size:12px;">Ответ выбирается автоматически — просто нажмите на вариант</div>' +
           '<div class="deep-tests-bottom">' +
             '<div class="deep-tests-actions" style="margin-top:0;width:100%;justify-content:space-between;">' +
               '<button type="button" class="deep-tests-btn deep-tests-btn-secondary" style="flex:0 0 auto;white-space:nowrap;" data-action="' + (session.currentIndex > 0 ? "back" : "back-to-start") + '">' + (session.currentIndex > 0 ? "Назад" : "К началу") + '</button>' +
@@ -279,13 +281,23 @@
         });
       }
 
-      /* Select answer — NO auto-advance, user must click "Далее" */
+      /* Select answer — auto-advance after 350ms */
       if (action === "answer") {
         if (answerLock) return;
+        answerLock = true;
         var idx = Number(btn.getAttribute("data-index"));
         s.answers[test.questions[s.currentIndex].id] = idx;
         saveState();
         render();
+        setTimeout(function() {
+          answerLock = false;
+          if (s.currentIndex < test.questions.length - 1) {
+            s.currentIndex++; s.mode = "quiz";
+          } else {
+            s.mode = "result"; s.completedAt = new Date().toISOString();
+          }
+          saveState(); render();
+        }, 350);
       }
 
       /* Manual advance via Далее button */
