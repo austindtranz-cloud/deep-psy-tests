@@ -1,43 +1,43 @@
 <script>
 /* ═══════════════════════════════════════════
-   DEEP PSY TESTS — ENGINE v10d (Universal Loader)
-   HOTFIX: window.TESTS для обхода бага в старом engine.js
+   DEEP PSY TESTS — ENGINE v11 (Smart Loader)
+   Автоматическое обновление версии (Github API)
    ═══════════════════════════════════════════ */
 (function() {
   var baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
-  var v = "?v=10f"; // менять при обновлении кода (10e → 10f → 10g ...)
-
+  
   /* HOTFIX: engine.js (старая версия на сервере) делает window.DEEP_TESTS = TESTS;
      где TESTS не объявлен → ReferenceError → deepRenderCatalog не создаётся.
      Объявляем TESTS в глобальной области ДО загрузки engine.js — ошибка исчезает. */
   window.TESTS = window.DEEP_TESTS || {};
 
-  var resources = [
-    { type: "style",  url: baseUrl + "core/style.css" + v },
-    { type: "script", url: baseUrl + "data/test_registry.js" + v },
-    { type: "script", url: baseUrl + "core/engine.js" + v },
-    { type: "script", url: baseUrl + "core/engine_results.js" + v },
-    { type: "script", url: baseUrl + "core/sidebar.js" + v },
-    { type: "script", url: baseUrl + "core/success_modal.js" + v },
-    { type: "script", url: baseUrl + "data/smil_566.js" + v },
-    { type: "script", url: baseUrl + "data/leongard.js" + v }
-  ];
+  function loadResources(v) {
+    if (v) v = "?v=" + v;
+    var resources = [
+      { type: "style",  url: baseUrl + "core/style.css" + v },
+      { type: "script", url: baseUrl + "data/test_registry.js" + v },
+      { type: "script", url: baseUrl + "core/engine.js" + v },
+      { type: "script", url: baseUrl + "core/engine_results.js" + v },
+      { type: "script", url: baseUrl + "core/sidebar.js" + v },
+      { type: "script", url: baseUrl + "core/success_modal.js" + v },
+      { type: "script", url: baseUrl + "data/smil_566.js" + v },
+      { type: "script", url: baseUrl + "data/leongard.js" + v }
+    ];
 
-  function loadResource(res) {
-    if (res.type === "style") {
-      var link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = res.url;
-      document.head.appendChild(link);
-    } else {
-      var script = document.createElement("script");
-      script.src = res.url;
-      script.async = false;
-      document.head.appendChild(script);
-    }
+    resources.forEach(function(res) {
+      if (res.type === "style") {
+        var link = document.createElement("link");
+        link.rel = "stylesheet"; link.href = res.url;
+        document.head.appendChild(link);
+      } else {
+        var script = document.createElement("script");
+        script.src = res.url; script.async = false;
+        document.head.appendChild(script);
+      }
+    });
+
+    init();
   }
-
-  resources.forEach(loadResource);
 
   function init() {
     var attempts = 0;
@@ -47,9 +47,7 @@
 
       if (window.deepRenderCatalog && window.DEEP_MASTER_REGISTRY) {
         clearInterval(checkReady);
-
-        var container = document.querySelector("[data-category-id]")
-                     || document.getElementById("personality-categories-container");
+        var container = document.querySelector("[data-category-id]") || document.getElementById("personality-categories-container");
         if (!container) return;
 
         var categoryId = container.getAttribute("data-category-id") || "personality";
@@ -64,10 +62,28 @@
     }, 100);
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+  // Смарт-лоадер: ищем закешированную версию сессии, иначе спрашиваем GitHub
+  var CACHE_KEY = "deep_psy_version";
+  var cachedV = null;
+  try { cachedV = sessionStorage.getItem(CACHE_KEY); } catch(e) {}
+
+  if (cachedV) {
+    loadResources(cachedV);
   } else {
-    init();
+    // Делаем микро-запрос к GitHub API (лимит 60/час с IP), чтобы узнать SHA последнего коммита.
+    // Если на сайте много трафика, 60 уников с одного IP может упереться в лимит,
+    // но Fallback сработает безопасно.
+    fetch("https://api.github.com/repos/austindtranz-cloud/deep-psy-tests/commits/main")
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var commitSha = (data && data.sha) ? data.sha.substring(0, 8) : "live";
+        try { sessionStorage.setItem(CACHE_KEY, commitSha); } catch(e) {}
+        loadResources(commitSha);
+      })
+      .catch(function() {
+        // Ошибка сети или лимит Github API — грузим актуальное без кэшбастера (браузер сам решит)
+        loadResources("");
+      });
   }
 })();
 </script>
