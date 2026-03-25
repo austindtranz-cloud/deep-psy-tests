@@ -518,122 +518,341 @@
   var BADGE_CHECK = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="rgba(163,201,168,0.15)" stroke="#A3C9A8" stroke-width="1.2"/><path d="M6 9.2L8.2 11.4L12.2 7" stroke="#A3C9A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var BADGE_WIP = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="rgba(232,214,179,0.12)" stroke="#E8D6B3" stroke-width="1.2"/><path d="M9 6V9.5L11 11" stroke="#E8D6B3" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+  /* ════════════════════════════════════════════════════════════
+     DASHBOARD RENDERING (v13.0)
+     Full SPA-like catalog with left nav, search, A-Z index
+     ════════════════════════════════════════════════════════════ */
+
+  /* ── SVG Icons for Nav ── */
+  var NAV_ICON_HOME = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+  var NAV_ICON_SEARCH = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+  var NAV_ICON_CHEVRON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  var NAV_ICON_BURGER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+  var NAV_ICON_CLOSE = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+
+  /* Category emoji map for left nav */
+  var CAT_ICONS = {
+    personality: "🧬", mental_functions: "🧠", adaptation: "🔄", psychiatry: "💊",
+    relationships: "💞", career: "💼", team: "👥", organization: "🏢",
+    psychoanalytic: "🔮", therapy_efficacy: "📊"
+  };
+
+  /* Short category names for nav */
+  var CAT_SHORT = {
+    personality: "Личность", mental_functions: "Псих. функции", adaptation: "Адаптация",
+    psychiatry: "Психиатрия", relationships: "Отношения", career: "Карьера",
+    team: "Команда", organization: "Организация", psychoanalytic: "Психоанализ",
+    therapy_efficacy: "Терапия"
+  };
+
+  var dashboardState = {
+    activeCategoryId: null, /* null = all categories overview */
+    searchQuery: "",
+    mode: "categories" /* "categories" | "alphabetical" */
+  };
+
+  /* ── Build a single test card HTML ── */
+  function buildCardHTML(test) {
+    var status = test.legalStatus || "public";
+    var isProp = status.indexOf("proprietary") !== -1;
+    var isRest = status.indexOf("restricted") !== -1;
+    var badge = isProp ? { c: "deep-tests-pill--proprietary", t: "Закрытая методика" } :
+                isRest ? { c: "deep-tests-pill--restricted", t: "Клиническая методика" } :
+                { c: "deep-tests-pill--public", t: "Открытая методика" };
+
+    var isRunnable = test.isRunnable !== false;
+    var ctaHtml = isRunnable
+      ? '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.deepTestsOpen(\'' + test.id + '\')">Пройти тест</button>'
+      : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'' + (test.replacement ? 'Рекомендуемый аналог: ' + test.replacement : 'Методика с ограниченным доступом') + '\')">Информация</button>';
+
+    var statusBadge = "";
+    try {
+      var stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      var sess = stored.sessions && stored.sessions[test.id];
+      if (sess && sess.mode === "result") {
+        statusBadge = '<span class="deep-tests-card-badge deep-tests-card-badge--ok" title="Тест пройден">' + BADGE_CHECK + '</span>';
+      } else if (sess && (sess.mode === "quiz" || (sess.answers && Object.keys(sess.answers).length > 0))) {
+        statusBadge = '<span class="deep-tests-card-badge deep-tests-card-badge--wip" title="В процессе">' + BADGE_WIP + '</span>';
+      }
+    } catch (e) {}
+
+    return '<div class="deep-tests-card">' + statusBadge +
+      '<div class="deep-tests-card-meta"><span class="deep-tests-pill ' + badge.c + '">' + badge.t + '</span></div>' +
+      '<h3 class="deep-tests-card-title">' + test.title + '</h3>' +
+      '<div class="deep-tests-card-text">' + (test.measures || "") + '</div>' +
+      '<div class="deep-tests-card-meta" style="margin-bottom:20px"><span style="font-size:12px;color:var(--dt-muted)">' + (test.time || "?") + ' • ' + (test.items || "?") + ' вопр.</span></div>' +
+      '<div class="deep-tests-actions">' + ctaHtml + '</div></div>';
+  }
+
+  /* ── Render the content area ── */
+  function renderDashboardContent(contentEl) {
+    var reg = window.DEEP_MASTER_REGISTRY;
+    if (!reg) { contentEl.innerHTML = '<div class="deep-tests-note">Реестр тестов не загружен.</div>'; return; }
+
+    var catId = dashboardState.activeCategoryId;
+    var query = dashboardState.searchQuery.toLowerCase().trim();
+    var isAlpha = dashboardState.mode === "alphabetical";
+
+    /* ── Breadcrumbs ── */
+    var breadHtml = '<nav class="deep-dash-breadcrumbs">';
+    breadHtml += '<a href="#" data-nav="home">Все категории</a>';
+    if (catId && reg[catId]) {
+      breadHtml += ' <span class="deep-dash-bc-sep">›</span> <span>' + reg[catId].categoryTitle + '</span>';
+    }
+    breadHtml += '</nav>';
+
+    /* ── Title + description ── */
+    var title = catId && reg[catId] ? reg[catId].categoryTitle : "Каталог тестов";
+    var desc = catId && reg[catId] ? reg[catId].categoryDescription : "Выберите категорию слева или воспользуйтесь поиском для быстрого доступа к 50+ психологическим методикам.";
+    var titleHtml = '<h1 class="deep-dash-title">' + title + '</h1><p class="deep-dash-desc">' + desc + '</p>';
+
+    /* ── Search + tabs ── */
+    var tabCatClass = !isAlpha ? " active" : "";
+    var tabAlphaClass = isAlpha ? " active" : "";
+    var toolbarHtml = '<div class="deep-dash-toolbar">' +
+      '<div class="deep-dash-search-wrap">' + NAV_ICON_SEARCH +
+        '<input type="text" class="deep-dash-search" id="deep-dash-search-input" placeholder="Поиск тестов..." value="' + (dashboardState.searchQuery || '') + '" />' +
+      '</div>' +
+      '<div class="deep-dash-tabs">' +
+        '<button class="deep-dash-tab' + tabCatClass + '" data-tab="categories">Категории</button>' +
+        '<button class="deep-dash-tab' + tabAlphaClass + '" data-tab="alphabetical">А — Я</button>' +
+      '</div></div>';
+
+    /* ── Cards ── */
+    var cardsHtml = "";
+
+    if (isAlpha) {
+      /* ALPHABETICAL MODE — all tests sorted A-Z */
+      var allTests = [];
+      Object.keys(reg).forEach(function(cId) {
+        reg[cId].subcategories.forEach(function(sub) {
+          sub.tests.forEach(function(t) {
+            var tCopy = {};
+            for (var k in t) tCopy[k] = t[k];
+            tCopy._categoryTitle = reg[cId].categoryTitle;
+            allTests.push(tCopy);
+          });
+        });
+      });
+      allTests.sort(function(a, b) { return a.title.localeCompare(b.title, "ru"); });
+
+      if (query) {
+        allTests = allTests.filter(function(t) {
+          return t.title.toLowerCase().indexOf(query) !== -1 ||
+                 (t.measures || "").toLowerCase().indexOf(query) !== -1 ||
+                 (t._categoryTitle || "").toLowerCase().indexOf(query) !== -1;
+        });
+      }
+
+      var currentLetter = "";
+      allTests.forEach(function(t) {
+        var letter = t.title.charAt(0).toUpperCase();
+        if (letter !== currentLetter) {
+          currentLetter = letter;
+          cardsHtml += '<div class="deep-dash-letter-header">' + letter + '</div>';
+        }
+        cardsHtml += buildCardHTML(t);
+      });
+
+      if (!allTests.length) {
+        cardsHtml = '<div class="deep-tests-note">По запросу «' + dashboardState.searchQuery + '» ничего не найдено.</div>';
+      }
+
+      cardsHtml = '<div class="deep-dash-alpha-grid">' + cardsHtml + '</div>';
+
+    } else if (!catId) {
+      /* HOME — Show category overview cards */
+      Object.keys(reg).forEach(function(cId) {
+        var cat = reg[cId];
+        var testCount = 0;
+        cat.subcategories.forEach(function(s) { testCount += s.tests.length; });
+        var emoji = CAT_ICONS[cId] || "📋";
+        cardsHtml += '<div class="deep-dash-cat-card" data-nav="' + cId + '">' +
+          '<div class="deep-dash-cat-emoji">' + emoji + '</div>' +
+          '<div class="deep-dash-cat-info">' +
+            '<h3 class="deep-dash-cat-name">' + cat.categoryTitle + '</h3>' +
+            '<span class="deep-dash-cat-count">' + testCount + ' тестов</span>' +
+          '</div>' +
+          '<div class="deep-dash-cat-arrow">→</div></div>';
+      });
+      cardsHtml = '<div class="deep-dash-cat-grid">' + cardsHtml + '</div>';
+
+    } else {
+      /* CATEGORY DETAIL — show subcategories with test cards */
+      var data = reg[catId];
+      if (!data) { cardsHtml = '<div class="deep-tests-note">Категория не найдена.</div>'; }
+      else {
+        data.subcategories.forEach(function(sub) {
+          var filteredTests = sub.tests;
+          if (query) {
+            filteredTests = sub.tests.filter(function(t) {
+              return t.title.toLowerCase().indexOf(query) !== -1 ||
+                     (t.measures || "").toLowerCase().indexOf(query) !== -1;
+            });
+          }
+          if (filteredTests.length === 0) return;
+          cardsHtml += '<div class="deep-subcategory"><h2>' + sub.subTitle + '</h2><div class="deep-tests-grid">';
+          filteredTests.forEach(function(t) { cardsHtml += buildCardHTML(t); });
+          cardsHtml += '</div></div>';
+        });
+        if (!cardsHtml && query) {
+          cardsHtml = '<div class="deep-tests-note">По запросу «' + dashboardState.searchQuery + '» ничего не найдено в этой категории.</div>';
+        }
+      }
+    }
+
+    contentEl.innerHTML = breadHtml + titleHtml + toolbarHtml + cardsHtml;
+
+    /* Wire up search */
+    var searchInput = document.getElementById("deep-dash-search-input");
+    if (searchInput) {
+      searchInput.addEventListener("input", function() {
+        dashboardState.searchQuery = this.value;
+        renderDashboardContent(contentEl);
+      });
+      /* Re-focus after re-render */
+      if (query) { searchInput.focus(); searchInput.setSelectionRange(query.length, query.length); }
+    }
+  }
+
+  /* ── Build full dashboard shell ── */
   window.deepRenderCatalog = function (containerId) {
     var container = null;
     if (containerId) container = document.getElementById(containerId);
-    if (!container) container = document.querySelector("#deep-categories-container") || document.querySelector("[data-category-id]");
+    if (!container) container = document.querySelector("#deep-categories-container") || document.querySelector("#deep-app-root") || document.querySelector("[data-category-id]");
     if (!container) return;
-    
-    var data = window.DEEP_CATEGORY_DATA;
-
-    // AUTO-DETECT VIA URL (Foolproof fallback)
-    if (!data || !data.categoryId) {
-      var dMap = {
-        "personality": "personality", "mental": "mental_functions", 
-        "adaptation": "adaptation", "psychiatry": "psychiatry",
-        "relationships": "relationships", "career": "career",
-        "team": "team", "organization": "organization",
-        "psychoanalytic": "psychoanalytic", "therapy": "therapy_efficacy"
-      };
-      var loc = window.location.pathname.toLowerCase();
-      var autoCat = null;
-      for (var k in dMap) {
-        if (loc.indexOf("/" + k) !== -1 || loc.indexOf(k + ".html") !== -1) { autoCat = dMap[k]; break; }
-      }
-      if (autoCat && window.DEEP_MASTER_REGISTRY) {
-        data = window.DEEP_MASTER_REGISTRY[autoCat];
-        window.DEEP_CATEGORY_DATA = data;
-      }
-    }
-
-    if (!data || !data.categoryId) {
-      console.warn("DEEP_CATEGORY_DATA or categoryId is missing.");
-      container.innerHTML = '<div style="color:#E8D6B3; background:rgba(255,50,50,0.1); border: 2px solid rgba(255,50,50,0.5); border-radius: 12px; font-size:16px; text-align:center; padding:40px 20px;">' +
-                            '<strong style="color:#ff6b6b; font-size:20px; display:block; margin-bottom:10px;">ОШИБКА: КАТЕГОРИЯ НЕ НАЙДЕНА</strong>' +
-                            'Скрипт попытался определить категорию тестов по ссылке страницы (URL), но не нашел в ней ключевого английского слова.<br><br>' +
-                            '<strong>Как исправить:</strong><br>' +
-                            '1. Зайдите в настройки страницы в Тильде и сделайте так, чтобы ссылка содержала ключевое слово (например: <code>/tests/personality</code> или <code>/tests/mental</code>).<br>' +
-                            '2. <strong>ИЛИ</strong> явно укажите категорию в вашем HTML-коде: <code>&lt;div id="deep-categories-container" data-category-id="название_категории"&gt;&lt;/div&gt;</code>.<br><br>' +
-                            '<span style="font-size:12px; opacity:0.7;">Возможные ключи: personality, mental, adaptation, psychiatry, relationships, career, team, organization, psychoanalytic, therapy</span>' +
-                            '</div>';
-      return;
-    }
-    
-    /* PREVENT DUPLICATION BUG */
     container.innerHTML = "";
+
+    var reg = window.DEEP_MASTER_REGISTRY;
+    if (!reg) return;
 
     // Refresh DEEP_TESTS dynamically
     if (!window.DEEP_TESTS || Object.keys(window.DEEP_TESTS).length === 0) {
-      if (window.DEEP_TEST_REGISTRY) {
-         window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
+      if (window.DEEP_TEST_REGISTRY) window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
+    }
+
+    // Auto-detect category from URL if on a category page
+    var dMap = {
+      "personality": "personality", "mental": "mental_functions",
+      "adaptation": "adaptation", "psychiatry": "psychiatry",
+      "relationships": "relationships", "career": "career",
+      "team": "team", "organization": "organization",
+      "psychoanalytic": "psychoanalytic", "therapy": "therapy_efficacy"
+    };
+    var loc = window.location.pathname.toLowerCase();
+    for (var k in dMap) {
+      if (loc.indexOf("/" + k) !== -1 || loc.indexOf(k + ".html") !== -1) {
+        dashboardState.activeCategoryId = dMap[k];
+        window.DEEP_CATEGORY_DATA = reg[dMap[k]];
+        break;
       }
     }
-
-    // Determine subcategories
-    var subcategoriesToRender = data.subcategories;
-
-    // If subcategories are not explicitly provided, build them from the global registry
-    if (!subcategoriesToRender && window.DEEP_TEST_REGISTRY) {
-      var grouped = {};
-      Object.keys(window.DEEP_TEST_REGISTRY).forEach(function(id) {
-        var t = window.DEEP_TEST_REGISTRY[id];
-        if (t.categoryId === data.categoryId) {
-          var subTitle = t.subcategoryTitle || "Общие тесты";
-          if (!grouped[subTitle]) grouped[subTitle] = { subTitle: subTitle, tests: [] };
-          grouped[subTitle].tests.push(t);
-        }
-      });
-      subcategoriesToRender = Object.keys(grouped).map(function(k){ return grouped[k]; });
+    // Also check data-category-id attribute
+    var explicitCat = container.getAttribute("data-category-id");
+    if (explicitCat && reg[explicitCat]) {
+      dashboardState.activeCategoryId = explicitCat;
+      window.DEEP_CATEGORY_DATA = reg[explicitCat];
     }
 
-    if (!subcategoriesToRender || subcategoriesToRender.length === 0) {
-      container.innerHTML = '<div class="deep-tests-note">Тесты этой категории в данный момент недоступны.</div>';
-      return;
-    }
+    /* ── Build left sidebar nav ── */
+    var navHtml = '<div class="deep-dash-nav" id="deep-dash-nav">' +
+      '<div class="deep-dash-nav-header">' +
+        '<div class="deep-dash-logo">DEEP <span>PSY</span></div>' +
+        '<button class="deep-dash-nav-close" id="deep-dash-nav-close">' + NAV_ICON_CLOSE + '</button>' +
+      '</div>' +
+      '<div class="deep-dash-nav-scroll">' +
+        '<a class="deep-dash-nav-item deep-dash-nav-home' + (!dashboardState.activeCategoryId ? ' active' : '') + '" href="#" data-nav="home">' +
+          NAV_ICON_HOME + '<span>Все тесты</span></a>';
 
-    subcategoriesToRender.forEach(function (sub) {
-      var sec = document.createElement("div");
-      sec.className = "deep-subcategory";
-      sec.innerHTML = '<h2>' + sub.subTitle + '</h2><div class="deep-tests-grid"></div>';
-      var grid = sec.querySelector(".deep-tests-grid");
+    Object.keys(reg).forEach(function(cId) {
+      var cat = reg[cId];
+      var isActive = dashboardState.activeCategoryId === cId;
+      var emoji = CAT_ICONS[cId] || "📋";
+      var testCount = 0;
+      cat.subcategories.forEach(function(s) { testCount += s.tests.length; });
 
-      sub.tests.forEach(function (test) {
-        var status = test.legalStatus || "public";
-        var isProp = status.indexOf("proprietary") !== -1;
-        var isRest = status.indexOf("restricted") !== -1;
-        var badge = isProp ? { c: "deep-tests-pill--proprietary", t: "Закрытая методика" } :
-                    isRest ? { c: "deep-tests-pill--restricted", t: "Клиническая методика" } :
-                    { c: "deep-tests-pill--public", t: "Открытая методика" };
+      navHtml += '<div class="deep-dash-nav-group' + (isActive ? ' expanded' : '') + '">' +
+        '<a class="deep-dash-nav-item' + (isActive ? ' active' : '') + '" href="#" data-nav="' + cId + '">' +
+          '<span class="deep-dash-nav-emoji">' + emoji + '</span>' +
+          '<span class="deep-dash-nav-label">' + (CAT_SHORT[cId] || cat.categoryTitle) + '</span>' +
+          '<span class="deep-dash-nav-count">' + testCount + '</span>' +
+          '<span class="deep-dash-nav-chevron">' + NAV_ICON_CHEVRON + '</span>' +
+        '</a>';
 
-        var isRunnable = test.isRunnable !== false;
-        var ctaHtml = isRunnable
-          ? '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.deepTestsOpen(\'' + test.id + '\')">Пройти тест</button>'
-          : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'' + (test.replacement ? 'Рекомендуемый аналог: ' + test.replacement : 'Методика с ограниченным доступом') + '\')">Информация</button>';
+      if (isActive) {
+        navHtml += '<div class="deep-dash-nav-sub">';
+        cat.subcategories.forEach(function(sub) {
+          navHtml += '<div class="deep-dash-nav-sub-item">' + sub.subTitle + ' <span>(' + sub.tests.length + ')</span></div>';
+        });
+        navHtml += '</div>';
+      }
 
-        var statusBadge = "";
-        try {
-          var stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-          var sess = stored.sessions && stored.sessions[test.id];
-          if (sess && sess.mode === "result") {
-            statusBadge = '<span class="deep-tests-card-badge deep-tests-card-badge--ok" title="Тест пройден">' + BADGE_CHECK + '</span>';
-          } else if (sess && (sess.mode === "quiz" || (sess.answers && Object.keys(sess.answers).length > 0))) {
-            statusBadge = '<span class="deep-tests-card-badge deep-tests-card-badge--wip" title="В процессе">' + BADGE_WIP + '</span>';
-          }
-        } catch (e) {}
-
-        var card = document.createElement("div");
-        card.className = "deep-tests-card";
-        card.innerHTML = statusBadge +
-          '<div class="deep-tests-card-meta"><span class="deep-tests-pill ' + badge.c + '">' + badge.t + '</span></div>' +
-          '<h3 class="deep-tests-card-title">' + test.title + '</h3>' +
-          '<div class="deep-tests-card-text">' + (test.measures || "") + '</div>' +
-          '<div class="deep-tests-card-meta" style="margin-bottom:20px"><span style="font-size:12px;color:var(--dt-muted)">' + (test.time || "?") + ' • ' + (test.items || "?") + ' вопр.</span></div>' +
-          '<div class="deep-tests-actions">' + ctaHtml + '</div>';
-        grid.appendChild(card);
-      });
-
-      container.appendChild(sec);
+      navHtml += '</div>';
     });
+
+    navHtml += '</div></div>';
+
+    /* ── Mobile burger button ── */
+    var burgerHtml = '<button class="deep-dash-burger" id="deep-dash-burger">' + NAV_ICON_BURGER + '</button>';
+
+    /* ── Content area ── */
+    var contentHtml = '<div class="deep-dash-content" id="deep-dash-content"></div>';
+
+    /* ── Overlay for mobile ── */
+    var overlayHtml = '<div class="deep-dash-overlay" id="deep-dash-overlay"></div>';
+
+    container.className = "deep-dashboard";
+    container.innerHTML = navHtml + burgerHtml + overlayHtml + contentHtml;
+
+    /* ── Render content ── */
+    var contentEl = document.getElementById("deep-dash-content");
+    renderDashboardContent(contentEl);
+
+    /* ── Event delegation ── */
+    container.addEventListener("click", function(e) {
+      var navItem = e.target.closest("[data-nav]");
+      if (navItem) {
+        e.preventDefault();
+        var targetCat = navItem.getAttribute("data-nav");
+        if (targetCat === "home") {
+          dashboardState.activeCategoryId = null;
+          dashboardState.searchQuery = "";
+          window.DEEP_CATEGORY_DATA = null;
+        } else if (reg[targetCat]) {
+          dashboardState.activeCategoryId = targetCat;
+          window.DEEP_CATEGORY_DATA = reg[targetCat];
+        }
+        /* Re-render entire dashboard to update nav active states */
+        window.deepRenderCatalog(container.id);
+        /* Close mobile nav */
+        var nav = document.getElementById("deep-dash-nav");
+        var overlay = document.getElementById("deep-dash-overlay");
+        if (nav) nav.classList.remove("open");
+        if (overlay) overlay.classList.remove("open");
+        return;
+      }
+
+      var tabBtn = e.target.closest("[data-tab]");
+      if (tabBtn) {
+        dashboardState.mode = tabBtn.getAttribute("data-tab");
+        renderDashboardContent(contentEl);
+        return;
+      }
+    });
+
+    /* ── Mobile burger toggle ── */
+    var burger = document.getElementById("deep-dash-burger");
+    var navEl = document.getElementById("deep-dash-nav");
+    var navOverlay = document.getElementById("deep-dash-overlay");
+    var navClose = document.getElementById("deep-dash-nav-close");
+
+    function toggleMobileNav() {
+      navEl.classList.toggle("open");
+      navOverlay.classList.toggle("open");
+    }
+    if (burger) burger.addEventListener("click", toggleMobileNav);
+    if (navOverlay) navOverlay.addEventListener("click", toggleMobileNav);
+    if (navClose) navClose.addEventListener("click", toggleMobileNav);
   };
 
 })();

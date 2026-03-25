@@ -1136,3 +1136,529 @@
 .deep-tests-card-badge svg {
   display: block;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD LAYOUT (v13.0)
+   3-column: Left Nav | Content | Right Sidebar
+   ═══════════════════════════════════════════════════════════ */
+
+.deep-dashboard {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: 1fr;
+  min-height: 100vh;
+  background: var(--dt-bg);
+  color: var(--dt-text);
+  font-family: 'Manrope', 'Source Sans Pro', system-ui, sans-serif;
+  position: relative;
+}
+
+/* ── LEFT NAVIGATION ── */
+.deep-dash-nav {
+  grid-column: 1;
+  grid-row: 1;
+  width: 260px;
+  background: var(--dt-panel);
+  border-right: 1px solid var(--dt-border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.deep-dash-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--dt-border);
+  flex-shrink: 0;
+}
+
+.deep-dash-logo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--dt-accent);
+}
+
+.deep-dash-logo span {
+  color: var(--dt-text);
+  font-weight: 500;
+}
+
+.deep-dash-nav-close {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--dt-muted);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.deep-dash-nav-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+.deep-dash-nav-scroll::-webkit-scrollbar { width: 4px; }
+.deep-dash-nav-scroll::-webkit-scrollbar-track { background: transparent; }
+.deep-dash-nav-scroll::-webkit-scrollbar-thumb { background: var(--dt-border); border-radius: 4px; }
+
+/* Nav items */
+.deep-dash-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  color: var(--dt-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.deep-dash-nav-item:hover {
+  color: var(--dt-text);
+  background: rgba(232, 214, 179, 0.05);
+}
+
+.deep-dash-nav-item.active {
+  color: var(--dt-accent);
+  background: rgba(232, 214, 179, 0.08);
+  border-right: 3px solid var(--dt-accent);
+}
+
+.deep-dash-nav-home {
+  margin-bottom: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--dt-border);
+}
+
+.deep-dash-nav-emoji {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.deep-dash-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deep-dash-nav-count {
+  font-size: 11px;
+  color: var(--dt-muted);
+  background: rgba(232, 214, 179, 0.08);
+  padding: 2px 7px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.deep-dash-nav-chevron {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  color: var(--dt-muted);
+  opacity: 0.5;
+}
+
+.deep-dash-nav-group.expanded .deep-dash-nav-chevron {
+  transform: rotate(180deg);
+}
+
+/* Sub-items */
+.deep-dash-nav-sub {
+  padding: 4px 0 8px 52px;
+}
+
+.deep-dash-nav-sub-item {
+  font-size: 12px;
+  color: var(--dt-muted);
+  padding: 5px 12px;
+  line-height: 1.4;
+}
+
+.deep-dash-nav-sub-item span {
+  opacity: 0.5;
+}
+
+/* ── CONTENT AREA ── */
+.deep-dash-content {
+  grid-column: 2;
+  padding: 32px 40px 60px;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+/* Breadcrumbs */
+.deep-dash-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--dt-muted);
+}
+
+.deep-dash-breadcrumbs a {
+  color: var(--dt-accent);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.deep-dash-breadcrumbs a:hover {
+  opacity: 1;
+}
+
+.deep-dash-bc-sep {
+  margin: 0 8px;
+  opacity: 0.4;
+}
+
+/* Title */
+.deep-dash-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--dt-text);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.deep-dash-desc {
+  font-size: 15px;
+  color: var(--dt-muted);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+  max-width: 640px;
+}
+
+/* ── TOOLBAR (search + tabs) ── */
+.deep-dash-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.deep-dash-search-wrap {
+  flex: 1;
+  min-width: 200px;
+  max-width: 420px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.deep-dash-search-wrap svg {
+  position: absolute;
+  left: 14px;
+  color: var(--dt-muted);
+  pointer-events: none;
+}
+
+.deep-dash-search {
+  width: 100%;
+  background: var(--dt-panel-2);
+  border: 1px solid var(--dt-border);
+  border-radius: 12px;
+  padding: 11px 14px 11px 40px;
+  font-size: 14px;
+  color: var(--dt-text);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.deep-dash-search::placeholder {
+  color: var(--dt-muted);
+  opacity: 0.6;
+}
+
+.deep-dash-search:focus {
+  border-color: var(--dt-accent);
+  box-shadow: 0 0 0 3px rgba(232, 214, 179, 0.1);
+}
+
+/* Tabs */
+.deep-dash-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--dt-panel-2);
+  border-radius: 10px;
+  padding: 3px;
+  border: 1px solid var(--dt-border);
+}
+
+.deep-dash-tab {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dt-muted);
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.deep-dash-tab:hover {
+  color: var(--dt-text);
+}
+
+.deep-dash-tab.active {
+  color: var(--dt-bg);
+  background: var(--dt-accent);
+}
+
+/* ── HOME: Category overview cards ── */
+.deep-dash-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.deep-dash-cat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--dt-panel-2);
+  border: 1px solid var(--dt-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deep-dash-cat-card:hover {
+  border-color: var(--dt-accent);
+  background: rgba(232, 214, 179, 0.04);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.deep-dash-cat-emoji {
+  font-size: 32px;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 214, 179, 0.06);
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.deep-dash-cat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.deep-dash-cat-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dt-text);
+  margin: 0 0 4px 0;
+}
+
+.deep-dash-cat-count {
+  font-size: 13px;
+  color: var(--dt-muted);
+}
+
+.deep-dash-cat-arrow {
+  font-size: 20px;
+  color: var(--dt-accent);
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.deep-dash-cat-card:hover .deep-dash-cat-arrow {
+  opacity: 1;
+}
+
+/* ── ALPHABETICAL — Letter headers ── */
+.deep-dash-alpha-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.deep-dash-alpha-grid .deep-tests-card {
+  margin-bottom: 12px;
+}
+
+.deep-dash-letter-header {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--dt-accent);
+  padding: 24px 0 12px;
+  border-bottom: 1px solid var(--dt-border);
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.deep-dash-letter-header:first-child {
+  padding-top: 0;
+}
+
+/* ── RIGHT SIDEBAR integration ── */
+.deep-tests-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 320px !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  border-left: 1px solid var(--dt-border) !important;
+  border-right: none !important;
+  box-shadow: none !important;
+  transform: translateX(100%) !important;
+  transition: transform 0.3s ease !important;
+}
+
+.deep-tests-sidebar.open {
+  transform: translateX(0) !important;
+}
+
+/* When sidebar is open, give content area some right margin */
+.deep-dashboard.sidebar-open {
+  grid-template-columns: 260px 1fr 320px;
+}
+
+.deep-dashboard.sidebar-open .deep-tests-sidebar {
+  position: relative !important;
+  transform: none !important;
+  grid-column: 3;
+  grid-row: 1;
+}
+
+/* ── MOBILE BURGER ── */
+.deep-dash-burger {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 150;
+  background: var(--dt-panel);
+  border: 1px solid var(--dt-border);
+  border-radius: 12px;
+  padding: 10px;
+  color: var(--dt-accent);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ── MOBILE OVERLAY ── */
+.deep-dash-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+  backdrop-filter: blur(4px);
+}
+
+.deep-dash-overlay.open {
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE — MOBILE
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .deep-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .deep-dashboard.sidebar-open {
+    grid-template-columns: 1fr;
+  }
+
+  .deep-dash-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .deep-dash-nav.open {
+    transform: translateX(0);
+  }
+
+  .deep-dash-nav-close {
+    display: flex;
+  }
+
+  .deep-dash-burger {
+    display: flex;
+  }
+
+  .deep-dash-content {
+    grid-column: 1;
+    padding: 72px 20px 60px;
+  }
+
+  .deep-dash-title {
+    font-size: 24px;
+  }
+
+  .deep-dash-toolbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .deep-dash-search-wrap {
+    max-width: 100%;
+  }
+
+  .deep-dash-cat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .deep-tests-sidebar {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .deep-dash-content {
+    padding: 64px 14px 50px;
+  }
+
+  .deep-dash-title {
+    font-size: 22px;
+  }
+
+  .deep-dash-cat-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .deep-dash-cat-emoji {
+    font-size: 24px;
+    width: 44px;
+    height: 44px;
+  }
+}
