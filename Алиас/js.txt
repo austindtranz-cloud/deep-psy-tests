@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════ */
 (function() {
   var baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
-  var v = "?v=10e"; // менять при обновлении кода (10e → 10f → 10g ...)
+  var v = "?v=10f"; // менять при обновлении кода (10e → 10f → 10g ...)
 
   /* HOTFIX: engine.js (старая версия на сервере) делает window.DEEP_TESTS = TESTS;
      где TESTS не объявлен → ReferenceError → deepRenderCatalog не создаётся.
