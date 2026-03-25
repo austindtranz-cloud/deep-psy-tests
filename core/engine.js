@@ -263,6 +263,11 @@
         /* Mark sent */
         s.sent = true; saveState();
         
+        /* Loading feedback */
+        var oldBtnHtml = btn.innerHTML;
+        btn.innerHTML = "Отправка...";
+        btn.disabled = true;
+        
         /* New unified CRM submission */
         var payload = {
           testId: test.id,
@@ -274,6 +279,8 @@
         };
         
         window.deepSubmitToCRM(payload, function(success) {
+           btn.innerHTML = oldBtnHtml;
+           btn.disabled = false;
            if (success) {
              if (typeof window.deepShowSuccessModal === "function") {
                window.deepShowSuccessModal(
@@ -289,29 +296,39 @@
         });
       }
 
-      /* Select answer — instant auto-advance */
+      /* Select answer — visual feedback then auto-advance */
       if (action === "answer") {
         if (answerLock) return;
         answerLock = true;
+        
+        // Визуально зажигаем чекбокс
+        var allBtns = app.querySelectorAll(".deep-tests-option");
+        for (var i=0; i<allBtns.length; i++) allBtns[i].classList.remove("is-selected");
+        btn.classList.add("is-selected");
+
         var idx = Number(btn.getAttribute("data-index"));
         var currentQ = test.questions[s.currentIndex];
         var optVal = currentQ.options[idx].value !== undefined ? currentQ.options[idx].value : idx;
         var optScore = currentQ.options[idx].score !== undefined ? currentQ.options[idx].score : optVal;
+        
         /* Store answer: value/score for calculateResult compatibility */
         s.answers[currentQ.id] = optScore;
         saveState();
-        /* Instant advance to next real question (skip isIntro) */
-        var nextIdx = s.currentIndex + 1;
-        while (nextIdx < test.questions.length && test.questions[nextIdx].isIntro) {
-          nextIdx++;
-        }
-        if (nextIdx < test.questions.length) {
-          s.currentIndex = nextIdx; s.mode = "quiz";
-        } else {
-          s.mode = "result"; s.completedAt = new Date().toISOString();
-        }
-        saveState(); render();
-        answerLock = false;
+        
+        /* Задержка 150мс для проигрывания анимации радиокнопки */
+        setTimeout(function() {
+          var nextIdx = s.currentIndex + 1;
+          while (nextIdx < test.questions.length && test.questions[nextIdx].isIntro) {
+            nextIdx++;
+          }
+          if (nextIdx < test.questions.length) {
+            s.currentIndex = nextIdx; s.mode = "quiz";
+          } else {
+            s.mode = "result"; s.completedAt = new Date().toISOString();
+          }
+          saveState(); render();
+          answerLock = false;
+        }, 150);
       }
 
       /* Manual advance via Далее button */
@@ -455,7 +472,7 @@
     var url = window.DEEP_CRM_WEBHOOK_URL || WEBHOOK_URL;
     if (!url) {
       console.warn("CRM WEBHOOK_URL is not set. Simulation mode.");
-      setTimeout(function(){ if (callback) callback(true); }, 800);
+      setTimeout(function(){ if (callback) callback(true); }, 100);
       return;
     }
 
@@ -575,4 +592,26 @@
       container.appendChild(sec);
     });
   };
+
+  /* ── Keyboard Support ── */
+  document.addEventListener("keydown", function(e) {
+    if (!window.DEEP_CURRENT_SESSION || window.DEEP_CURRENT_SESSION.mode !== "quiz") return;
+    
+    // Игнорируем нажатия внутри текстовых полей
+    var activeTag = document.activeElement ? document.activeElement.tagName : "";
+    if (activeTag === "INPUT" || activeTag === "TEXTAREA" || activeTag === "SELECT") return;
+
+    var keyNum = Number(e.key);
+    if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= 9) {
+      var app = document.getElementById("deep-tests-app");
+      if (app) {
+        var options = app.querySelectorAll(".deep-tests-option");
+        var targetIndex = keyNum - 1; // Клавиша 1 = индекс 0, ...
+        if (options[targetIndex]) {
+          options[targetIndex].click(); // Эмулируем клик пользователя
+        }
+      }
+    }
+  });
+
 })();
