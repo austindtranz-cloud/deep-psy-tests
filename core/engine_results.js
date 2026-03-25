@@ -79,25 +79,157 @@
     html += '</div>';
     return html;
   }
+  /* ── Render for tests returning {scores, scales, interpretations} (SMIL) ── */
+  function renderCustomResult(test, session, appEl, allTests, result) {
+    var scaleKeys = Object.keys(result.scores);
+    var hasRisk = false, hasWarn = false;
+
+    var cardsHtml = scaleKeys.map(function(k) {
+      var score = result.scores[k];
+      var scaleInfo = (result.scales || test.scales || {})[k] || { title: k, maxScore: 100 };
+      var max = scaleInfo.maxScore || scaleInfo.max || 100;
+      var pct = Math.min(100, Math.round((score / max) * 100));
+      var color = score > 70 ? "risk" : score > 55 ? "warn" : "ok";
+      var label = score > 70 ? "Выше нормы" : score > 55 ? "Умеренно" : "Норма";
+
+      if (color === "risk") hasRisk = true;
+      if (color === "warn") hasWarn = true;
+
+      return '<div class="deep-tests-score-card">' +
+        '<div class="deep-tests-score-head">' +
+          '<span class="deep-tests-score-title">' + scaleInfo.title + '</span>' +
+          '<span class="deep-tests-score-value score-' + color + '">' + score + ' <span>T</span></span>' +
+        '</div>' +
+        '<div class="deep-tests-bar"><span class="bar-' + color + '" data-width="' + pct + '"></span></div>' +
+        '<span class="deep-tests-status status-' + color + '">' + label + '</span>' +
+      '</div>';
+    }).join("");
+
+    /* Interpretations from calculateResult */
+    var interpHtml = "";
+    if (result.interpretations && result.interpretations.length) {
+      interpHtml = '<div class="deep-accordion" style="margin-top:16px;">';
+      result.interpretations.forEach(function(item) {
+        interpHtml += '<div class="deep-accordion-item">' +
+          '<div class="deep-accordion-header" data-action="toggle-accordion"><span>' + item.title + '</span>' + chevronSVG + '</div>' +
+          '<div class="deep-accordion-body"><p>' + item.text + '</p></div>' +
+        '</div>';
+      });
+      interpHtml += '</div>';
+    }
+
+    assembleResultPage(test, session, appEl, allTests, cardsHtml, interpHtml, hasRisk, hasWarn);
+  }
+
+  /* ── Render for tests returning array of score objects (Leongard) ── */
+  function renderArrayResult(test, session, appEl, allTests, resultArr) {
+    var hasRisk = false, hasWarn = false;
+
+    var cardsHtml = resultArr.map(function(item) {
+      var score = item.score || 0;
+      var max = item.maxScore || 24;
+      var pct = Math.min(100, Math.round((score / max) * 100));
+      var color = score >= 18 ? "risk" : score >= 12 ? "warn" : "ok";
+      var label = item.label || (score >= 18 ? "Акцентуация выражена" : score >= 12 ? "Склонность" : "Норма");
+
+      if (color === "risk") hasRisk = true;
+      if (color === "warn") hasWarn = true;
+
+      return '<div class="deep-tests-score-card">' +
+        '<div class="deep-tests-score-head">' +
+          '<span class="deep-tests-score-title">' + item.title + '</span>' +
+          '<span class="deep-tests-score-value score-' + color + '">' + score + ' <span>/ ' + max + '</span></span>' +
+        '</div>' +
+        '<div class="deep-tests-bar"><span class="bar-' + color + '" data-width="' + pct + '"></span></div>' +
+        '<span class="deep-tests-status status-' + color + '">' + label + '</span>' +
+      '</div>';
+    }).join("");
+
+    assembleResultPage(test, session, appEl, allTests, cardsHtml, "", hasRisk, hasWarn);
+  }
+
+  /* ── Shared result page assembly ── */
+  function assembleResultPage(test, session, appEl, allTests, cardsHtml, extraHtml, hasRisk, hasWarn) {
+    var summaryText = getSummaryText(hasRisk, hasWarn);
+    var nextTestHtml = buildNextTestHtml(test, allTests, hasRisk);
+    var consultHtml = hasRisk ? buildConsultHtml() : "";
+    var formHtml = buildFormHtml();
+
+    appEl.innerHTML =
+      '<div class="deep-tests-screen">' +
+        '<div class="deep-tests-scroll">' +
+          '<div class="deep-tests-top-space">' +
+            '<div class="deep-tests-kicker">Результат</div>' +
+            '<h2 class="deep-tests-title">' + test.title + '</h2>' +
+          '</div>' +
+          '<div class="deep-tests-note" style="margin-top:16px;">' +
+            '<strong>Общее заключение:</strong> ' + summaryText +
+          '</div>' +
+          '<div class="deep-tests-score-grid">' + cardsHtml + '</div>' +
+          extraHtml +
+          '<p class="deep-tests-disclaimer">Результаты носят ориентировочный характер и не являются клиническим диагнозом.</p>' +
+          consultHtml + nextTestHtml + formHtml +
+          '<div class="deep-tests-actions" style="margin-top:24px;">' +
+            '<button class="deep-tests-btn deep-tests-btn-secondary" type="button" data-action="restart-test">Пройти заново</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    animateBars(appEl);
+  }
+
+  function animateBars(el) {
+    setTimeout(function() {
+      var bars = el.querySelectorAll('.deep-tests-bar > span');
+      bars.forEach(function(bar) { var w = bar.getAttribute('data-width'); if (w) bar.style.width = w + '%'; });
+    }, 60);
+  }
 
   /* ── Main render function ── */
   window.deepTestsRenderResult = function (test, session, appEl, allTests) {
     var scores = {};
-    var scaleKeys = Object.keys(test.scales);
+    var scaleKeys = test.scales ? Object.keys(test.scales) : [];
+
+    /* If test has its own calculateResult method, use it */
+    if (typeof test.calculateResult === "function") {
+      try {
+        var customResult = test.calculateResult(session.answers);
+        /* SMIL returns { scores, scales, interpretations } */
+        if (customResult && customResult.scores) {
+          return renderCustomResult(test, session, appEl, allTests, customResult);
+        }
+        /* Leongard returns array of { id, title, score, maxScore, label, color } */
+        if (Array.isArray(customResult)) {
+          return renderArrayResult(test, session, appEl, allTests, customResult);
+        }
+      } catch (e) {
+        console.warn("DEEP: calculateResult error for " + test.id, e);
+      }
+    }
+
+    /* Generic scoring fallback */
     scaleKeys.forEach(function (k) { scores[k] = 0; });
 
     test.questions.forEach(function (q) {
-      var ansIdx = session.answers[q.id];
+      if (q.isIntro) return; /* skip intro screens */
+      var ansVal = session.answers[q.id];
       var ansList = q.answers || q.options;
-      if (typeof ansIdx === "number" && ansList && ansList[ansIdx]) {
-        var a = ansList[ansIdx];
-        if (a.score) {
-          for (var scale in a.score) {
-            scores[scale] = (scores[scale] || 0) + a.score[scale];
+      if (ansVal !== undefined && ansVal !== null && ansList) {
+        /* ansVal is now the actual value/score, find matching option */
+        for (var i = 0; i < ansList.length; i++) {
+          var a = ansList[i];
+          var matchVal = a.value !== undefined ? a.value : a.score !== undefined ? a.score : i;
+          if (matchVal === ansVal || i === ansVal) {
+            if (a.score && typeof a.score === "object") {
+              for (var scale in a.score) {
+                scores[scale] = (scores[scale] || 0) + a.score[scale];
+              }
+            } else if (typeof a.value === "number") {
+              var targetScale = q.scale || scaleKeys[0];
+              scores[targetScale] = (scores[targetScale] || 0) + a.value;
+            }
+            break;
           }
-        } else if (typeof a.value === "number") {
-          var targetScale = q.scale || scaleKeys[0];
-          scores[targetScale] = (scores[targetScale] || 0) + a.value;
         }
       }
     });
@@ -139,47 +271,47 @@
       '</div>';
     }).join("");
 
-    /* Summary text */
-    var summaryText = getSummaryText(hasRisk, hasWarn);
+    assembleResultPage(test, session, appEl, allTests, cardsHtml, "", hasRisk, hasWarn);
+  };
 
-    /* Next test CTA */
-    var nextTestHtml = "";
+  /* ── Shared helper functions ── */
+  function buildNextTestHtml(test, allTests, hasRisk) {
+    var html = "";
     if (window.DEEP_CATEGORY_DATA && window.DEEP_CATEGORY_DATA.subcategories) {
       var nextTests = [];
       window.DEEP_CATEGORY_DATA.subcategories.forEach(function (sub) {
         sub.tests.forEach(function (t) {
-          if (t.isRunnable && t.id !== test.id && allTests[t.id]) {
+          if (t.isRunnable && t.id !== test.id && allTests[t.id] && allTests[t.id].questions && allTests[t.id].questions.length > 0) {
             nextTests.push(t);
           }
         });
       });
       if (nextTests.length > 0) {
         var rnd = nextTests[Math.floor(Math.random() * nextTests.length)];
-        nextTestHtml = '<div class="deep-tests-cta-block">' +
+        html = '<div class="deep-tests-cta-block">' +
           '<h4>' + (hasRisk ? "Рекомендуем пройти дополнительную диагностику" : "Продолжите изучение") + '</h4>' +
-          '<p>' + rnd.title + ' — ' + rnd.measures + '</p>' +
+          '<p>' + rnd.title + (rnd.measures ? ' — ' + rnd.measures : '') + '</p>' +
           '<button type="button" class="deep-tests-btn deep-tests-btn-primary" data-action="next-test" data-test-id="' + rnd.id + '">Пройти следующий тест</button>' +
         '</div>';
       }
     }
+    return html;
+  }
 
-    /* Consultation CTA if risk */
-    var consultHtml = "";
-    if (hasRisk) {
-      consultHtml = '<div class="deep-tests-cta-block" style="border-color:var(--dt-danger-border);background:linear-gradient(135deg,rgba(217,140,140,0.06),rgba(217,140,140,0.02));">' +
-        '<h4 style="color:var(--dt-danger);">Обратите внимание</h4>' +
-        '<p>По некоторым шкалам ваши результаты выходят за пределы нормы. ' +
-        'Это не диагноз, но может быть полезным обсудить результаты с квалифицированным специалистом.</p>' +
-        '<a href="https://t.me/DeepPsySolutions" target="_blank" class="deep-tests-btn deep-tests-btn-secondary" style="flex:none;">Связаться со специалистом</a>' +
-      '</div>';
-    }
+  function buildConsultHtml() {
+    return '<div class="deep-tests-cta-block" style="border-color:var(--dt-danger-border);background:linear-gradient(135deg,rgba(217,140,140,0.06),rgba(217,140,140,0.02));">' +
+      '<h4 style="color:var(--dt-danger);">Обратите внимание</h4>' +
+      '<p>По некоторым шкалам ваши результаты выходят за пределы нормы. ' +
+      'Это не диагноз, но может быть полезным обсудить результаты с квалифицированным специалистом.</p>' +
+      '<a href="https://t.me/DeepPsySolutions" target="_blank" class="deep-tests-btn deep-tests-btn-secondary" style="flex:none;">Связаться со специалистом</a>' +
+    '</div>';
+  }
 
-    /* User Profile Cache */
+  function buildFormHtml() {
     var profile = {};
     try { profile = JSON.parse(localStorage.getItem("deep-tests-user-profile")) || {}; } catch(e) {}
 
-    /* Lead form — always editable, even after submission */
-    var formHtml = '<div class="deep-tests-form">' +
+    return '<div class="deep-tests-form">' +
       '<div class="deep-tests-form-title">Получить подробный отчёт на e-mail</div>' +
       '<div class="deep-tests-input-group">' +
         '<input class="deep-tests-input" type="text" name="lead_name" placeholder="Имя (как к вам обращаться?)" value="' + (profile.name || '') + '">' +
@@ -203,46 +335,6 @@
         '<button type="button" class="deep-tests-btn deep-tests-btn-primary" data-action="submit-lead">Получить отчёт</button>' +
       '</div>' +
     '</div>';
+  }
 
-    /* Assemble */
-    appEl.innerHTML =
-      '<div class="deep-tests-screen">' +
-        '<div class="deep-tests-scroll">' +
-          '<div class="deep-tests-top-space">' +
-            '<div class="deep-tests-kicker">Результат</div>' +
-            '<h2 class="deep-tests-title">' + test.title + '</h2>' +
-          '</div>' +
-
-          /* Summary block */
-          '<div class="deep-tests-note" style="margin-top:16px;">' +
-            '<strong>Общее заключение:</strong> ' + summaryText +
-          '</div>' +
-
-          '<div class="deep-tests-score-grid">' + cardsHtml + '</div>' +
-
-          '<p class="deep-tests-disclaimer">Результаты носят ориентировочный характер и не являются клиническим диагнозом.</p>' +
-          consultHtml +
-          nextTestHtml +
-          formHtml +
-          '<div class="deep-tests-actions" style="margin-top:24px;">' +
-            '<button class="deep-tests-btn deep-tests-btn-secondary" type="button" data-action="restart-test">Пройти заново</button>' +
-          '</div>' +
-
-          /* Bug report link */
-          '<div style="text-align:center;margin-top:32px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.04);">' +
-            '<a href="#" data-action="open-bug-report" style="font-size:12px;color:rgba(168,159,145,0.5);text-decoration:none;transition:color .2s;" onmouseover="this.style.color=\'rgba(168,159,145,0.8)\'" onmouseout="this.style.color=\'rgba(168,159,145,0.5)\'">Сообщить об ошибке</a>' +
-          '</div>' +
-
-        '</div>' +
-      '</div>';
-
-    /* Animate bars after render */
-    setTimeout(function() {
-      var bars = appEl.querySelectorAll('.deep-tests-bar > span');
-      bars.forEach(function(bar) {
-        var w = bar.getAttribute('data-width');
-        if (w) bar.style.width = w + '%';
-      });
-    }, 60);
-  };
 })();

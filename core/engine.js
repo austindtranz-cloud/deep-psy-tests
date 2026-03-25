@@ -182,7 +182,8 @@
       return;
     }
 
-    var selectedIndex = typeof session.answers[q.id] === "number" ? session.answers[q.id] : null;
+    var savedAns = session.answers[q.id];
+    var selectedIndex = typeof savedAns === "number" ? savedAns : (typeof savedAns === "object" && savedAns !== null ? savedAns.idx : null);
     var hasAnswer = selectedIndex !== null;
 
     app.innerHTML =
@@ -286,13 +287,22 @@
         if (answerLock) return;
         answerLock = true;
         var idx = Number(btn.getAttribute("data-index"));
-        s.answers[test.questions[s.currentIndex].id] = idx;
+        var currentQ = test.questions[s.currentIndex];
+        var optVal = currentQ.options[idx].value !== undefined ? currentQ.options[idx].value : idx;
+        var optScore = currentQ.options[idx].score !== undefined ? currentQ.options[idx].score : optVal;
+        /* Store answer: numeric index for generic renderer, value for custom calculateResult */
+        s.answers[currentQ.id] = optScore;
         saveState();
         render();
         setTimeout(function() {
           answerLock = false;
-          if (s.currentIndex < test.questions.length - 1) {
-            s.currentIndex++; s.mode = "quiz";
+          /* Advance to next real question (skip isIntro) */
+          var nextIdx = s.currentIndex + 1;
+          while (nextIdx < test.questions.length && test.questions[nextIdx].isIntro) {
+            nextIdx++;
+          }
+          if (nextIdx < test.questions.length) {
+            s.currentIndex = nextIdx; s.mode = "quiz";
           } else {
             s.mode = "result"; s.completedAt = new Date().toISOString();
           }
