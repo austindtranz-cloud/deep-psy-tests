@@ -307,7 +307,7 @@
             s.mode = "result"; s.completedAt = new Date().toISOString();
           }
           saveState(); render();
-        }, 350);
+        }, 200);
       }
 
       /* Manual advance via Далее button */
