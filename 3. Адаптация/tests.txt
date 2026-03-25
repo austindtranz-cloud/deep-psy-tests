@@ -1,0 +1,24 @@
+﻿<script>
+/* 3. АДАПТАЦИЯ И ДЕЗАДАПТАЦИЯ */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"adaptation",categoryTitle:"Адаптация и дезадаптация",
+  categoryDescription:"Быстрый скрининг выгорания, оценка стресса и копинг-стратегий, выявление деструктивных паттернов поведения.",
+  subcategories:[
+    {subId:"burnout",subTitle:"Быстрый скрининг выгорания",tests:[
+      {id:"mbi",title:"MBI (Maslach Burnout Inventory)",measures:"Профессиональное выгорание",items:"22",time:"10 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"cbi",title:"CBI (Copenhagen Burnout Inventory)",measures:"Персональное / рабочее / клиентское выгорание",items:"19",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"stress_coping",subTitle:"Стресс и копинги",tests:[
+      {id:"pss",title:"PSS (Perceived Stress Scale)",measures:"Воспринимаемый стресс",items:"10",time:"3-5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"cope",title:"COPE / Brief COPE",measures:"Стратегии совладания",items:"28",time:"10-15 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"destructors",subTitle:"Деструкторы",tests:[
+      {id:"bpaq",title:"Buss–Perry Aggression Questionnaire",measures:"Агрессия (физическая, вербальная, гнев, враждебность)",items:"29",time:"7-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"cts2",title:"CTS-2 (Conflict Tactics Scale)",measures:"Тактики конфликта в паре",items:"39",time:"10-15 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>
+

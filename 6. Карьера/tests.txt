@@ -1,0 +1,25 @@
+﻿﻿<script>
+/* 6. КАРЬЕРА */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"career",categoryTitle:"Карьера",
+  categoryDescription:"Профориентация, карьерные перспективы, лидерство, управленческие кризисы, синдром самозванца и профессиональная идентичность.",
+  subcategories:[
+    {subId:"interests",subTitle:"Карьерные интересы",tests:[
+      {id:"sds",title:"SDS (Self-Directed Search, Holland)",measures:"Профессиональные типы",items:"~160",time:"20-30 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"prospects",subTitle:"Карьерные перспективы",tests:[
+      {id:"caas",title:"CAAS (Career Adapt-Abilities Scale)",measures:"Карьерная адаптивность",items:"24",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"cdse",title:"CDSE",measures:"Самоэффективность в карьерных решениях",items:"25",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"leadership",subTitle:"Лидерство / Кризисы лидерства",tests:[
+      {id:"mlq",title:"MLQ",measures:"Стиль лидерства",items:"45",time:"10-15 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"lses",title:"LSES",measures:"Самоэффективность лидера",items:"~20",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"impostor",subTitle:"Синдром самозванца",tests:[
+      {id:"cips",title:"CIPS (Clance Impostor Phenomenon Scale)",measures:"Выраженность синдрома самозванца",items:"20",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>

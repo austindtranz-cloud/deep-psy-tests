@@ -1,0 +1,18 @@
+﻿﻿<script>
+/* 8. ОРГАНИЗАЦИЯ */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"organization",categoryTitle:"Организационное консультирование",
+  categoryDescription:"Оценка организационной культуры, климата, ролевых конфликтов и системных проблем внутри компании.",
+  subcategories:[
+    {subId:"org_assessment",subTitle:"Оценка организации",tests:[
+      {id:"ocai",title:"OCAI",measures:"Тип организационной культуры",items:"24",time:"10-15 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"denison",title:"Denison Organizational Culture Survey",measures:"4 измерения оргкультуры",items:"60",time:"15-20 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"role_conflict",subTitle:"Ролевой конфликт",tests:[
+      {id:"rcra",title:"Role Conflict & Ambiguity Scale (Rizzo et al.)",measures:"Ролевой конфликт и неопределённость",items:"14",time:"5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>

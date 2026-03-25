@@ -1,0 +1,19 @@
+﻿﻿<script>
+/* 10. ЭФФЕКТИВНОСТЬ ТЕРАПИИ */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"therapy_efficacy",categoryTitle:"Оценка эффективности терапии",
+  categoryDescription:"Инструменты для мониторинга терапевтического альянса и результативности каждой сессии.",
+  subcategories:[
+    {subId:"track",subTitle:"Терапевтический альянс",tests:[
+      {id:"wai",title:"WAI (Working Alliance Inventory)",measures:"Рабочий альянс",items:"36 / 12 (короткая)",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"seq",title:"SEQ (Session Evaluation Questionnaire)",measures:"Оценка сессии",items:"21",time:"3-5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"session",subTitle:"Результативность",tests:[
+      {id:"ors",title:"ORS (Outcome Rating Scale)",measures:"Субъективные результаты терапии",items:"4",time:"1-2 минуты",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"srs",title:"SRS (Session Rating Scale)",measures:"Удовлетворённость сессией",items:"4",time:"1-2 минуты",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>

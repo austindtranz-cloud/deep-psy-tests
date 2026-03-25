@@ -1,0 +1,15 @@
+# Temp and logs
+/tmp/
+*.log
+.DS_Store
+
+# Brain and internal files (important to keep private)
+/.gemini/
+/brain/
+
+# Local testing
+debug_index.html
+
+# Node (if any)
+node_modules/
+npm-debug.log

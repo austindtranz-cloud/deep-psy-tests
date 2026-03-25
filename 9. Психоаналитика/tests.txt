@@ -1,0 +1,37 @@
+﻿﻿<script>
+/* 9. ПСИХОАНАЛИТИЧЕСКАЯ ДИАГНОСТИКА */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"psychoanalytic",categoryTitle:"Психоаналитическая диагностика",
+  categoryDescription:"Глубинная оценка уровня организации личности, психологических защит, объектных отношений, привязанности, ментализации и идентичности.",
+  subcategories:[
+    {subId:"ipo_level",subTitle:"Уровень организации личности",tests:[
+      {id:"ipo",title:"IPO (Kernberg)",measures:"Уровень организации личности",items:"83",time:"20-30 минут",legalStatus:"academic-only",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"defenses",subTitle:"Психологические защиты",tests:[
+      {id:"dsq",title:"DSQ-40",measures:"Стили психологических защит",items:"40",time:"10-15 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"mipz",title:"МИПЗ (Плутчик–Келлерман–Конте)",measures:"Напряженность 8 типов защит",items:"97",time:"15-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"object_relations",subTitle:"Объектные отношения",tests:[
+      {id:"borrti",title:"BORRTI",measures:"Объектные отношения и реальность",items:"90",time:"15-20 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"attachment_deep",subTitle:"Привязанность (глубинная)",tests:[
+      {id:"aai",title:"AAI",measures:"Паттерны привязанности",items:"Интервью",time:"от 60 минут",legalStatus:"academic-only",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"mentalization",subTitle:"Ментализация",tests:[
+      {id:"rfq",title:"RFQ",measures:"Рефлексивная функция",items:"8",time:"3-5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"identity",subTitle:"Идентичность",tests:[
+      {id:"scim",title:"SCIM",measures:"Самоконцепция и идентичность",items:"27",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"projective",subTitle:"Проективные",tests:[
+      {id:"tat",title:"TAT",measures:"Проективная диагностика",items:"Серия картин",time:"30-60 минут",legalStatus:"academic-only",ctaType:"informational",isRunnable:false},
+      {id:"rorschach",title:"Тест Роршаха",measures:"Глубинная проективная диагностика",items:"10 таблиц",time:"40-60 минут",legalStatus:"academic-only",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"integrative",subTitle:"Интегративная",tests:[
+      {id:"opd2",title:"OPD-2",measures:"Операционализированная психодинамическая диагностика",items:"Зависит от модулей",time:"от 30 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>

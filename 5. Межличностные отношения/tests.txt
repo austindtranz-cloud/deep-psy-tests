@@ -1,0 +1,22 @@
+﻿﻿<script>
+/* 5. МЕЖЛИЧНОСТНЫЕ ОТНОШЕНИЯ */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"relationships",categoryTitle:"Межличностные отношения",
+  categoryDescription:"Диагностика привязанности, семейных систем и деструктивных паттернов в близких отношениях.",
+  subcategories:[
+    {subId:"attachment",subTitle:"Привязанность",tests:[
+      {id:"ecrr",title:"ECR-R",measures:"Тревожность и избегание в привязанности",items:"36",time:"10-15 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"family",subTitle:"Семейные отношения",tests:[
+      {id:"faces4",title:"FACES-IV",measures:"Семейная сплоченность и адаптивность",items:"62",time:"15-20 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"das_rel",title:"DAS (Dyadic Adjustment Scale)",measures:"Удовлетворенность партнёрскими отношениями",items:"32",time:"10 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"destructive",subTitle:"Деструктивные отношения",tests:[
+      {id:"cts2_rel",title:"CTS-2",measures:"Тактики конфликтного поведения",items:"39",time:"10-15 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"abi",title:"ABI (Abusive Behavior Inventory)",measures:"Абьюзивное поведение",items:"30",time:"10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>

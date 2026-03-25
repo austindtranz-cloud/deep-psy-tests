@@ -1,0 +1,13 @@
+<!-- Шаблон для ВНУТРЕННЕЙ СТРАНИЦЫ КАТЕГОРИИ — вставить в HTML блок T123 -->
+<div class="deep-page-container">
+  <nav class="deep-nav">
+    <a href="/tests">Все категории</a>
+  </nav>
+  <div id="personality-categories-container"></div>
+</div>
+<div class="deep-tests-overlay" id="deep-tests-overlay" aria-hidden="true">
+  <div class="deep-tests-modal">
+    <button class="deep-tests-close" aria-label="Закрыть">×</button>
+    <div class="deep-tests-app" id="deep-tests-app"></div>
+  </div>
+</div>

@@ -1,0 +1,138 @@
+<script>
+/* 1. ИССЛЕДОВАНИЕ ЛИЧНОСТИ — данные каталога и runnable тестов */
+window.DEEP_CATEGORY_DATA = {
+  categoryId: "personality",
+  categoryTitle: "Исследование личности",
+  categoryDescription: "Комплексная оценка структуры личности, акцентуаций, темперамента, самооценки и личностных черт.",
+  subcategories: [
+    { subId:"structure", subTitle:"Структура личности", tests:[
+      {id:"personality_smil_566",title:"СМИЛ (MMPI-2) — 566 вопросов",measures:"Многоаспектная структура личности",items:"566",time:"40-60 минут",legalStatus:"restricted",ctaType:"runnable",isRunnable:true},
+      {id:"16pf",title:"16PF (Кеттелл)",measures:"16 личностных факторов",items:"187",time:"35-50 минут",legalStatus:"proprietary",ctaType:"replacement used",replacement:"IPIP 16PF",isRunnable:false},
+      {id:"neopir",title:"NEO-PI-R / NEO-FFI",measures:"Большая пятерка",items:"60 или 240",time:"15-45 минут",legalStatus:"proprietary",ctaType:"replacement used",replacement:"IPIP-NEO",isRunnable:false}
+    ]},
+    { subId:"accentuations", subTitle:"Акцентуации", tests:[
+      {id:"leongard",title:"Опросник Леонгарда–Шмишека",measures:"Типы акцентуаций характера",items:"88",time:"15-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"pdo",title:"ПДО (Личко)",measures:"Типы акцентуаций",items:"143",time:"30-40 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    { subId:"temperament", subTitle:"Темперамент", tests:[
+      {id:"epiq",title:"EPI / EPQ (Айзенк)",measures:"Экстраверсия, нейротизм, психотизм",items:"от 57 до 90",time:"10-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    { subId:"autonomy", subTitle:"Автономия", tests:[
+      {id:"bpns",title:"Basic Psychological Needs Scale",measures:"Удовлетворенность базовых потребностей",items:"21",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    { subId:"selfesteem", subTitle:"Самооценка", tests:[
+      {id:"rosenberg",title:"Шкала самоуважения Розенберга (RSES)",measures:"Глобальная самооценка",items:"10",time:"2-5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    { subId:"traits", subTitle:"Личностные черты", tests:[
+      {id:"tipi",title:"TIPI-RU (Большая Пятёрка — экспресс)",measures:"5 факторов личности",items:"10",time:"2 минуты",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"pid5bf",title:"PID-5-BF (DSM-5)",measures:"5 доменов патологических черт",items:"25",time:"5 минут",legalStatus:"public domain / APA",ctaType:"runnable",isRunnable:true},
+      {id:"hexaco",title:"HEXACO",measures:"6 факторов",items:"от 60 до 100",time:"15-25 минут",legalStatus:"restricted",ctaType:"legal review",isRunnable:false},
+      {id:"sd3",title:"Dark Triad (SD3)",measures:"Макиавеллизм, нарциссизм, психопатия",items:"27",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    { subId:"jungian", subTitle:"Юнгианские / психоаналитические", tests:[
+      {id:"mbti",title:"MBTI",measures:"Типология Юнга",items:"93 и более",time:"20-30 минут",legalStatus:"proprietary",ctaType:"replacement used",replacement:"Open Jungian Type",isRunnable:false},
+      {id:"dsq",title:"DSQ-40",measures:"Стили психологических защит",items:"40",time:"10-15 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"opd2",title:"OPD-2",measures:"Ось конфликтов и структуры",items:"—",time:"от 30 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]}
+  ]
+};
+
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+
+/* ── Rosenberg Self-Esteem Scale ── */
+window.DEEP_TESTS.rosenberg = {
+  id:"rosenberg", title:"Шкала самоуважения Розенберга (RSES)", shortTitle:"RSES",
+  description:"Глобальная оценка самоуважения. 10 утверждений. Адаптация: Золотарева А.А., 2020.",
+  intro:"Выберите вариант, наиболее точно отражающий ваше согласие с утверждением.",
+  scales:{ selfesteem:{ title:"Самоуважение", max:30, ranges:[{min:0,max:14,label:"Низкое"},{min:15,max:25,label:"Нормальное"},{min:26,max:30,label:"Высокое"}] }},
+  questions:[
+    {id:"rs1",scale:"selfesteem",text:"В целом я доволен собой.",options:[{text:"Полностью не согласен",value:0},{text:"Не согласен",value:1},{text:"Согласен",value:2},{text:"Полностью согласен",value:3}]},
+    {id:"rs2",scale:"selfesteem",text:"Временами мне кажется, что я не совсем хорош.",options:[{text:"Полностью не согласен",value:3},{text:"Не согласен",value:2},{text:"Согласен",value:1},{text:"Полностью согласен",value:0}]},
+    {id:"rs3",scale:"selfesteem",text:"Думаю, у меня есть ряд достоинств.",options:[{text:"Полностью не согласен",value:0},{text:"Не согласен",value:1},{text:"Согласен",value:2},{text:"Полностью согласен",value:3}]},
+    {id:"rs4",scale:"selfesteem",text:"Многие вещи я способен делать не хуже большинства.",options:[{text:"Полностью не согласен",value:0},{text:"Не согласен",value:1},{text:"Согласен",value:2},{text:"Полностью согласен",value:3}]},
+    {id:"rs5",scale:"selfesteem",text:"Мне кажется, что мне нечем гордиться.",options:[{text:"Полностью не согласен",value:3},{text:"Не согласен",value:2},{text:"Согласен",value:1},{text:"Полностью согласен",value:0}]},
+    {id:"rs6",scale:"selfesteem",text:"Иногда я чувствую себя бесполезным.",options:[{text:"Полностью не согласен",value:3},{text:"Не согласен",value:2},{text:"Согласен",value:1},{text:"Полностью согласен",value:0}]},
+    {id:"rs7",scale:"selfesteem",text:"Я считаю себя достойным и равным другим.",options:[{text:"Полностью не согласен",value:0},{text:"Не согласен",value:1},{text:"Согласен",value:2},{text:"Полностью согласен",value:3}]},
+    {id:"rs8",scale:"selfesteem",text:"Мне бы хотелось больше уважать себя.",options:[{text:"Полностью не согласен",value:3},{text:"Не согласен",value:2},{text:"Согласен",value:1},{text:"Полностью согласен",value:0}]},
+    {id:"rs9",scale:"selfesteem",text:"По большому счету я считаю себя неудачником.",options:[{text:"Полностью не согласен",value:3},{text:"Не согласен",value:2},{text:"Согласен",value:1},{text:"Полностью согласен",value:0}]},
+    {id:"rs10",scale:"selfesteem",text:"Я хорошо отношусь к себе.",options:[{text:"Полностью не согласен",value:0},{text:"Не согласен",value:1},{text:"Согласен",value:2},{text:"Полностью согласен",value:3}]}
+  ]
+};
+
+/* ── TIPI-RU ── */
+window.DEEP_TESTS.tipi = {
+  id:"tipi", title:"Экспресс-оценка Большой Пятерки (TIPI-RU)", shortTitle:"TIPI",
+  description:"Самый короткий (10 пунктов) инструмент для быстрой оценки пяти факторов личности.",
+  intro:"Я вижу себя как человека...",
+  scales:{
+    extraversion:{title:"Экстраверсия",max:14,ranges:[{min:2,max:5,label:"Низкий"},{min:6,max:10,label:"Средний"},{min:11,max:14,label:"Высокий"}]},
+    agreeableness:{title:"Доброжелательность",max:14,ranges:[{min:2,max:5,label:"Низкий"},{min:6,max:10,label:"Средний"},{min:11,max:14,label:"Высокий"}]},
+    conscientiousness:{title:"Добросовестность",max:14,ranges:[{min:2,max:5,label:"Низкий"},{min:6,max:10,label:"Средний"},{min:11,max:14,label:"Высокий"}]},
+    neuroticism:{title:"Нейротизм",max:14,ranges:[{min:2,max:5,label:"Низкий"},{min:6,max:10,label:"Средний"},{min:11,max:14,label:"Высокий"}]},
+    openness:{title:"Открытость опыту",max:14,ranges:[{min:2,max:5,label:"Низкий"},{min:6,max:10,label:"Средний"},{min:11,max:14,label:"Высокий"}]}
+  },
+  questions:[
+    {id:"t1",scale:"extraversion",text:"Экстравертного, полного энтузиазма.",options:[{text:"Полностью не согласен",value:1},{text:"Не согласен",value:2},{text:"Немного не согласен",value:3},{text:"Нейтрально",value:4},{text:"Немного согласен",value:5},{text:"Согласен",value:6},{text:"Полностью согласен",value:7}]},
+    {id:"t2",scale:"agreeableness",text:"Критичного, склонного к ссорам.",options:[{text:"Полностью не согласен",value:7},{text:"Не согласен",value:6},{text:"Немного не согласен",value:5},{text:"Нейтрально",value:4},{text:"Немного согласен",value:3},{text:"Согласен",value:2},{text:"Полностью согласен",value:1}]},
+    {id:"t3",scale:"conscientiousness",text:"Надежного, дисциплинированного.",options:[{text:"Полностью не согласен",value:1},{text:"Не согласен",value:2},{text:"Немного не согласен",value:3},{text:"Нейтрально",value:4},{text:"Немного согласен",value:5},{text:"Согласен",value:6},{text:"Полностью согласен",value:7}]},
+    {id:"t4",scale:"neuroticism",text:"Тревожного, легко расстраивающегося.",options:[{text:"Полностью не согласен",value:1},{text:"Не согласен",value:2},{text:"Немного не согласен",value:3},{text:"Нейтрально",value:4},{text:"Немного согласен",value:5},{text:"Согласен",value:6},{text:"Полностью согласен",value:7}]},
+    {id:"t5",scale:"openness",text:"Открытого новому, разностороннего.",options:[{text:"Полностью не согласен",value:1},{text:"Не согласен",value:2},{text:"Немного не согласен",value:3},{text:"Нейтрально",value:4},{text:"Немного согласен",value:5},{text:"Согласен",value:6},{text:"Полностью согласен",value:7}]},
+    {id:"t6",scale:"extraversion",text:"Сдержанного, тихого.",options:[{text:"Полностью не согласен",value:7},{text:"Не согласен",value:6},{text:"Немного не согласен",value:5},{text:"Нейтрально",value:4},{text:"Немного согласен",value:3},{text:"Согласен",value:2},{text:"Полностью согласен",value:1}]},
+    {id:"t7",scale:"agreeableness",text:"Относящегося с симпатией, теплого.",options:[{text:"Полностью не согласен",value:1},{text:"Не согласен",value:2},{text:"Немного не согласен",value:3},{text:"Нейтрально",value:4},{text:"Немного согласен",value:5},{text:"Согласен",value:6},{text:"Полностью согласен",value:7}]},
+    {id:"t8",scale:"conscientiousness",text:"Неорганизованного, небрежного.",options:[{text:"Полностью не согласен",value:7},{text:"Не согласен",value:6},{text:"Немного не согласен",value:5},{text:"Нейтрально",value:4},{text:"Немного согласен",value:3},{text:"Согласен",value:2},{text:"Полностью согласен",value:1}]},
+    {id:"t9",scale:"neuroticism",text:"Спокойного, эмоционально стабильного.",options:[{text:"Полностью не согласен",value:7},{text:"Не согласен",value:6},{text:"Немного не согласен",value:5},{text:"Нейтрально",value:4},{text:"Немного согласен",value:3},{text:"Согласен",value:2},{text:"Полностью согласен",value:1}]},
+    {id:"t10",scale:"openness",text:"Традиционного, не креативного.",options:[{text:"Полностью не согласен",value:7},{text:"Не согласен",value:6},{text:"Немного не согласен",value:5},{text:"Нейтрально",value:4},{text:"Немного согласен",value:3},{text:"Согласен",value:2},{text:"Полностью согласен",value:1}]}
+  ]
+};
+
+/* ── PID-5-BF ── */
+window.DEEP_TESTS.pid5bf = {
+  id:"pid5bf", title:"PID-5-BF Краткая форма (DSM-5)", shortTitle:"PID-5-BF",
+  description:"Оценка 5 доменов патологических черт по DSM-5 (APA). 25 утверждений.",
+  intro:"Оцените, насколько каждое утверждение описывает вас в целом.",
+  scales:{
+    negative_affect:{title:"Негативная эмоциональность",max:15,ranges:[{min:0,max:5,label:"Низкая"},{min:6,max:10,label:"Средняя"},{min:11,max:15,label:"Высокая"}]},
+    detachment:{title:"Отчужденность",max:15,ranges:[{min:0,max:5,label:"Низкая"},{min:6,max:10,label:"Средняя"},{min:11,max:15,label:"Высокая"}]},
+    antagonism:{title:"Антагонизм",max:15,ranges:[{min:0,max:5,label:"Низкий"},{min:6,max:10,label:"Средний"},{min:11,max:15,label:"Высокий"}]},
+    disinhibition:{title:"Растормаживание",max:15,ranges:[{min:0,max:5,label:"Низкое"},{min:6,max:10,label:"Среднее"},{min:11,max:15,label:"Высокое"}]},
+    psychoticism:{title:"Психотизм",max:15,ranges:[{min:0,max:5,label:"Низкий"},{min:6,max:10,label:"Средний"},{min:11,max:15,label:"Высокий"}]}
+  },
+  questions:[
+    {id:"p1",scale:"disinhibition",text:"Люди говорят мне, что я слишком часто делаю что-то, не подумав.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p2",scale:"disinhibition",text:"У меня проблемы со срывами и нервами.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p3",scale:"disinhibition",text:"Я постоянно принимаю поспешные, импульсивные решения.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p4",scale:"detachment",text:"Я избегаю тесных отношений с другими людьми.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p5",scale:"disinhibition",text:"Меня легко отвлечь.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p6",scale:"disinhibition",text:"Обычно я не думаю о том, могут ли мои действия навредить другим.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p7",scale:"psychoticism",text:"Часто я вижу и слышу вещи, которых на самом деле нет.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p8",scale:"negative_affect",text:"Я часто переживаю о том, что должно произойти.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p9",scale:"negative_affect",text:"Я склонен(на) легко впадать в панику.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p10",scale:"negative_affect",text:"Я часто чувствую себя несчастным(ой).",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p11",scale:"negative_affect",text:"Мои эмоции быстро меняются из одной крайности в другую.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p12",scale:"psychoticism",text:"У меня бывают мысли, которые кажутся другим странными.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p13",scale:"detachment",text:"Я предпочитаю ничего не чувствовать.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p14",scale:"detachment",text:"Я редко получаю удовольствие от чего-либо.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p15",scale:"negative_affect",text:"Чтобы выжить, я завишу от других людей.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p16",scale:"detachment",text:"Я держусь на расстоянии от людей.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p17",scale:"antagonism",text:"Если кто-то мне не нравится, я без колебаний скажу.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p18",scale:"detachment",text:"Мне кажется, что я ни к кому не привязан(а).",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p19",scale:"antagonism",text:"Я часто делаю что-то только чтобы увидеть чужую реакцию.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p20",scale:"antagonism",text:"Я умею манипулировать, чтобы получить что хочу.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p21",scale:"psychoticism",text:"Я могу чувствовать чужие мысли.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p22",scale:"antagonism",text:"Важно показать другим, кто здесь главный.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p23",scale:"psychoticism",text:"Окружающий мир иногда кажется мне нереальным.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p24",scale:"psychoticism",text:"Любое событие для меня имеет скрытый подтекст.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]},
+    {id:"p25",scale:"antagonism",text:"Я получаю удовольствие от того, что издеваюсь над людьми.",options:[{text:"Совсем неверно",value:0},{text:"Иногда верно",value:1},{text:"Часто верно",value:2},{text:"Очень верно",value:3}]}
+  ]
+};
+
+/* Каталог-рендерер (использует shared deepRenderCatalog из engine.js) */
+document.addEventListener("DOMContentLoaded", function () {
+  window.deepRenderCatalog("personality-categories-container");
+});
+</script>
+<!-- Базы данных тестов -->
+<script src="data/test_registry.js"></script>
+<script src="data/smil_566.js"></script>
+<script src="data/leongard.js"></script>
+

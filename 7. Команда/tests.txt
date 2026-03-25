@@ -1,0 +1,27 @@
+﻿﻿<script>
+/* 7. КОМАНДНОЕ КОНСУЛЬТИРОВАНИЕ */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"team",categoryTitle:"Командное консультирование",
+  categoryDescription:"Оценка софт-скиллов, стилей поведения в команде, сильных/слабых сторон и конфликтных стратегий.",
+  subcategories:[
+    {subId:"soft_skills",subTitle:"Софт-скиллз",tests:[
+      {id:"msceit",title:"MSCEIT",measures:"Эмоциональный интеллект",items:"141",time:"30-45 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"ssi",title:"SSI (Social Skills Inventory)",measures:"Социальные навыки",items:"90",time:"15-20 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"behavior",subTitle:"Поведенческие характеристики",tests:[
+      {id:"disc",title:"DISC Assessment",measures:"Стили поведения",items:"~28",time:"10-15 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"firob",title:"FIRO-B",measures:"Межличностная ориентация",items:"54",time:"10-15 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"strengths",subTitle:"Сильные / слабые стороны",tests:[
+      {id:"via",title:"VIA Character Strengths Survey",measures:"24 черты характера",items:"120",time:"15-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"clifton",title:"CliftonStrengths (Gallup)",measures:"34 таланта",items:"177",time:"30-40 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"conflict",subTitle:"Конфликтология",tests:[
+      {id:"tki",title:"TKI (Thomas-Kilmann)",measures:"Стиль поведения в конфликте",items:"30",time:"10 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"roci2",title:"ROCI-II (Rahim)",measures:"Организационный конфликт",items:"28",time:"7-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>

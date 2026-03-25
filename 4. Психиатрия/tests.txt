@@ -1,0 +1,49 @@
+﻿<script>
+/* 4. ПСИХИАТРИЯ */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"psychiatry",categoryTitle:"Психиатрия",
+  categoryDescription:"Скрининговые и клинические инструменты для оценки тревожных, депрессивных, личностных расстройств, зависимостей и психотических спектров.",
+  subcategories:[
+    {subId:"screening",subTitle:"Психиатрический скрининг",tests:[
+      {id:"pdsq",title:"PDSQ",measures:"Мультидиагностический скрининг",items:"125",time:"20-30 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"scl90r",title:"SCL-90-R",measures:"9 шкал психопатологии",items:"90",time:"15-20 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"anxiety_depression_fast",subTitle:"Быстрый скрининг тревоги и депрессии",tests:[
+      {id:"phq9",title:"PHQ-9",measures:"Депрессия (скрининг)",items:"9",time:"3-5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"gad7",title:"GAD-7",measures:"Генерализованная тревога",items:"7",time:"2-3 минуты",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"anxiety_neurotic",subTitle:"Тревожные / невротические",tests:[
+      {id:"bai",title:"BAI (Beck Anxiety Inventory)",measures:"Уровень тревоги",items:"21",time:"5-10 минут",legalStatus:"proprietary",ctaType:"replacement used",replacement:"GAD-7 / DASS-21",isRunnable:false},
+      {id:"stai",title:"STAI (Spielberger)",measures:"Ситуативная и личностная тревожность",items:"40",time:"10-15 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"mood",subTitle:"Настроение (депрессия, БАР)",tests:[
+      {id:"bdi2_psych",title:"BDI-II",measures:"Депрессия",items:"21",time:"5-10 минут",legalStatus:"proprietary",ctaType:"replacement used",replacement:"PHQ-9",isRunnable:false},
+      {id:"mdq",title:"MDQ",measures:"Скрининг биполярного расстройства",items:"13 и более",time:"5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"personality_disorders",subTitle:"Расстройства личности",tests:[
+      {id:"pid5",title:"PID-5 (полный)",measures:"Патологические черты (DSM-5)",items:"220",time:"30-40 минут",legalStatus:"public domain / APA",ctaType:"runnable",isRunnable:true},
+      {id:"mcmi3",title:"MCMI-III (Millon)",measures:"Клинические синдромы",items:"175",time:"25-30 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"addictions",subTitle:"Зависимости",tests:[
+      {id:"audit",title:"AUDIT",measures:"Алкогольная зависимость",items:"10",time:"3 минуты",legalStatus:"public domain / WHO",ctaType:"runnable",isRunnable:true},
+      {id:"dast",title:"DAST",measures:"Наркотическая зависимость",items:"20",time:"5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"eating",subTitle:"РПП",tests:[
+      {id:"eat26",title:"EAT-26",measures:"Расстройства пищевого поведения",items:"26",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"scoff",title:"SCOFF",measures:"Экспресс-скрининг РПП",items:"5",time:"1-2 минуты",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"asd",subTitle:"РАС",tests:[
+      {id:"aq",title:"AQ (Autism Spectrum Quotient)",measures:"Аутистические черты",items:"50",time:"10-15 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"raadsr",title:"RAADS-R",measures:"РАС у взрослых",items:"80",time:"15-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"psychotic",subTitle:"Психотические спектры",tests:[
+      {id:"spq",title:"SPQ",measures:"Шизотипические черты",items:"74",time:"15-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"pq16",title:"PQ-16",measures:"Продромальные симптомы",items:"16",time:"3-5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+document.addEventListener("DOMContentLoaded", function(){ window.deepRenderCatalog("personality-categories-container"); });
+</script>
+
+

@@ -1,0 +1,67 @@
+﻿<script>
+/* 2. ПСИХИЧЕСКИЕ ФУНКЦИИ */
+window.DEEP_CATEGORY_DATA = {
+  categoryId:"mental_functions", categoryTitle:"Психические функции",
+  categoryDescription:"Оценка эмоционального состояния, волевой регуляции, мотивации, когнитивных функций и восприятия.",
+  subcategories:[
+    {subId:"emotions",subTitle:"Эмоции",tests:[
+      {id:"dass21",title:"DASS-21",measures:"Депрессия, тревога, стресс",items:"21",time:"5-10 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"bdi2",title:"BDI-II (Шкала Бека)",measures:"Уровень депрессии",items:"21",time:"5-10 минут",legalStatus:"proprietary",ctaType:"replacement used",replacement:"DASS-21 / PHQ-9",isRunnable:false}
+    ]},
+    {subId:"will_motivation",subTitle:"Воля и мотивация",tests:[
+      {id:"morosanova",title:"Шкала саморегуляции (Моросанова)",measures:"Стиль саморегуляции",items:"46",time:"15-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true},
+      {id:"gse",title:"General Self-Efficacy Scale (Schwarzer)",measures:"Самоэффективность",items:"10",time:"3-5 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]},
+    {subId:"intellect",subTitle:"Интеллект и мышление",tests:[
+      {id:"raven",title:"Прогрессивные матрицы Равена",measures:"Невербальный интеллект",items:"60",time:"30-45 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false},
+      {id:"wais",title:"WAIS (адаптации)",measures:"Общий интеллект",items:"—",time:"от 60 минут",legalStatus:"proprietary",ctaType:"informational",isRunnable:false}
+    ]},
+    {subId:"perception",subTitle:"Восприятие",tests:[
+      {id:"eft",title:"Embedded Figures Test",measures:"Полезависимость/поленезависимость",items:"25",time:"15-20 минут",legalStatus:"academic-only",ctaType:"informational",isRunnable:false},
+      {id:"das_cog",title:"DAS (когнитивные искажения)",measures:"Дисфункциональные установки",items:"40",time:"15-20 минут",legalStatus:"public domain",ctaType:"runnable",isRunnable:true}
+    ]}
+  ]
+};
+window.DEEP_TESTS = window.DEEP_TESTS || {};
+
+/* DASS-21 */
+window.DEEP_TESTS.dass21 = {
+  id:"dass21",title:"Шкалы депрессии, тревоги и стресса (DASS-21)",shortTitle:"DASS-21",
+  description:"Клинический скрининг негативных эмоциональных состояний. 21 утверждение.",
+  intro:"Прочитайте каждое утверждение и выберите ответ, который в наибольшей степени соответствует тому, как вы чувствовали себя в течение последней недели.",
+  scales:{
+    depression:{title:"Депрессия",max:42,ranges:[{min:0,max:9,label:"Норма"},{min:10,max:13,label:"Лёгкая"},{min:14,max:20,label:"Умеренная"},{min:21,max:27,label:"Выраженная"},{min:28,max:42,label:"Тяжёлая"}]},
+    anxiety:{title:"Тревога",max:42,ranges:[{min:0,max:7,label:"Норма"},{min:8,max:9,label:"Лёгкая"},{min:10,max:14,label:"Умеренная"},{min:15,max:19,label:"Выраженная"},{min:20,max:42,label:"Тяжёлая"}]},
+    stress:{title:"Стресс",max:42,ranges:[{min:0,max:14,label:"Норма"},{min:15,max:18,label:"Лёгкая"},{min:19,max:25,label:"Умеренная"},{min:26,max:33,label:"Выраженная"},{min:34,max:42,label:"Тяжёлая"}]}
+  },
+  questions:[
+    {id:"d1",scale:"stress",text:"Мне было трудно успокоиться.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d2",scale:"anxiety",text:"Я замечал(а) сухость во рту.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d3",scale:"depression",text:"Я не мог(ла) испытывать никаких положительных эмоций.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d4",scale:"anxiety",text:"Я испытывал(а) трудности с дыханием.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d5",scale:"depression",text:"Мне было трудно браться за инициативу.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d6",scale:"stress",text:"Я слишком остро реагировал(а) на ситуации.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d7",scale:"anxiety",text:"Я замечал(а) дрожь (например, в руках).",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d8",scale:"stress",text:"Я чувствовал(а), что трачу много нервных сил.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d9",scale:"anxiety",text:"Я беспокоился(лась) о ситуациях, в которых могу запаниковать.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d10",scale:"depression",text:"Я чувствовал(а), что мне нечего ждать от будущего.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d11",scale:"stress",text:"Я чувствовал(а), что меня легко вывести из себя.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d12",scale:"stress",text:"Мне было трудно расслабиться.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d13",scale:"depression",text:"Я чувствовал(а) себя подавленным(ой) и унылым(ой).",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d14",scale:"stress",text:"Я не терпел(а), когда меня прерывали.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d15",scale:"anxiety",text:"Я чувствовал(а), что близок(ка) к панике.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d16",scale:"depression",text:"Я не мог(ла) ничем воодушевиться.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d17",scale:"depression",text:"Я чувствовал(а), что не достоин(на) уважения.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d18",scale:"stress",text:"Я чувствовал(а), что слишком раздражителен(льна).",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d19",scale:"anxiety",text:"Я замечал(а) изменение пульса без физической нагрузки.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d20",scale:"anxiety",text:"Я часто чувствовал(а) беспричинный страх.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]},
+    {id:"d21",scale:"depression",text:"Я чувствовал(а), что жизнь бессмысленна.",options:[{text:"Совсем не относится ко мне",value:0},{text:"Относится в некоторой степени",value:2},{text:"Относится в значительной степени",value:4},{text:"Полностью относится ко мне",value:6}]}
+  ]
+};
+
+/* Каталог-рендерер */
+document.addEventListener("DOMContentLoaded", function () {
+  window.deepRenderCatalog("personality-categories-container");
+});
+</script>
+
