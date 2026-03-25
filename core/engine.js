@@ -50,10 +50,7 @@
   var app     = document.getElementById("deep-tests-app");
   var answerLock = false;
 
-  /* ── TESTS dict (populated by category page script) ── */
-  var TESTS = window.DEEP_TESTS || {};
-
-  function getActiveTest() { return state.activeTestId ? (TESTS[state.activeTestId] || null) : null; }
+  function getActiveTest() { return state.activeTestId ? ((window.DEEP_TESTS || {})[state.activeTestId] || null) : null; }
 
   /* ── Overlay ── */
   function openOverlay() {
@@ -86,7 +83,7 @@
       alert(PUBLISHERS[testId] + " В данном каталоге такие тесты несут исключительно информирующий характер.");
       return;
     }
-    if (!TESTS[testId]) {
+    if (!(window.DEEP_TESTS || {})[testId]) {
       alert("Оцифровка вопросов для теста «" + testId + "» ещё не завершена. Попробуйте один из доступных тестов.");
       return;
     }
@@ -103,7 +100,7 @@
     if (!test) return;
     var s = ensureSession(test.id);
     if (s.mode === "quiz")   { renderQuiz(test, s);   return; }
-    if (s.mode === "result") { window.deepTestsRenderResult(test, s, app, TESTS); return; }
+    if (s.mode === "result") { window.deepTestsRenderResult(test, s, app, window.DEEP_TESTS || {}); return; }
     renderStart(test, s);
   }
 
@@ -479,10 +476,11 @@
       return;
     }
 
-    // Fallback: if DEEP_TESTS is empty, populate it from the registry
-    if (Object.keys(window.DEEP_TESTS || {}).length === 0 && window.DEEP_TEST_REGISTRY) {
-      window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
-      TESTS = window.DEEP_TESTS; // update local ref
+    // Refresh DEEP_TESTS dynamically
+    if (!window.DEEP_TESTS || Object.keys(window.DEEP_TESTS).length === 0) {
+      if (window.DEEP_TEST_REGISTRY) {
+         window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
+      }
     }
 
     // Determine subcategories
