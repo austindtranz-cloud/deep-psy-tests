@@ -310,9 +310,10 @@ window.DEEP_MASTER_REGISTRY = {
 })();
 
 /**
- * DEEP PSY TESTS — CORE TEST DATA
+ * DEEP PSY TESTS — CORE TEST DATA (Runnable Questions)
+ * Merges INTO existing DEEP_TESTS (populated by flat registry above)
  */
-window.DEEP_TESTS = {
+Object.assign(window.DEEP_TESTS, {
   /* ── Rosenberg Self-Esteem Scale ── */
   "rosenberg": {
     id: "rosenberg", title: "Шкала самоуважения Розенберга (RSES)", shortTitle: "RSES",
@@ -357,5 +358,5 @@ window.DEEP_TESTS = {
       { id: "t10", scale: "openness", text: "Традиционного, не креативного.", options: [{ text: "Полностью не согласен", value: 7 }, { text: "Не согласен", value: 6 }, { text: "Немного не согласен", value: 5 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 3 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 1 }] }
     ]
   }
-};
+});
 

@@ -1,0 +1,144 @@
+Google Antigravity - spec v2 / DEEP PSY TESTS
+
+Critical correction: categories and subcategories are not enough. All named tests must be treated as actual test entities.
+
+Mandatory build:
+- Page A: /tests
+- Page B: /tests/personality
+
+Rules:
+
+- On /tests show all top-level categories, alphabetic library by Russian test names, and keyword library.
+- On /tests/personality show all subcategories and all named tests inside them as separate cards.
+- Each test card must include title, what it measures, approximate number of items/time, legal/licensing status, and CTA.
+- Do web research for every named test and classify: public domain / downloadable with restrictions / academic-only / commercial/proprietary / unknown.
+- If a test is proprietary or legally unclear, do not automatically embed verbatim items in the public runnable demo. Use informational card or open replacement.
+- Preserve DEEP dark premium style, background #111111, accent #E8D6B3, Tilda-ready code, and paddings 40 / 40 / 20 / 10 px by breakpoint.
+
+Representative legal examples:
+
+- MMPI-2 / СМИЛ -> proprietary / restricted -> Показывать как карточку и route node; не публиковать items verbatim -> Нужна отдельная правовая проверка и, вероятно, лицензирование
+- 16PF -> proprietary / restricted -> Карточка + описание; для public runnable demo заменить -> Замену подбирать из open alternatives
+- NEO-PI-R / NEO-FFI -> official versions restricted -> Для public demo prefer IPIP-NEO or BFI-2 style route -> Не смешивать official NEO with open analogs без маркировки
+- MBTI official forms -> proprietary / restricted -> Не делать 'официальный MBTI' runnable public test -> Можно показать informational card и open Jung-type analog
+- IPIP / IPIP-NEO -> public domain -> Можно делать runnable -> Разрешено копировать/редактировать/переводить
+- DASS-21 -> download/copy allowed, no modification/profit resale -> Можно делать runnable при соблюдении ограничений -> Не модифицировать wording
+- Rosenberg Self-Esteem Scale -> public domain -> Можно делать runnable -> Подходит как открытый якорный тест
+- HEXACO -> license for non-academic use -> Карточка + legal note; runnable only after rights check -> Для non-academic use есть royalty/license fee
+
+Mandatory pilot page /tests/personality actual tests:
+
+
+Структура личности:
+- MMPI-2 (СМИЛ — адаптация Собчик)
+- 16PF (опросник Кеттелла)
+- NEO-PI-R / NEO-FFI (Big Five)
+
+Акцентуации:
+- Опросник Леонгарда–Шмишека
+- ПДО (Патохарактерологический диагностический опросник, Личко)
+
+Темперамент:
+- EPI / EPQ (Айзенк)
+- FCB-TI (Стреляу)
+
+Автономия:
+- Psychological Separation Inventory (PSI, Hoffman)
+- Basic Psychological Needs Scale (Deci & Ryan)
+
+Самооценка:
+- Rosenberg Self-Esteem Scale
+- Coopersmith Self-Esteem Inventory
+
+Личностные черты:
+- HEXACO Personality Inventory
+- Dark Triad (SD3)
+- Barratt Impulsiveness Scale (BIS-11)
+
+Юнгианские / психоаналитические:
+- MBTI (официальные формы)
+- Jung Typology Indicator (JTI)
+- Defense Style Questionnaire (DSQ)
+- Inventory of Personality Organization (IPO, Kernberg)
+- OPD-2 (опросные модули)
+
+Full named tests universe from business requirements (treat as actual test entities):
+
+
+# Исследование личности
+Структура личности: MMPI-2 (СМИЛ — адаптация Собчик); 16PF (опросник Кеттелла); NEO-PI-R / NEO-FFI (Big Five)
+Акцентуации: Опросник Леонгарда–Шмишека; ПДО (Патохарактерологический диагностический опросник, Личко)
+Темперамент: EPI / EPQ (Айзенк); FCB-TI (Стреляу)
+Автономия: Psychological Separation Inventory (PSI, Hoffman); Basic Psychological Needs Scale (Deci & Ryan)
+Самооценка: Rosenberg Self-Esteem Scale; Coopersmith Self-Esteem Inventory
+Личностные черты: HEXACO Personality Inventory; Dark Triad (SD3); Barratt Impulsiveness Scale (BIS-11)
+Юнгианские / психоаналитические: MBTI (официальные формы); Jung Typology Indicator (JTI); Defense Style Questionnaire (DSQ); Inventory of Personality Organization (IPO, Kernberg); OPD-2 (опросные модули)
+
+# Психические функции
+Эмоции: DASS-21; Beck Depression Inventory (BDI-II); Beck Anxiety Inventory (BAI); State-Trait Anxiety Inventory (STAI, Спилбергер); PANAS; Toronto Alexithymia Scale (TAS-20)
+Воля и мотивация: Шкала саморегуляции поведения (Моросанова); General Self-Efficacy Scale; Academic Motivation Scale (AMS); Work Extrinsic and Intrinsic Motivation Scale (WEIMS); Volitional Components Inventory (Kuhl)
+Интеллект и мышление: Raven’s Progressive Matrices; Wonderlic Personnel Test; WAIS (адаптации); Cognitive Reflection Test (CRT); Watson-Glaser Critical Thinking Appraisal
+Восприятие: Embedded Figures Test (Witkin); Rod-and-Frame Test (Witkin); Benton Visual Retention Test; Visual Object and Space Perception Battery (VOSP); Dysfunctional Attitude Scale (DAS)
+
+# Адаптация и дезадаптация
+Быстрый скрининг выгорания: MBI (Maslach Burnout Inventory); CBI (Copenhagen Burnout Inventory); Тест выгорания Бойко; PSS-10
+Стресс и копинги: Perceived Stress Scale (PSS); COPE Inventory; Brief COPE; Ways of Coping Questionnaire (WCQ); Stress Coping Inventory (SCI); Holmes and Rahe Stress Scale; CISS; Proactive Coping Inventory (PCI); Stress Coping Questionnaire (SCQ)
+Деструкторы: Maslach Burnout Inventory (MBI); Copenhagen Burnout Inventory (CBI); Oldenburg Burnout Inventory (OLBI); Buss–Perry Aggression Questionnaire (BPAQ); Aggression Questionnaire (AQ); Interpersonal Reactivity Index (IRI); Conflict Tactics Scale (CTS2); Brief Betrayal Trauma Survey (BBTS); Barratt Impulsiveness Scale (BIS-11)
+
+# Психиатрия
+Психиатрический скрининг: PDSQ; SCL-90-R; GHQ-28; GHQ-12; BSI; PHQ; HADS; MINI (скрининговые модули); CIDI-SF; PRIME-MD
+Быстрый скрининг тревоги и депрессии: PHQ-9; GAD-7
+Тревожные / невротические: BAI; STAI; HAM-A; Zung SAS
+Настроение: BDI-II; HDRS; Zung SDS; Mood Disorder Questionnaire (MDQ); Hypomania Checklist (HCL-32)
+Расстройства личности: PID-5; SCID-II (опросные формы); MCMI-III
+Зависимости: AUDIT; DAST; Fagerström Test for Nicotine Dependence; Internet Addiction Test (IAT, Young)
+РПП: EAT-26; SCOFF Questionnaire; EDE-Q
+РАС: Autism Spectrum Quotient (AQ); RAADS-R; CAST
+Психотические спектры: SPQ; PDI; PQ-16 / PQ-B
+
+# Социальные и межличностные тесты
+Привязанность: ECR; ECR-R; Adult Attachment Scale (AAS); Relationship Scales Questionnaire (RSQ)
+Семейные отношения: FACES-III / FACES-IV; Family Environment Scale (FES); Dyadic Adjustment Scale (DAS); Marital Satisfaction Inventory (MSI)
+Деструктивные отношения: Conflict Tactics Scale (CTS2); Relationship Assessment Scale (RAS); Abusive Behavior Inventory (ABI); Psychological Maltreatment of Women Inventory (PMWI)
+
+# Индивидуальное карьерное консультирование
+Карьерные интересы: Self-Directed Search (SDS, Holland); Strong Interest Inventory (SII)
+Карьерные перспективы: Career Adapt-Abilities Scale (CAAS); Career Decision Self-Efficacy Scale (CDSES); Career Futures Inventory (CFI)
+Лидерство и кризисы лидерской позиции: Leadership Self-Efficacy Scale (LSES); Multifactor Leadership Questionnaire (MLQ); Leadership Practices Inventory (LPI)
+Руководство: Blake–Mouton Managerial Grid; Decision-Making Styles Inventory (DMSI); Managerial Style Questionnaire (MSQ)
+Карьерные переходы: Career Transitions Inventory (CTI); Career Adapt-Abilities Scale (CAAS); Career Decision-Making Difficulties Questionnaire (CDDQ)
+Управленческая перегрузка: MBI; CBI; OLBI
+Сложная коммуникация: Thomas-Kilmann Conflict Mode Instrument (TKI); Interpersonal Competence Questionnaire (ICQ); Communication Styles Inventory (CSI)
+Вход в новую роль: Organizational Socialization Inventory (OSI); Role Orientation Questionnaire (ROQ); CAAS
+Кризис профессиональной идентичности: Vocational Identity Scale (VIS); My Vocational Situation (MVS, Holland); Career Identity Scale (CIS)
+
+# Командное консультирование
+Софт-скиллз: MSCEIT; EQ-i 2.0; Social Skills Inventory (SSI); Communication Skills Inventory (CSI); Interpersonal Competence Questionnaire (ICQ)
+Поведенческие характеристики: DISC Assessment; Thomas-Kilmann Conflict Mode Instrument (TKI); FIRO-B; Belbin Team Roles Inventory; Organizational Citizenship Behavior Scale (OCB)
+Сильные / слабые стороны: VIA Character Strengths Survey; CliftonStrengths; High Potential Trait Indicator (HPTI)
+Конфликтология: TKI; Rahim Organizational Conflict Inventory (ROCI-II)
+
+# Организационное консультирование
+Оценка организации: Organizational Culture Assessment Instrument (OCAI); Denison Organizational Culture Survey; Organizational Climate Questionnaire (OCQ, Litwin & Stringer); Organizational Health Index (OHI, McKinsey); Competing Values Framework (CVF) Assessment; Team Climate Inventory (TCI)
+Ролевой конфликт: Role Conflict and Role Ambiguity Scale (Rizzo et al.); Organizational Role Stress Scale (ORS, Pareek)
+
+# Психоаналитическая диагностика
+Уровень организации личности: IPO (Kernberg); STIPO
+Психологические защиты: DSQ-40 / DSQ-88; DMI
+Объектные отношения: BORRTI; Object Relations Inventory (ORI)
+Привязанность (психодинамический уровень): Adult Attachment Interview (AAI); Adult Attachment Projective (AAP)
+Ментализация / рефлексивная функция: Reflective Functioning Questionnaire (RFQ); Mentalization Questionnaire (MZQ)
+Идентичность / самость: SCIM; EPSI
+Проективные методы: TAT; Rorschach Inkblot Test; Sentence Completion Test (SCT, Rotter)
+Психодинамическая диагностика (интегративная): OPD-2
+Психологические защиты (спектр): МИПЗ; DSQ-40 / DSQ-88; Life Style Index (LSI); DMI; Ego Defense Mechanisms Scale (EDMS)
+
+# Оценка эффективности терапии
+Трек эффективности терапии: Working Alliance Inventory (WAI); Session Evaluation Questionnaire (SEQ); Outcome Rating Scale (ORS); Session Rating Scale (SRS)
+
+Research pipeline:
+- extract all named tests
+- classify legal status
+- propose open replacements where necessary
+- build actual test cards and route logic
+- mark each card runnable / informational / legal review / replacement used

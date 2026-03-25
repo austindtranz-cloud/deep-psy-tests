@@ -1,19 +1,20 @@
 <script>
 /* ═══════════════════════════════════════════
-   DEEP PSY TESTS — ENGINE v5 (Loader)
-   Автоматическая загрузка движка с GitHub.
-   Теперь включает: Поиск, Алфавит, CRM и новые тесты.
+   DEEP PSY TESTS — ENGINE v10 (Universal Loader)
+   Загружает все ресурсы с GitHub Pages.
+   Автоматически определяет категорию по data-category-id.
    ═══════════════════════════════════════════ */
 
 (function() {
   var baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
   
-  // Список необходимых ресурсов
   var resources = [
     { type: "style",  url: baseUrl + "core/style.css" },
     { type: "script", url: baseUrl + "data/test_registry.js" },
     { type: "script", url: baseUrl + "core/engine.js" },
+    { type: "script", url: baseUrl + "core/engine_results.js" },
     { type: "script", url: baseUrl + "core/sidebar.js" },
+    { type: "script", url: baseUrl + "core/success_modal.js" },
     { type: "script", url: baseUrl + "data/smil_566.js" },
     { type: "script", url: baseUrl + "data/leongard.js" }
   ];
@@ -27,24 +28,33 @@
     } else {
       var script = document.createElement("script");
       script.src = res.url;
-      script.async = false; // Сохраняем порядок загрузки
+      script.async = false;
       document.head.appendChild(script);
     }
   }
 
-  // Загружаем всё по очереди
   resources.forEach(loadResource);
 
-  // Инициализация при готовности DOM
+  /* Universal auto-render for ALL category pages */
   document.addEventListener("DOMContentLoaded", function() {
     var checkReady = setInterval(function() {
-      if (window.deepRenderCatalog && window.DEEP_TEST_REGISTRY) {
+      if (window.deepRenderCatalog && window.DEEP_MASTER_REGISTRY) {
         clearInterval(checkReady);
-        // Если на странице есть контейнер для каталога — рендерим
-        var container = document.getElementById("personality-categories-container");
-        if (container) {
-          window.deepRenderCatalog("personality-categories-container");
+
+        /* Find container with data-category-id OR fallback to ID */
+        var container = document.querySelector("[data-category-id]")
+                     || document.getElementById("personality-categories-container");
+        if (!container) return;
+
+        var categoryId = container.getAttribute("data-category-id") || "personality";
+        var containerId = container.id || "personality-categories-container";
+
+        /* Auto-set DEEP_CATEGORY_DATA from master registry */
+        if (window.DEEP_MASTER_REGISTRY[categoryId]) {
+          window.DEEP_CATEGORY_DATA = window.DEEP_MASTER_REGISTRY[categoryId];
         }
+
+        window.deepRenderCatalog(containerId);
       }
     }, 100);
   });

@@ -18,7 +18,11 @@
   <nav class="deep-nav">
     <a href="/tests">Все категории</a>
   </nav>
-  <div id="personality-categories-container"></div>
+  <!-- 
+    ВАЖНО: замените "personality" на нужный categoryId для своей страницы:
+    personality | mental_functions | adaptation | psychiatry | relationships | career | team | organization | psychoanalytic | therapy_efficacy
+  -->
+  <div id="personality-categories-container" data-category-id="personality"></div>
 </div>
 
 <!-- Модальное окно для самих тестов -->
