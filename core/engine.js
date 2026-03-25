@@ -279,9 +279,11 @@
         };
         
         window.deepSubmitToCRM(payload, function(success) {
-           btn.innerHTML = oldBtnHtml;
-           btn.disabled = false;
            if (success) {
+             btn.innerHTML = "Отправлено";
+             btn.style.backgroundColor = "#52b788";
+             btn.style.borderColor = "#52b788";
+             btn.style.color = "#fff";
              if (typeof window.deepShowSuccessModal === "function") {
                window.deepShowSuccessModal(
                  "Результаты отправлены!",
@@ -291,6 +293,8 @@
                alert("Отправлено!");
              }
            } else {
+             btn.innerHTML = oldBtnHtml;
+             btn.disabled = false;
              alert("Ошибка при отправке. Пожалуйста, попробуйте еще раз.");
            }
         });
@@ -424,23 +428,27 @@
   document.addEventListener("keydown", function(e) {
     if (e.key === "Escape" && overlay && overlay.classList.contains("active")) { closeModal(); return; }
 
+    // Игнорируем нажатия внутри текстовых полей
+    var activeTag = document.activeElement ? document.activeElement.tagName : "";
+    if (activeTag === "INPUT" || activeTag === "TEXTAREA" || activeTag === "SELECT") return;
+
     /* Only handle keys when quiz is active */
     var test = getActiveTest();
-    if (!test || !overlay || !overlay.classList.contains("active")) return;
+    if (!test) return;
     var s = ensureSession(test.id);
     if (s.mode !== "quiz") return;
 
-    /* Number keys 1-9 (main row + numpad) → select answer */
+    /* Number keys 1-9 (main row + numpad) → call real click to trigger visual + auto-advance */
     var keyNum = -1;
     if (e.key >= "1" && e.key <= "9") keyNum = parseInt(e.key) - 1;
     if (e.code && e.code.indexOf("Numpad") === 0 && e.key >= "1" && e.key <= "9") keyNum = parseInt(e.key) - 1;
 
     if (keyNum >= 0) {
-      var q = test.questions[s.currentIndex];
-      if (q && keyNum < q.options.length) {
-        s.answers[q.id] = keyNum;
-        saveState();
-        render();
+      if (app) {
+        var options = app.querySelectorAll(".deep-tests-option");
+        if (options[keyNum]) {
+          options[keyNum].click();
+        }
       }
       return;
     }
@@ -448,7 +456,8 @@
     /* Enter → advance (same as Далее) */
     if (e.key === "Enter") {
       var q2 = test.questions[s.currentIndex];
-      if (typeof s.answers[q2.id] !== "number") return; /* no answer yet */
+      var savedAns = s.answers[q2.id];
+      if (savedAns === undefined || savedAns === null) return; /* no answer yet */
       if (s.currentIndex < test.questions.length - 1) {
         s.currentIndex++; s.mode = "quiz";
       } else {
@@ -592,26 +601,5 @@
       container.appendChild(sec);
     });
   };
-
-  /* ── Keyboard Support ── */
-  document.addEventListener("keydown", function(e) {
-    if (!window.DEEP_CURRENT_SESSION || window.DEEP_CURRENT_SESSION.mode !== "quiz") return;
-    
-    // Игнорируем нажатия внутри текстовых полей
-    var activeTag = document.activeElement ? document.activeElement.tagName : "";
-    if (activeTag === "INPUT" || activeTag === "TEXTAREA" || activeTag === "SELECT") return;
-
-    var keyNum = Number(e.key);
-    if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= 9) {
-      var app = document.getElementById("deep-tests-app");
-      if (app) {
-        var options = app.querySelectorAll(".deep-tests-option");
-        var targetIndex = keyNum - 1; // Клавиша 1 = индекс 0, ...
-        if (options[targetIndex]) {
-          options[targetIndex].click(); // Эмулируем клик пользователя
-        }
-      }
-    }
-  });
 
 })();
