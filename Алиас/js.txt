@@ -1,22 +1,20 @@
 <script>
 /* ═══════════════════════════════════════════
-   DEEP PSY TESTS — ENGINE v10 (Universal Loader)
-   Загружает все ресурсы с GitHub Pages.
-   Автоматически определяет категорию по data-category-id.
+   DEEP PSY TESTS — ENGINE v10c (Universal Loader)
    ═══════════════════════════════════════════ */
-
 (function() {
   var baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
-  
+  var v = "?v=" + Date.now(); // автоматический сброс кеша при каждой загрузке страницы
+
   var resources = [
-    { type: "style",  url: baseUrl + "core/style.css" },
-    { type: "script", url: baseUrl + "data/test_registry.js" },
-    { type: "script", url: baseUrl + "core/engine.js" },
-    { type: "script", url: baseUrl + "core/engine_results.js" },
-    { type: "script", url: baseUrl + "core/sidebar.js" },
-    { type: "script", url: baseUrl + "core/success_modal.js" },
-    { type: "script", url: baseUrl + "data/smil_566.js" },
-    { type: "script", url: baseUrl + "data/leongard.js" }
+    { type: "style",  url: baseUrl + "core/style.css" + v },
+    { type: "script", url: baseUrl + "data/test_registry.js" + v },
+    { type: "script", url: baseUrl + "core/engine.js" + v },
+    { type: "script", url: baseUrl + "core/engine_results.js" + v },
+    { type: "script", url: baseUrl + "core/sidebar.js" + v },
+    { type: "script", url: baseUrl + "core/success_modal.js" + v },
+    { type: "script", url: baseUrl + "data/smil_566.js" + v },
+    { type: "script", url: baseUrl + "data/leongard.js" + v }
   ];
 
   function loadResource(res) {
@@ -35,13 +33,16 @@
 
   resources.forEach(loadResource);
 
-  /* Universal auto-render for ALL category pages */
-  document.addEventListener("DOMContentLoaded", function() {
+  /* Инициализация — работает даже если DOMContentLoaded уже прошёл */
+  function init() {
+    var attempts = 0;
     var checkReady = setInterval(function() {
+      attempts++;
+      if (attempts > 100) { clearInterval(checkReady); return; } // таймаут 10 сек
+
       if (window.deepRenderCatalog && window.DEEP_MASTER_REGISTRY) {
         clearInterval(checkReady);
 
-        /* Find container with data-category-id OR fallback to ID */
         var container = document.querySelector("[data-category-id]")
                      || document.getElementById("personality-categories-container");
         if (!container) return;
@@ -49,7 +50,6 @@
         var categoryId = container.getAttribute("data-category-id") || "personality";
         var containerId = container.id || "personality-categories-container";
 
-        /* Auto-set DEEP_CATEGORY_DATA from master registry */
         if (window.DEEP_MASTER_REGISTRY[categoryId]) {
           window.DEEP_CATEGORY_DATA = window.DEEP_MASTER_REGISTRY[categoryId];
         }
@@ -57,6 +57,13 @@
         window.deepRenderCatalog(containerId);
       }
     }, 100);
-  });
+  }
+
+  // Если DOM уже загружен — стартуем сразу, иначе ждём
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();
 </script>
