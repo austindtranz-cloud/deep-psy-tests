@@ -485,8 +485,11 @@
       }
 
       if (action === "toggle-panel") {
-        sidebar.classList.toggle("is-open");
-        if (sidebar.classList.contains("is-open")) renderSidebar();
+        var sidebar = document.getElementById("deep-sidebar");
+        if (sidebar) {
+          sidebar.classList.toggle("is-open");
+          if (sidebar.classList.contains("is-open")) renderSidebar();
+        }
       }
 
       if (action === "toggle-cat") {
