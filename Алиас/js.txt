@@ -47,17 +47,17 @@
     var pl = document.createElement("div");
     pl.id = "deep-full-preloader";
     pl.innerHTML = '<style>' +
-      '#deep-full-preloader { position:fixed; top:0; left:0; width:100%; height:100vh; background: radial-gradient(circle at center, #1b202c 0%, #0d0f14 100%); z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.6s ease; margin:0; padding:0; overflow:hidden; } ' +
-      '.deep-glow { position:absolute; width:300px; height:300px; background:rgba(80,140,255,0.06); filter:blur(60px); border-radius:50%; animation:deep-pulse-glow 3s infinite alternate; } ' +
+      '#deep-full-preloader { position:fixed; top:0; left:0; width:100%; height:100vh; background:#0f0f0f; z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.6s ease; margin:0; padding:0; overflow:hidden; } ' +
+      '.deep-glow { position:absolute; width:300px; height:300px; background:rgba(213,203,186,0.03); filter:blur(50px); border-radius:50%; animation:deep-pulse-glow 4s infinite alternate; } ' +
       '.deep-spinner-box { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; } ' +
-      '.deep-spinner { width:44px; height:44px; border:3px solid rgba(255,255,255,0.05); border-top-color:rgba(255,255,255,0.9); border-radius:50%; animation:deep-spin 1s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite; margin-bottom:24px; } ' +
+      '.deep-spinner { width:40px; height:40px; border:2px solid rgba(213,203,186,0.1); border-top-color:rgba(213,203,186,0.8); border-radius:50%; animation:deep-spin 1s cubic-bezier(0.4, 0.1, 0.4, 1) infinite; margin-bottom:20px; } ' +
       '@keyframes deep-spin { to { transform:rotate(360deg); } } ' +
-      '@keyframes deep-pulse-glow { from { transform:scale(0.8); opacity:0.5; } to { transform:scale(1.2); opacity:1; } } ' +
+      '@keyframes deep-pulse-glow { from { transform:scale(0.9); opacity:0.6; } to { transform:scale(1.1); opacity:1; } } ' +
       '</style>' +
       '<div class="deep-glow"></div>' +
       '<div class="deep-spinner-box">' +
         '<div class="deep-spinner"></div>' +
-        '<div style="color:rgba(255,255,255,0.4); font-family:-apple-system, system-ui, sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase;">Синхронизация Ядра</div>' +
+        '<div style="color:rgba(213,203,186,0.4); font-family:system-ui, -apple-system, sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase;">Загрузка</div>' +
       '</div>';
     
     var parent = document.body || document.documentElement;
