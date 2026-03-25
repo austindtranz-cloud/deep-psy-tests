@@ -153,12 +153,12 @@
         const key = this.keys[scale];
         if (key.yes) {
           key.yes.forEach(qNum => {
-            if (answers[qNum - 1] === "yes") scores[scale]++;
+            if (answers["q" + qNum] === "yes") scores[scale]++;
           });
         }
         if (key.no) {
           key.no.forEach(qNum => {
-            if (answers[qNum - 1] === "no") scores[scale]++;
+            if (answers["q" + qNum] === "no") scores[scale]++;
           });
         }
         // Умножаем на коэффициент

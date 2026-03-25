@@ -183,7 +183,14 @@
     }
 
     var savedAns = session.answers[q.id];
-    var selectedIndex = typeof savedAns === "number" ? savedAns : (typeof savedAns === "object" && savedAns !== null ? savedAns.idx : null);
+    var selectedIndex = null;
+    if (savedAns !== undefined && savedAns !== null && q.options) {
+      for (var si = 0; si < q.options.length; si++) {
+        var ov = q.options[si].value !== undefined ? q.options[si].value : (q.options[si].score !== undefined ? q.options[si].score : si);
+        if (ov === savedAns) { selectedIndex = si; break; }
+      }
+      if (selectedIndex === null && typeof savedAns === "number" && savedAns >= 0 && savedAns < q.options.length) selectedIndex = savedAns;
+    }
     var hasAnswer = selectedIndex !== null;
 
     app.innerHTML =
@@ -282,7 +289,7 @@
         });
       }
 
-      /* Select answer — auto-advance after 350ms */
+      /* Select answer — instant auto-advance */
       if (action === "answer") {
         if (answerLock) return;
         answerLock = true;
@@ -290,24 +297,21 @@
         var currentQ = test.questions[s.currentIndex];
         var optVal = currentQ.options[idx].value !== undefined ? currentQ.options[idx].value : idx;
         var optScore = currentQ.options[idx].score !== undefined ? currentQ.options[idx].score : optVal;
-        /* Store answer: numeric index for generic renderer, value for custom calculateResult */
+        /* Store answer: value/score for calculateResult compatibility */
         s.answers[currentQ.id] = optScore;
         saveState();
-        render();
-        setTimeout(function() {
-          answerLock = false;
-          /* Advance to next real question (skip isIntro) */
-          var nextIdx = s.currentIndex + 1;
-          while (nextIdx < test.questions.length && test.questions[nextIdx].isIntro) {
-            nextIdx++;
-          }
-          if (nextIdx < test.questions.length) {
-            s.currentIndex = nextIdx; s.mode = "quiz";
-          } else {
-            s.mode = "result"; s.completedAt = new Date().toISOString();
-          }
-          saveState(); render();
-        }, 200);
+        /* Instant advance to next real question (skip isIntro) */
+        var nextIdx = s.currentIndex + 1;
+        while (nextIdx < test.questions.length && test.questions[nextIdx].isIntro) {
+          nextIdx++;
+        }
+        if (nextIdx < test.questions.length) {
+          s.currentIndex = nextIdx; s.mode = "quiz";
+        } else {
+          s.mode = "result"; s.completedAt = new Date().toISOString();
+        }
+        saveState(); render();
+        answerLock = false;
       }
 
       /* Manual advance via Далее button */
