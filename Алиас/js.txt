@@ -47,18 +47,23 @@
     var pl = document.createElement("div");
     pl.id = "deep-full-preloader";
     pl.innerHTML = '<style>' +
-      '#deep-full-preloader { position:fixed; top:0; left:0; width:100%; height:100vh; background:#111; z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.4s ease; margin:0; padding:0; } ' +
-      '.deep-spinner { width:40px; height:40px; border:3px solid rgba(255,255,255,0.1); border-top-color:#fff; border-radius:50%; animation:deep-spin 1s linear infinite; margin-bottom:16px; } ' +
+      '#deep-full-preloader { position:fixed; top:0; left:0; width:100%; height:100vh; background: radial-gradient(circle at center, #1b202c 0%, #0d0f14 100%); z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.6s ease; margin:0; padding:0; overflow:hidden; } ' +
+      '.deep-glow { position:absolute; width:300px; height:300px; background:rgba(80,140,255,0.06); filter:blur(60px); border-radius:50%; animation:deep-pulse-glow 3s infinite alternate; } ' +
+      '.deep-spinner-box { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; } ' +
+      '.deep-spinner { width:44px; height:44px; border:3px solid rgba(255,255,255,0.05); border-top-color:rgba(255,255,255,0.9); border-radius:50%; animation:deep-spin 1s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite; margin-bottom:24px; } ' +
       '@keyframes deep-spin { to { transform:rotate(360deg); } } ' +
+      '@keyframes deep-pulse-glow { from { transform:scale(0.8); opacity:0.5; } to { transform:scale(1.2); opacity:1; } } ' +
       '</style>' +
-      '<div class="deep-spinner"></div>' +
-      '<div style="color:rgba(255,255,255,0.6); font-family:sans-serif; font-size:14px; letter-spacing:1px; text-transform:uppercase;">Загрузка тестов...</div>';
+      '<div class="deep-glow"></div>' +
+      '<div class="deep-spinner-box">' +
+        '<div class="deep-spinner"></div>' +
+        '<div style="color:rgba(255,255,255,0.4); font-family:-apple-system, system-ui, sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase;">Синхронизация Ядра</div>' +
+      '</div>';
     
     var parent = document.body || document.documentElement;
     if (parent) parent.appendChild(pl);
     
-    // FAILSAFE: Если через 4 секунды прелоадер всё ещё висит - убираем его принудительно, 
-    // чтобы человек хотя бы увидел базовый контент сайта (ошибка сети/сбой скриптов)
+    // FAILSAFE: Если через 4 секунды прелоадер всё ещё висит - убираем его принудительно
     preloaderFailsafe = setTimeout(removePreloader, 4000);
   }
 
@@ -67,7 +72,7 @@
     var pl = document.getElementById("deep-full-preloader");
     if (pl) {
       pl.style.opacity = "0";
-      setTimeout(function() { if (pl.parentNode) pl.parentNode.removeChild(pl); }, 400);
+      setTimeout(function() { if (pl.parentNode) pl.parentNode.removeChild(pl); }, 600);
     }
   }
 
@@ -77,7 +82,7 @@
       attempts++;
       if (attempts > 100) { 
         clearInterval(checkReady); 
-        removePreloader(); // FAILSAFE 2: если движок так и не загрузился за 10с
+        removePreloader(); // FAILSAFE 2
         return; 
       }
 
@@ -85,7 +90,7 @@
         clearInterval(checkReady);
         var container = document.querySelector("[data-category-id]") || document.getElementById("personality-categories-container");
         if (!container) { 
-          removePreloader(); // Контейнер не найден (мб главная без тестов)
+          removePreloader();
           return; 
         }
 
@@ -104,13 +109,15 @@
     }, 100);
   }
 
-  // 1. Показываем полноэкранный прелоадер сразу
-  injectFullpageLoader();
-
-  // Смарт-лоадер: ищем закешированную версию сессии, иначе спрашиваем GitHub
+  // Смарт-лоадер: ищем закешированную версию сессии
   var CACHE_KEY = "deep_psy_version";
   var cachedV = null;
   try { cachedV = sessionStorage.getItem(CACHE_KEY); } catch(e) {}
+
+  // Показываем прелоадер ТОЛЬКО при первом холодном запуске (когда нет кэша)
+  if (!cachedV) {
+    injectFullpageLoader();
+  }
 
   if (cachedV) {
     loadResources(cachedV);
