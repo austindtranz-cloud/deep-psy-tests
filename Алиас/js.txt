@@ -88,20 +88,18 @@
 
       if (window.deepRenderCatalog && window.DEEP_MASTER_REGISTRY) {
         clearInterval(checkReady);
-        var container = document.querySelector("[data-category-id]") || document.getElementById("personality-categories-container");
+        var container = document.getElementById("deep-categories-container") || document.querySelector("[data-category-id]") || document.getElementById("personality-categories-container");
         if (!container) { 
           removePreloader();
           return; 
         }
 
-        var categoryId = container.getAttribute("data-category-id") || "personality";
-        var containerId = container.id || "personality-categories-container";
-
-        if (window.DEEP_MASTER_REGISTRY[categoryId]) {
+        var categoryId = container.getAttribute("data-category-id");
+        if (categoryId && window.DEEP_MASTER_REGISTRY[categoryId]) {
           window.DEEP_CATEGORY_DATA = window.DEEP_MASTER_REGISTRY[categoryId];
         }
 
-        window.deepRenderCatalog(containerId);
+        window.deepRenderCatalog(container.id);
         
         // Успешный рендер каталога — снимаем прелоадер!
         removePreloader();

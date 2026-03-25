@@ -519,14 +519,40 @@
   var BADGE_WIP = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="rgba(232,214,179,0.12)" stroke="#E8D6B3" stroke-width="1.2"/><path d="M9 6V9.5L11 11" stroke="#E8D6B3" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   window.deepRenderCatalog = function (containerId) {
-    var container = document.getElementById(containerId);
+    var container = null;
+    if (containerId) container = document.getElementById(containerId);
+    if (!container) container = document.querySelector("#deep-categories-container") || document.querySelector("[data-category-id]");
     if (!container) return;
     
     var data = window.DEEP_CATEGORY_DATA;
+
+    // AUTO-DETECT VIA URL (Foolproof fallback)
+    if (!data || !data.categoryId) {
+      var dMap = {
+        "personality": "personality", "mental": "mental_functions", 
+        "adaptation": "adaptation", "psychiatry": "psychiatry",
+        "relationships": "relationships", "career": "career",
+        "team": "team", "organization": "organization",
+        "psychoanalytic": "psychoanalytic", "therapy": "therapy_efficacy"
+      };
+      var loc = window.location.pathname.toLowerCase();
+      var autoCat = null;
+      for (var k in dMap) {
+        if (loc.indexOf("/" + k) !== -1 || loc.indexOf(k + ".html") !== -1) { autoCat = dMap[k]; break; }
+      }
+      if (autoCat && window.DEEP_MASTER_REGISTRY) {
+        data = window.DEEP_MASTER_REGISTRY[autoCat];
+        window.DEEP_CATEGORY_DATA = data;
+      }
+    }
+
     if (!data || !data.categoryId) {
       console.warn("DEEP_CATEGORY_DATA or categoryId is missing.");
       return;
     }
+    
+    /* PREVENT DUPLICATION BUG */
+    container.innerHTML = "";
 
     // Refresh DEEP_TESTS dynamically
     if (!window.DEEP_TESTS || Object.keys(window.DEEP_TESTS).length === 0) {
