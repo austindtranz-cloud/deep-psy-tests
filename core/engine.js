@@ -548,6 +548,14 @@
 
     if (!data || !data.categoryId) {
       console.warn("DEEP_CATEGORY_DATA or categoryId is missing.");
+      container.innerHTML = '<div style="color:#E8D6B3; background:rgba(255,50,50,0.1); border: 2px solid rgba(255,50,50,0.5); border-radius: 12px; font-size:16px; text-align:center; padding:40px 20px;">' +
+                            '<strong style="color:#ff6b6b; font-size:20px; display:block; margin-bottom:10px;">ОШИБКА: КАТЕГОРИЯ НЕ НАЙДЕНА</strong>' +
+                            'Скрипт попытался определить категорию тестов по ссылке страницы (URL), но не нашел в ней ключевого английского слова.<br><br>' +
+                            '<strong>Как исправить:</strong><br>' +
+                            '1. Зайдите в настройки страницы в Тильде и сделайте так, чтобы ссылка содержала ключевое слово (например: <code>/tests/personality</code> или <code>/tests/mental</code>).<br>' +
+                            '2. <strong>ИЛИ</strong> явно укажите категорию в вашем HTML-коде: <code>&lt;div id="deep-categories-container" data-category-id="название_категории"&gt;&lt;/div&gt;</code>.<br><br>' +
+                            '<span style="font-size:12px; opacity:0.7;">Возможные ключи: personality, mental, adaptation, psychiatry, relationships, career, team, organization, psychoanalytic, therapy</span>' +
+                            '</div>';
       return;
     }
     
