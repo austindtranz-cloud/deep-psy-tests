@@ -48,7 +48,8 @@
   var app     = document.getElementById("deep-tests-app");
   var answerLock = false;
   var currentCatalogContainerId = null;
-  var CATEGORY_PAGE_URLS = {
+  var CAT_URLS = {
+    home: "/tests",
     personality: "/tests/personality",
     mental_functions: "/tests/mental",
     adaptation: "/tests/adaptation",
@@ -610,7 +611,7 @@
   function getCTA(test) {
     return isActuallyRunnable(test)
       ? '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.deepTestsOpen(\'' + test.id + '\')">Пройти тест</button>'
-      : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'' + (test.replacement ? 'Аналог: ' + test.replacement : 'Ограниченный доступ') + '\')">Инфо</button>';
+      : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'Оцифровка вопросов для этого теста ещё не завершена. Попробуйте другой тест из каталога.\')">Инфо</button>';
   }
 
   function buildCardHTML(test) {
@@ -667,7 +668,7 @@
       var cat = reg[cId];
       var count = 0; cat.subcategories.forEach(function(s) { count += s.tests.length; });
 
-      cardsHtml += '<a class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" href="' + (CATEGORY_PAGE_URLS[cId] || "/tests") + '">';
+      cardsHtml += '<a class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" href="' + (CAT_URLS[cId] || CAT_URLS.home || "#") + '" data-nav="' + cId + '">';
       cardsHtml += '<div class="deep-tests-card-img" style="height:160px; background:linear-gradient(135deg, var(--dt-panel-2) 0%, var(--dt-bg) 100%); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--dt-border);">';
       cardsHtml += '<div style="position:relative; z-index:2; color:var(--dt-accent); opacity:0.8; transform:scale(1.5);">' + (CAT_ICONS[cId] || "📋") + '</div>';
       cardsHtml += '</div>';
@@ -742,14 +743,14 @@
         '<button class="deep-dash-nav-close" id="deep-dash-nav-close">' + NAV_ICON_CLOSE + '</button>' +
       '</div>' +
       '<div class="deep-dash-nav-scroll">' +
-        '<a class="deep-dash-nav-item deep-dash-nav-home" href="/tests" data-nav="home"><span>Категории</span></a>';
+        '<a class="deep-dash-nav-item deep-dash-nav-home" href="' + (CAT_URLS.home || "#") + '" data-nav="home"><span>Категории</span></a>';
 
     Object.keys(reg).forEach(function(cId) {
       var cat = reg[cId];
       var emoji = CAT_ICONS[cId] || "📋";
       var testCount = 0; cat.subcategories.forEach(function(s) { testCount += s.tests.length; });
       navHtml += '<div class="deep-dash-nav-group">' +
-        '<a class="deep-dash-nav-item" href="' + (CATEGORY_PAGE_URLS[cId] || "/tests") + '" data-nav="' + cId + '">' +
+        '<a class="deep-dash-nav-item" href="' + (CAT_URLS[cId] || CAT_URLS.home || "#") + '" data-nav="' + cId + '">' +
           '<span class="deep-dash-nav-emoji">' + emoji + '</span>' +
           '<span class="deep-dash-nav-label">' + (CAT_SHORT[cId] || cat.categoryTitle) + '</span>' +
           '<span class="deep-dash-nav-count">' + testCount + '</span>' +
@@ -775,6 +776,25 @@
 
     /* ── Attach events ONCE — never re-stacked ── */
     container.addEventListener("click", function(e) {
+      var navItem = e.target.closest("[data-nav]");
+      if (navItem) {
+        var targetCat = navItem.getAttribute("data-nav");
+        var isCurrentPage = (targetCat === "home" && !dashboardState.activeCategoryId) || (targetCat === dashboardState.activeCategoryId);
+
+        /* Для перехода на другую физическую страницу не перехватываем клик */
+        if (!isCurrentPage) return;
+
+        e.preventDefault();
+        dashboardState.activeCategoryId = targetCat === "home" ? null : targetCat;
+        updateDashboardGrid();
+
+        if (!targetCat || targetCat === "home") {
+          document.getElementById("deep-dash-nav").classList.remove("open");
+          document.getElementById("deep-dash-overlay").classList.remove("open");
+        }
+        return;
+      }
+
       var subItem = e.target.closest("[data-scroll-to]");
       if (!subItem) return;
       e.preventDefault();
