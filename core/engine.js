@@ -835,15 +835,10 @@
       return;
     }
 
-    /* Detect initial category from URL — only on first call */
+    /* Main dashboard in multi-page mode: always starts from category overview */
     if (!dashboardState.initialized) {
-      var dMap = { personality: "personality", mental: "mental_functions", adaptation: "adaptation", psychiatry: "psychiatry", relationships: "relationships", career: "career", team: "team", organization: "organization", psychoanalytic: "psychoanalytic", therapy: "therapy_efficacy" };
-      var loc = window.location.pathname.toLowerCase();
-      var urlParams = new URLSearchParams(window.location.search);
-      var qCat = urlParams.get("category");
-      if (qCat && reg[qCat]) { dashboardState.activeCategoryId = qCat; }
-      else { for (var k in dMap) { if (loc.indexOf("/" + k) !== -1) { dashboardState.activeCategoryId = dMap[k]; break; } } }
-      if (dashboardState.activeCategoryId) window.DEEP_CATEGORY_DATA = reg[dashboardState.activeCategoryId];
+      dashboardState.activeCategoryId = null;
+      window.DEEP_CATEGORY_DATA = null;
       dashboardState.initialized = true;
     }
 
