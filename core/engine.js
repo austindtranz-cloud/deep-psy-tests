@@ -801,7 +801,7 @@
       if (window.DEEP_TEST_REGISTRY) window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
     }
 
-    /* Detective initial category from URL — only on first call */
+    /* Detect initial category from URL — only on first call */
     if (!dashboardState.initialized) {
       var dMap = { personality: "personality", mental: "mental_functions", adaptation: "adaptation", psychiatry: "psychiatry", relationships: "relationships", career: "career", team: "team", organization: "organization", psychoanalytic: "psychoanalytic", therapy: "therapy_efficacy" };
       var loc = window.location.pathname.toLowerCase();
