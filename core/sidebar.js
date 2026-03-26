@@ -259,7 +259,7 @@
       var css = document.createElement("style");
       css.id = "deep-sidebar-css";
       css.textContent =
-        '#deep-sidebar{position:fixed;bottom:20px;right:20px;width:320px;max-height:80vh;z-index:9999990;font-family:"Manrope",Arial,sans-serif;color:var(--dt-text,#F4EEE3);}' +
+        '#deep-sidebar{position:fixed;bottom:20px;right:20px;width:320px;max-height:80vh;z-index:120;font-family:"Manrope",Arial,sans-serif;color:var(--dt-text,#F4EEE3);}' +
       '#deep-sidebar *{box-sizing:border-box}' +
       '.deep-sb-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:rgba(15,17,19,.96);border:1px solid rgba(232,214,179,.14);border-radius:16px;cursor:pointer;user-select:none;transition:border-color .2s,background .2s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}' +
       '.deep-sb-header:hover{border-color:rgba(232,214,179,.28);background:rgba(15,17,19,.98)}' +
@@ -307,7 +307,7 @@
       '.deep-sb-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .2s;font-size:13px;color:#F4EEE3;margin-bottom:4px}' +
       '.deep-sb-nav-item:hover{background:rgba(232,214,179,0.08)}' +
       /* Mobile: softer edge */
-      '@media(max-width:639px){#deep-sidebar{width:auto;right:16px;bottom:16px}#deep-sidebar .deep-sb-header{padding:12px 14px;border-radius:14px}#deep-sidebar.is-open{width:calc(100vw - 32px);right:16px}#deep-sidebar.is-open .deep-sb-body{max-height:50vh}}' +
+      '@media(max-width:900px){#deep-sidebar{z-index:60}}@media(max-width:639px){#deep-sidebar{width:auto;right:16px;bottom:16px}#deep-sidebar .deep-sb-header{padding:12px 14px;border-radius:14px}#deep-sidebar.is-open{width:calc(100vw - 32px);right:16px}#deep-sidebar.is-open .deep-sb-body{max-height:50vh}}' +
       '.deep-sb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:9999999;display:none;align-items:center;justify-content:center;padding:20px 10px;opacity:0;transition:opacity .2s}' +
       '.deep-sb-overlay.is-active{opacity:1}' +
       '.deep-sb-modal{width:100%;max-width:460px;max-height:calc(100dvh - 40px);overflow-y:auto;background:rgba(10,10,10,.96);border:1px solid rgba(232,214,179,.14);border-radius:16px;padding:30px 26px;position:relative;transform:translateY(20px);transition:transform .2s;box-sizing:border-box!important;font-family:"Manrope",Arial,sans-serif!important;box-shadow:0 24px 70px rgba(0,0,0,.58);scrollbar-width:none}' +

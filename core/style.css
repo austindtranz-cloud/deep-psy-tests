@@ -56,6 +56,17 @@
   color: var(--dt-text);
 }
 
+/* Keep link styles scoped inside DEEP TESTS blocks (Tilda-safe) */
+.deep-page-container a,
+.deep-dashboard a,
+.deep-tests-overlay a,
+#deep-sidebar a,
+#deep-sidebar button,
+.deep-tests-overlay button {
+  font-family: inherit !important;
+  text-decoration: none;
+}
+
 @media (max-width: 960px) {
   .deep-page-container { padding-left: 40px; padding-right: 40px; }
 }
@@ -1225,8 +1236,9 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 6px 10px;
+  padding: 6px 10px calc(20px + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Custom thin scrollbar (Matilda-style) */
@@ -1849,9 +1861,9 @@
 .deep-dash-burger {
   display: none;
   position: fixed;
-  top: 16px;
+  top: calc(10px + env(safe-area-inset-top));
   left: 16px;
-  z-index: 150;
+  z-index: 260;
   background: var(--dt-panel);
   border: 1px solid var(--dt-border);
   border-radius: 12px;
@@ -1912,13 +1924,13 @@
 
   .deep-dash-burger {
     display: flex;
-    top: 24px;
+    top: calc(14px + env(safe-area-inset-top));
     left: 20px;
   }
 
   .deep-dash-content {
     grid-column: 1;
-    padding: 100px 20px 60px;
+    padding: 110px 20px 60px;
   }
 
   .deep-dash-title {
@@ -1988,7 +2000,7 @@
 
 @media (max-width: 600px) {
   .deep-dash-content {
-    padding: 64px 14px 50px;
+    padding: 88px 14px 50px;
   }
 
   .deep-dash-title {

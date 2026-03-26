@@ -1,42 +1,9 @@
 <!-- ГЛАВНАЯ СТРАНИЦА КАТАЛОГА ТЕСТОВ — /tests -->
-<div class="deep-page-container" id="tests-main-container"></div>
+<!-- ВАЖНО: это контейнер dashboard-shell для главной страницы -->
+<div id="deep-categories-container"></div>
 <div class="deep-tests-overlay" id="deep-tests-overlay" aria-hidden="true">
   <div class="deep-tests-modal">
     <button class="deep-tests-close" aria-label="Закрыть">×</button>
     <div class="deep-tests-app" id="deep-tests-app"></div>
   </div>
 </div>
-<script>
-(function(){
-  var categories = [
-    { title:"Исследование личности", url:"/tests/personality", desc:"Структура личности, акцентуации, темперамент, самооценка и личностные черты.", count:"7 подкатегорий" },
-    { title:"Психические функции", url:"/tests/mental", desc:"Эмоции, волевая регуляция, мотивация, интеллект и восприятие.", count:"4 подкатегории" },
-    { title:"Адаптация и дезадаптация", url:"/tests/adaptation", desc:"Скрининг выгорания, стресс, копинг-стратегии и деструктивные паттерны.", count:"3 подкатегории" },
-    { title:"Психиатрия", url:"/tests/psychiatry", desc:"Тревога, депрессия, расстройства личности, зависимости, РПП, РАС.", count:"8 подкатегорий" },
-    { title:"Межличностные отношения", url:"/tests/relationships", desc:"Привязанность, семейные системы и деструктивные отношения.", count:"3 подкатегории" },
-    { title:"Карьера", url:"/tests/career", desc:"Профориентация, лидерство, синдром самозванца, карьерная идентичность.", count:"4 подкатегории" },
-    { title:"Командное консультирование", url:"/tests/team", desc:"Софт-скиллы, поведенческие характеристики, сильные стороны, конфликтология.", count:"4 подкатегории" },
-    { title:"Организация", url:"/tests/organization", desc:"Оценка организационной культуры, климата и ролевых конфликтов.", count:"2 подкатегории" },
-    { title:"Психоаналитическая диагностика", url:"/tests/psychoanalytic", desc:"Уровень организации личности, защиты, объектные отношения, ментализация.", count:"8 подкатегорий" },
-    { title:"Эффективность терапии", url:"/tests/therapy", desc:"Терапевтический альянс, результативность сессий и прогресс.", count:"2 подкатегории" }
-  ];
-  document.addEventListener("DOMContentLoaded", function(){
-    var c = document.getElementById("tests-main-container");
-    if(!c) return;
-    var grid = document.createElement("div");
-    grid.className = "deep-tests-grid";
-    categories.forEach(function(cat){
-      var card = document.createElement("a");
-      card.className = "deep-tests-card";
-      card.href = cat.url;
-      card.innerHTML =
-        '<div class="deep-tests-card-meta"><span class="deep-tests-pill">' + cat.count + '</span></div>' +
-        '<h3 class="deep-tests-card-title">' + cat.title + '</h3>' +
-        '<div class="deep-tests-card-text">' + cat.desc + '</div>' +
-        '<div class="deep-tests-actions"><span class="deep-tests-btn deep-tests-btn-primary">Перейти</span></div>';
-      grid.appendChild(card);
-    });
-    c.appendChild(grid);
-  });
-})();
-</script>

@@ -21,3 +21,45 @@
 3. Сохраните и опубликуйте страницу.
 
 Это необходимо для того, чтобы с главной страницы по кнопке "Перейти" открывалась нужная категория, а кнопка хлебных крошек "Все категории" возвращала пользователя обратно в каталог.
+
+────────────────────────────────────────────────────────
+ЧТО КОНКРЕТНО ВСТАВЛЯТЬ В T123
+────────────────────────────────────────────────────────
+
+ВАЖНО: на КАЖДОЙ странице /tests и /tests/* должен быть один и тот же alias-loader
+(код из файла «Алиас/js.txt»).
+
+1) ГЛАВНАЯ /tests
+   В T123 HTML вставьте код из файла:
+   - «Главная страница/html.txt»
+
+   Это именно dashboard-shell (наш главный каталог) с контейнером:
+   - <div id="deep-categories-container"></div>
+   Категории/левая навигация рендерятся движком автоматически.
+
+2) ВНУТРЕННЯЯ СТРАНИЦА категории (например /tests/personality)
+   В T123 HTML вставьте:
+
+   <div class="deep-page-container">
+     <nav class="deep-nav">
+       <a href="/tests">Все категории</a>
+     </nav>
+     <div id="personality-categories-container" data-category-id="personality"></div>
+   </div>
+
+   <div class="deep-tests-overlay" id="deep-tests-overlay" aria-hidden="true">
+     <div class="deep-tests-modal">
+       <button class="deep-tests-close" aria-label="Закрыть">×</button>
+       <div class="deep-tests-app" id="deep-tests-app"></div>
+     </div>
+   </div>
+
+   Для остальных страниц меняются ТОЛЬКО:
+   - id контейнера
+   - data-category-id
+
+3) ПРО «Все категории» и хлебные крошки
+   - На category page должна быть только ОДНА навигационная ссылка «Все категории» (внешняя .deep-nav).
+   - Внутренние SPA-breadcrumbs движка на category page не используются.
+   - Если у вас на category page одновременно видно и .deep-nav, и внутренние breadcrumbs,
+     значит вставлен не тот HTML или отсутствует data-category-id.

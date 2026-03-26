@@ -272,15 +272,15 @@ window.DEEP_MASTER_REGISTRY = {
 (function () {
   var categoryUrls = {
     "personality": "/tests/personality",
-    "functions": "/tests/functions",
-    "intelligence": "/tests/intelligence",
+    "mental_functions": "/tests/mental",
+    "adaptation": "/tests/adaptation",
     "psychiatry": "/tests/psychiatry",
-    "therapy": "/tests/therapy",
-    "family": "/tests/family",
+    "relationships": "/tests/relationships",
     "career": "/tests/career",
-    "social": "/tests/social",
-    "children": "/tests/children",
-    "scales": "/tests/scales"
+    "team": "/tests/team",
+    "organization": "/tests/organization",
+    "psychoanalytic": "/tests/psychoanalytic",
+    "therapy_efficacy": "/tests/therapy"
   };
 
   window.DEEP_TEST_REGISTRY = []; // Used by Sidebar.js (Array)
@@ -359,4 +359,3 @@ Object.assign(window.DEEP_TESTS, {
     ]
   }
 });
-

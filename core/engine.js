@@ -47,6 +47,19 @@
   var overlay = document.getElementById("deep-tests-overlay");
   var app     = document.getElementById("deep-tests-app");
   var answerLock = false;
+  var currentCatalogContainerId = null;
+  var CATEGORY_PAGE_URLS = {
+    personality: "/tests/personality",
+    mental_functions: "/tests/mental",
+    adaptation: "/tests/adaptation",
+    psychiatry: "/tests/psychiatry",
+    relationships: "/tests/relationships",
+    career: "/tests/career",
+    team: "/tests/team",
+    organization: "/tests/organization",
+    psychoanalytic: "/tests/psychoanalytic",
+    therapy_efficacy: "/tests/therapy"
+  };
 
   function getActiveTest() { return state.activeTestId ? ((window.DEEP_TESTS || {})[state.activeTestId] || null) : null; }
 
@@ -62,8 +75,10 @@
     if (overlay) { overlay.classList.remove("active"); overlay.setAttribute("aria-hidden", "true"); }
     document.body.style.overflow = "";
     /* Re-render catalog to update badges in real-time */
-    var catalogContainer = document.getElementById("personality-categories-container");
-    if (catalogContainer) { catalogContainer.innerHTML = ""; window.deepRenderCatalog("personality-categories-container"); }
+    if (currentCatalogContainerId && typeof window.deepRenderCatalog === "function") {
+      var catalogContainer = document.getElementById(currentCatalogContainerId);
+      if (catalogContainer) { catalogContainer.innerHTML = ""; window.deepRenderCatalog(currentCatalogContainerId); }
+    }
     /* Refresh sidebar */
     if (typeof window.deepSidebarRefresh === "function") window.deepSidebarRefresh();
   }
@@ -581,8 +596,19 @@
     return "";
   }
 
+  function hasRunnableQuestions(testId) {
+    var t = (window.DEEP_TESTS || {})[testId];
+    return !!(t && t.questions && t.questions.length);
+  }
+
+  function isActuallyRunnable(test) {
+    if (!test || test.isRunnable === false) return false;
+    if (PUBLISHERS[test.id]) return false;
+    return hasRunnableQuestions(test.id);
+  }
+
   function getCTA(test) {
-    return (test.isRunnable !== false)
+    return isActuallyRunnable(test)
       ? '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.deepTestsOpen(\'' + test.id + '\')">Пройти тест</button>'
       : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'' + (test.replacement ? 'Аналог: ' + test.replacement : 'Ограниченный доступ') + '\')">Инфо</button>';
   }
@@ -593,7 +619,8 @@
                 status.indexOf("restricted") !== -1 ? { c: "deep-tests-pill--restricted", t: "Клиническая" } :
                 { c: "deep-tests-pill--public", t: "Открытая" };
 
-    var html = '<div class="deep-tests-card" style="padding:0; overflow:hidden; cursor:pointer;" onclick="window.deepTestsOpen(\'' + test.id + '\')">';
+    var canRun = isActuallyRunnable(test);
+    var html = '<div class="deep-tests-card" style="padding:0; overflow:hidden; cursor:' + (canRun ? 'pointer' : 'default') + ';"' + (canRun ? ' onclick="window.deepTestsOpen(\'' + test.id + '\')"' : '') + '>';
     html += getStatusBadge(test.id);
 
     html += '<div class="deep-tests-card-img" style="height:160px; background:linear-gradient(135deg, var(--dt-panel-2) 0%, var(--dt-bg) 100%); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--dt-border);">';
@@ -604,6 +631,9 @@
     html += '<div class="deep-tests-card-text" style="font-size:13px; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (test.measures || "") + '</div>';
     html += '<div style="display:flex; gap:6px; flex-wrap:wrap;">';
     html += '<span class="deep-tests-pill ' + badge.c + '" style="font-size:11px; padding:4px 8px; font-weight:500;">' + badge.t + '</span>';
+    if (!canRun) {
+      html += '<span class="deep-tests-pill" style="font-size:11px; padding:4px 8px; background:rgba(255,255,255,0.05); color:var(--dt-muted); border-color:rgba(255,255,255,0.08); font-weight:500;">Пока недоступно</span>';
+    }
     html += '<span class="deep-tests-pill" style="font-size:11px; padding:4px 8px; background:rgba(255,255,255,0.05); color:var(--dt-muted); border-color:rgba(255,255,255,0.08); font-weight:500;">' + (test.items || "?") + ' вопр.</span>';
     if (test.time) {
         var timeStr = String(test.time).toLowerCase().indexOf("мин") !== -1 ? test.time : (test.time + " мин.");
@@ -629,7 +659,7 @@
     if (!headerEl || !gridEl) return;
 
     /* Breadcrumbs + Header */
-    var breadHtml = '<nav class="deep-dash-breadcrumbs"><a href="#" data-nav="home">Все категории</a>';
+    var breadHtml = '<nav class="deep-dash-breadcrumbs"><a href="/tests">Все категории</a>';
     if (catId && reg[catId]) breadHtml += ' <span class="deep-dash-bc-sep">›</span> <span>' + reg[catId].categoryTitle + '</span>';
     breadHtml += '</nav>';
     var title = catId && reg[catId] ? reg[catId].categoryTitle : "Каталог тестов";
@@ -718,7 +748,7 @@
         var cat = reg[cId];
         var count = 0; cat.subcategories.forEach(function(s) { count += s.tests.length; });
         
-        cardsHtml += '<div class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" data-nav="' + cId + '">';
+        cardsHtml += '<a class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" href="' + (CATEGORY_PAGE_URLS[cId] || "/tests") + '">';
         
         /* Header area matching test cards */
         cardsHtml += '<div class="deep-tests-card-img" style="height:160px; background:linear-gradient(135deg, var(--dt-panel-2) 0%, var(--dt-bg) 100%); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--dt-border);">';
@@ -731,7 +761,7 @@
         cardsHtml += '<div class="deep-tests-card-text" style="font-size:13px; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (cat.categoryDescription || "") + '</div>';
         cardsHtml += '<div style="display:flex; gap:6px; flex-wrap:wrap;">';
         cardsHtml += '<span class="deep-tests-pill" style="font-size:11px; padding:4px 8px; font-weight:500; background:rgba(232,214,179,0.1); border-color:rgba(232,214,179,0.15); color:var(--dt-accent);">' + count + ' тестов</span>';
-        cardsHtml += '</div></div></div>';
+        cardsHtml += '</div></div></a>';
       });
       gridEl.innerHTML = '<div class="deep-dash-cat-grid">' + cardsHtml + '</div>';
 
@@ -760,6 +790,29 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function renderCategoryPage(container, categoryId) {
+    var reg = window.DEEP_MASTER_REGISTRY || {};
+    var cat = reg[categoryId];
+    if (!cat) {
+      container.innerHTML = '<div class="deep-tests-note">Категория не найдена.</div>';
+      return;
+    }
+    window.DEEP_CATEGORY_DATA = cat;
+
+    var html = '<div class="deep-page-kicker">DEEP TESTS</div>' +
+      '<h1 class="deep-page-title">' + cat.categoryTitle + '</h1>' +
+      '<p class="deep-page-subtitle">' + (cat.categoryDescription || "") + '</p>';
+
+    cat.subcategories.forEach(function(sub, idx) {
+      html += '<div class="deep-subcategory"><h2 id="sub-' + categoryId + '-' + idx + '">' + sub.subTitle + '</h2><div class="deep-tests-grid">';
+      sub.tests.forEach(function(t) { html += buildCardHTML(t); });
+      html += '</div></div>';
+    });
+
+    container.className = "deep-page-container";
+    container.innerHTML = html;
+  }
+
   /* ── SHELL BUILD: Called ONCE. Builds nav + content + attaches events ── */
   window.deepRenderCatalog = function(containerId) {
     var container = null;
@@ -767,11 +820,19 @@
     if (!container) container = document.querySelector("#deep-categories-container") || document.querySelector("#deep-app-root") || document.querySelector("[data-category-id]");
     if (!container) return;
 
+    currentCatalogContainerId = container.id || null;
+
     var reg = window.DEEP_MASTER_REGISTRY;
     if (!reg) return;
 
     if (!window.DEEP_TESTS || Object.keys(window.DEEP_TESTS).length === 0) {
       if (window.DEEP_TEST_REGISTRY) window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
+    }
+
+    var explicitCat = container.getAttribute("data-category-id");
+    if (explicitCat && reg[explicitCat]) {
+      renderCategoryPage(container, explicitCat);
+      return;
     }
 
     /* Detect initial category from URL — only on first call */
@@ -782,8 +843,6 @@
       var qCat = urlParams.get("category");
       if (qCat && reg[qCat]) { dashboardState.activeCategoryId = qCat; }
       else { for (var k in dMap) { if (loc.indexOf("/" + k) !== -1) { dashboardState.activeCategoryId = dMap[k]; break; } } }
-      var explicitCat = container.getAttribute("data-category-id");
-      if (explicitCat && reg[explicitCat]) dashboardState.activeCategoryId = explicitCat;
       if (dashboardState.activeCategoryId) window.DEEP_CATEGORY_DATA = reg[dashboardState.activeCategoryId];
       dashboardState.initialized = true;
     }
@@ -795,14 +854,14 @@
         '<button class="deep-dash-nav-close" id="deep-dash-nav-close">' + NAV_ICON_CLOSE + '</button>' +
       '</div>' +
       '<div class="deep-dash-nav-scroll">' +
-        '<a class="deep-dash-nav-item deep-dash-nav-home" href="#" data-nav="home"><span>Категории</span></a>';
+        '<a class="deep-dash-nav-item deep-dash-nav-home" href="/tests" data-nav="home"><span>Категории</span></a>';
 
     Object.keys(reg).forEach(function(cId) {
       var cat = reg[cId];
       var emoji = CAT_ICONS[cId] || "📋";
       var testCount = 0; cat.subcategories.forEach(function(s) { testCount += s.tests.length; });
       navHtml += '<div class="deep-dash-nav-group">' +
-        '<a class="deep-dash-nav-item" href="#" data-nav="' + cId + '">' +
+        '<a class="deep-dash-nav-item" href="' + (CATEGORY_PAGE_URLS[cId] || "/tests") + '" data-nav="' + cId + '">' +
           '<span class="deep-dash-nav-emoji">' + emoji + '</span>' +
           '<span class="deep-dash-nav-label">' + (CAT_SHORT[cId] || cat.categoryTitle) + '</span>' +
           '<span class="deep-dash-nav-count">' + testCount + '</span>' +
@@ -845,6 +904,8 @@
     container.addEventListener("click", function(e) {
       var navItem = e.target.closest("[data-nav]");
       if (navItem) {
+        var targetCat = navItem.getAttribute("data-nav");
+        if (targetCat !== "home") return;
         e.preventDefault();
         
         // Handle accordion toggle FIRST if it's a category
@@ -860,7 +921,6 @@
           if (!wasExpanded) group.classList.add("expanded");
         }
         
-        var targetCat = navItem.getAttribute("data-nav");
         dashboardState.activeCategoryId = targetCat === "home" ? null : targetCat;
         if (dashboardState.activeCategoryId) window.DEEP_CATEGORY_DATA = reg[dashboardState.activeCategoryId];
         else window.DEEP_CATEGORY_DATA = null;
@@ -923,4 +983,3 @@
   };
 
 })();
-
