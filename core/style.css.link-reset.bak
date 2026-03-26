@@ -246,58 +246,24 @@
   border-color: var(--dt-border-strong) !important;
 }
 
-/* ── Link Protection — Scoped Resets (Beats Tilda Global Styles) ── */
-.deep-dashboard a,
-.deep-page-container a,
-.deep-tests-overlay a,
-.deep-tests-card,
+/* Force override Tilda link colors inside our blocks */
+.deep-tests-card a,
+.deep-tests-card a:visited,
+.deep-tests-card a:hover,
+.deep-tests-modal a,
+.deep-tests-modal a:visited,
+.deep-tests-modal a:hover,
 .deep-tests-btn,
-.deep-dash-nav-item,
-.deep-dash-nav-sub-item,
-.deep-dash-alpha-index-link {
-  text-decoration: none !important;
+.deep-tests-btn:visited,
+.deep-tests-btn:hover {
   color: inherit !important;
-  border-bottom: none !important;
-  background: transparent;
-  outline: none !important;
-  box-shadow: none !important;
-  -webkit-tap-highlight-color: transparent;
+  text-decoration: none !important;
 }
 
-/* Force state overrides to prevent Tilda leaks on hover/visited */
-.deep-dashboard a:hover, .deep-dashboard a:active, .deep-dashboard a:visited, .deep-dashboard a:focus,
-.deep-page-container a:hover, .deep-page-container a:active, .deep-page-container a:visited, .deep-page-container a:focus,
-.deep-tests-overlay a:hover, .deep-tests-overlay a:active, .deep-tests-overlay a:visited, .deep-tests-overlay a:focus {
-  text-decoration: none !important;
-  color: inherit !important;
-  border-bottom: none !important;
-  background: transparent !important;
-}
-
-/* Specific component link overrides to maintain brand colors */
-.deep-tests-btn-primary, 
-.deep-tests-btn-primary:hover, 
-.deep-tests-btn-primary:visited {
+.deep-tests-btn-primary,
+.deep-tests-btn-primary:visited,
+.deep-tests-btn-primary:hover {
   color: var(--dt-black) !important;
-  background: var(--dt-accent) !important;
-}
-
-.deep-tests-btn-secondary,
-.deep-tests-btn-secondary:hover,
-.deep-tests-btn-secondary:visited {
-  color: var(--dt-text) !important;
-}
-
-.deep-nav a, 
-.deep-nav a:hover, 
-.deep-nav a:visited {
-  color: var(--dt-accent) !important;
-  opacity: 0.9;
-}
-
-.deep-dash-nav-item.active,
-.deep-dash-nav-item.active:hover {
-  color: var(--dt-bg) !important;
 }
 
 /* ── Subcategory sections ── */

@@ -1,0 +1,193 @@
+/* ═══════════════════════════════════════════
+   ARCHIVE: HIGH-FIDELITY 3D DOSSIER (FOLDERS)
+   This file contains the "Folders" implementation of the test catalog.
+   ═══════════════════════════════════════════ */
+
+/* --- CORE JS RENDERING (engine.js) --- */
+/* Replace standard category grid loop with this: */
+
+      Object.keys(reg).forEach(function(cId) {
+        var cat = reg[cId];
+        var count = 0; cat.subcategories.forEach(function(s) { count += s.tests.length; });
+        cardsHtml += '<div class="deep-dash-cat-card folder-card" data-nav="' + cId + '">' +
+          '<div class="folder-back work-5"></div>' +
+          '<div class="folder-paper work-4"></div>' +
+          '<div class="folder-paper work-3"></div>' +
+          '<div class="folder-paper work-2"></div>' +
+          '<div class="folder-front work-1">' +
+            '<div class="deep-dash-cat-info">' +
+              '<div class="deep-dash-cat-header">' +
+                '<span class="deep-dash-cat-count">' + count + ' тестов</span>' +
+                '<h3 class="deep-dash-cat-name">' + cat.categoryTitle + '</h3>' +
+              '</div>' +
+              '<p class="deep-dash-cat-desc">' + (cat.categoryDescription || "") + '</p>' +
+            '</div>' +
+            '<div class="deep-dash-cat-arrow">→</div>' +
+          '</div></div>';
+      });
+      gridEl.innerHTML = '<div class="deep-dash-cat-grid">' + cardsHtml + '</div>';
+
+
+/* --- CORE CSS STYLES (style.css) --- */
+
+/* ── Catalogue Overview (High-Fidelity 3D Dossier) ── */
+.deep-dash-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+  padding-top: 20px;
+}
+
+.folder-card {
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-top: 20px;
+  isolation: isolate;
+}
+
+.folder-back.work-5 {
+  position: absolute; inset: 0; border-radius: 28px; border-top-left-radius: 0;
+  background: linear-gradient(180deg, rgba(87, 83, 78, 0.96), rgba(68, 64, 60, 0.98));
+  border: 1px solid rgba(232, 214, 179, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;
+  z-index: 1; transform-origin: top;
+}
+.folder-back.work-5::after {
+  content: ''; position: absolute; bottom: 100%; left: 0; width: 80px; height: 16px;
+  background: #57534e; border: 1px solid rgba(232, 214, 179, 0.1);
+  border-bottom: none; border-radius: 12px 12px 0 0;
+}
+.folder-back.work-5::before {
+  content: ''; position: absolute; top: -15px; left: 75.5px; width: 16px; height: 16px;
+  background: #57534e; clip-path: polygon(0 35%, 0% 100%, 50% 100%);
+}
+
+.folder-paper {
+  position: absolute; inset: 4px; border-radius: 18px; transition: all 0.3s ease;
+  transform-origin: bottom; pointer-events: none; z-index: 2;
+}
+.folder-paper.work-4 { background: #a1a1aa; opacity: 0.8; }
+.folder-paper.work-3 { background: #d4d4d8; opacity: 0.6; }
+.folder-paper.work-2 { background: #e4e4e7; opacity: 0.4; }
+
+.folder-card:hover .folder-paper.work-4 { transform: rotateX(-20deg); }
+.folder-card:hover .folder-paper.work-3 { transform: rotateX(-30deg); }
+.folder-card:hover .folder-paper.work-2 { transform: rotateX(-38deg); }
+
+.folder-front.work-1 {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 170px;
+  border-radius: 22px 22px 28px 28px; border-top-right-radius: 0;
+  background: linear-gradient(180deg, #78716c, #57534e);
+  border: 1px solid rgba(232, 214, 179, 0.1); z-index: 5;
+  transition: all 0.3s ease; transform-origin: bottom;
+  display: flex; flex-direction: column; padding: 24px 22px 20px;
+}
+.folder-front.work-1::after {
+  content: ''; position: absolute; bottom: 100%; right: 0; width: 140px; height: 16px;
+  background: #78716c; border: 1px solid rgba(232, 214, 179, 0.1);
+  border-bottom: none; border-radius: 12px 12px 0 0;
+}
+.folder-front.work-1::before {
+  content: ''; position: absolute; top: -10px; right: 138px; width: 12px; height: 12px;
+  background: #78716c; clip-path: polygon(100% 14%, 50% 100%, 100% 100%);
+}
+
+.folder-card:hover .folder-front.work-1 {
+  transform: rotateX(-46deg) translateY(1px);
+  box-shadow: inset 0 20px 40px rgba(87, 83, 78, 0.4);
+}
+
+.deep-dash-cat-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.deep-dash-cat-count {
+  order: -1;
+  flex: 0 0 auto;
+  max-width: 100%;
+  white-space: nowrap;
+  background: rgba(232, 214, 179, 0.10);
+  border: 1px solid rgba(232, 214, 179, 0.12);
+  color: #E8D6B3;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.deep-dash-cat-name {
+  margin: 0;
+  max-width: 100%;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  font-family: var(--dt-f-head);
+  font-size: clamp(20px, 1.5vw + 12px, 28px);
+  font-weight: 600;
+  color: #F4EEE3;
+}
+
+.deep-dash-cat-desc {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-family: var(--dt-f-body);
+  font-size: 14px;
+  color: rgba(244, 238, 227, 0.7);
+  line-height: 1.45;
+  margin-top: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.deep-dash-cat-arrow {
+  position: absolute;
+  bottom: 20px;
+  right: 22px;
+  color: rgba(232, 214, 179, 0.5);
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.folder-card:hover .deep-dash-cat-arrow {
+  color: var(--dt-accent);
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+/* RESPONSIVE STABILIZATION */
+@media (max-width: 900px) {
+  .deep-dashboard {
+    grid-template-columns: 1fr !important;
+  }
+  .deep-dash-nav {
+    position: fixed !important;
+    left: 0; top: 0; bottom: 0; width: 280px; height: 100vh;
+    transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1600;
+    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5);
+  }
+  .deep-dash-nav.open { transform: translateX(0); }
+  .deep-dash-content { grid-column: 1 !important; padding: 100px 20px 40px !important; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .folder-card * {
+    animation: none !important;
+    transform: none !important;
+    transition: background-color .2s ease, opacity .2s ease !important;
+  }
+}

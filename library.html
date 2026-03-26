@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Psy Tests - Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="core/style.css">
+</head>
+<body style="margin:0; padding:0; background:#111111;">
+    <div id="deep-categories-container"></div>
+    <div class="deep-tests-overlay" id="deep-tests-overlay" aria-hidden="true">
+      <div class="deep-tests-modal">
+        <button class="deep-tests-close" aria-label="Закрыть">×</button>
+        <div class="deep-tests-app" id="deep-tests-app"></div>
+      </div>
+    </div>
+    <!-- Results Sidebar Addon structure -->
+    <div class="deep-tests-sidebar" id="deep-dash-sidebar">
+      <div style="padding: 20px; color: #fff;">Результаты теста будут здесь</div>
+    </div>
+    
+    <script src="data/phq9.js"></script>
+    <script src="data/gad7.js"></script>
+    <script src="data/pss10.js"></script>
+    <script src="data/test_registry.js"></script>
+    <script src="core/sidebar.js"></script>
+    <script src="core/engine.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if(window.deepRenderCatalog) window.deepRenderCatalog('deep-categories-container');
+        });
+    </script>
+</body>
+</html>

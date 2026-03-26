@@ -10,25 +10,12 @@
   var STORAGE_KEY = "deep-tests-engine-v4";
   var WEBHOOK_URL = "";
 
-  /* Map category IDs to Tilda URLs for multi-page mode */
-  var CAT_URLS = {
-    home: "/tests",
-    personality: "/tests/personality",
-    mental_functions: "/tests/mental",
-    adaptation: "/tests/adaptation",
-    psychiatry: "/tests/psychiatry",
-    relationships: "/tests/relationships",
-    career: "/tests/career",
-    team: "/tests/team",
-    organization: "/tests/organization",
-    psychoanalytic: "/tests/psychoanalytic",
-    therapy_efficacy: "/tests/therapy"
-  };
-
   /* ── SVG Icons ── */
-  var ICON_QUESTIONS = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-  var ICON_TIME = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-  var ICON_SAVE = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
+  var ICON_QUESTIONS = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21.6602 10.4395L20.6802 14.6195C19.8402 18.2295 18.1802 19.6895 15.0602 19.3895C14.5602 19.3495 14.0202 19.2595 13.4402 19.1195L11.7602 18.7195C7.59018 17.7295 6.30018 15.6695 7.28018 11.4895L8.26018 7.29952C8.46018 6.44952 8.70018 5.70952 9.00018 5.09952C10.1702 2.67952 12.1602 2.02952 15.5002 2.81952L17.1702 3.20952C21.3602 4.18952 22.6402 6.25952 21.6602 10.4395Z" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.0584 19.3896C14.4384 19.8096 13.6584 20.1596 12.7084 20.4696L11.1284 20.9896C7.15839 22.2696 5.06839 21.1996 3.77839 17.2296L2.49839 13.2796C1.21839 9.30961 2.27839 7.20961 6.24839 5.92961L7.82839 5.40961C8.23839 5.27961 8.62839 5.16961 8.99839 5.09961C8.69839 5.70961 8.45839 6.44961 8.25839 7.29961L7.27839 11.4896C6.29839 15.6696 7.58839 17.7296 11.7584 18.7196L13.4384 19.1196C14.0184 19.2596 14.5584 19.3496 15.0584 19.3896Z" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.6406 8.53027L17.4906 9.76027" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.6602 12.4004L14.5602 13.1404" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var ICON_TIME = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.7089 15.1798L12.6089 13.3298C12.0689 13.0098 11.6289 12.2398 11.6289 11.6098V7.50977" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var ICON_SAVE = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14 2C16 2 17 3.01 17 5.03V12.08C17 14.07 15.59 14.84 13.86 13.8L12.54 13C12.24 12.82 11.76 12.82 11.46 13L10.14 13.8C8.41 14.84 7 14.07 7 12.08V5.03C7 3.01 8 2 10 2H14Z" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.82 4.98996C3.41 5.55996 2 7.65996 2 11.9V14.93C2 19.98 4 22 9 22H15C20 22 22 19.98 22 14.93V11.9C22 7.58996 20.54 5.47996 17 4.95996" stroke="#E8D6B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   /* ── Publishers map for proprietary tests ── */
   var PUBLISHERS = {
@@ -541,21 +528,21 @@
   var NAV_ICON_HOME = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
   var NAV_ICON_SEARCH = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
   var NAV_ICON_CHEVRON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
-  var NAV_ICON_BURGER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="18" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
-  var NAV_ICON_CLOSE = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  var NAV_ICON_BURGER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+  var NAV_ICON_CLOSE = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
 
   var _i = function(d) { return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>'; };
   var CAT_ICONS = {
-    personality:      _i('<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'),
-    mental_functions: _i('<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-2-4-2.5c-.5.5-2 1-4 2.5s-3 3.5-3 5.5a7 7 0 0 0 7 7Z"/><path d="M12 2v4"/><path d="M4.2 4.2l2.8 2.8"/><path d="M19.8 4.2l-2.8 2.8"/>'),
-    adaptation:       _i('<path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>'),
-    psychiatry:       _i('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'),
+    personality:      _i('<path d="M12 2a4 4 0 0 0-4 4c0 2.8 2 5.2 4 6.5 2-1.3 4-3.7 4-6.5a4 4 0 0 0-4-4z"/><path d="M12 12.5C9 14.2 7 17 7 20h10c0-3-2-5.8-5-7.5z"/><line x1="12" y1="2" x2="12" y2="22"/>'),
+    mental_functions: _i('<path d="M12 2a7 7 0 0 1 7 7c0 2.4-1.2 4.5-3 5.7V17a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2.3C6.2 13.5 5 11.4 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="22" x2="15" y2="22"/><line x1="10" y1="19" x2="14" y2="19"/>'),
+    adaptation:       _i('<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>'),
+    psychiatry:       _i('<rect x="3" y="8" width="6" height="13" rx="2"/><rect x="15" y="3" width="6" height="18" rx="2"/><line x1="6" y1="12" x2="6" y2="15"/><line x1="18" y1="8" x2="18" y2="12"/>'),
     relationships:    _i('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'),
-    career:           _i('<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'),
+    career:           _i('<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/>'),
     team:             _i('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'),
-    organization:     _i('<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/>'),
-    psychoanalytic:   _i('<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>'),
-    therapy_efficacy: _i('<path d="M12 3v1.5"/><path d="M12 19.5V21"/><path d="M3 12h1.5"/><path d="M19.5 12H21"/><path d="M5.6 5.6l1.1 1.1"/><path d="M17.3 17.3l1.1 1.1"/><path d="M5.6 18.4l1.1-1.1"/><path d="M17.3 6.7l1.1-1.1"/><path d="M12 8l-1.5 4 1.5 4 1.5-4z"/>')
+    organization:     _i('<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="15" y2="18"/>'),
+    psychoanalytic:   _i('<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/>'),
+    therapy_efficacy: _i('<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>')
   };
 
 
@@ -597,12 +584,9 @@
   }
 
   function getCTA(test) {
-    var isDataLoaded = (window.DEEP_TEST_DATA && window.DEEP_TEST_DATA[test.id]);
-    var isRunnable = (test.isRunnable !== false) && (!!test.questions || isDataLoaded);
-    
-    return isRunnable
+    return (test.isRunnable !== false)
       ? '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.deepTestsOpen(\'' + test.id + '\')">Пройти тест</button>'
-      : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'Оцифровка вопросов для этого теста ещё не завершена. Попробуйте другой тест из каталога.\')">Инфо</button>';
+      : '<button class="deep-tests-btn deep-tests-btn-secondary" onclick="alert(\'' + (test.replacement ? 'Аналог: ' + test.replacement : 'Ограниченный доступ') + '\')">Инфо</button>';
   }
 
   function buildCardHTML(test) {
@@ -642,22 +626,14 @@
     var query = dashboardState.searchQuery.toLowerCase().trim();
     var isAlpha = dashboardState.mode === "alphabetical";
 
-    /* Breadcrumbs + Header */
     var headerEl = document.getElementById("deep-dash-header-area");
     var gridEl = document.getElementById("deep-dash-grid-area");
     if (!headerEl || !gridEl) return;
 
-    // Detect if we are on a dedicated category page (via attribute)
-    var container = document.querySelector(".deep-dashboard");
-    var isDedicatedPage = container && container.getAttribute("data-category-id");
-
-    var breadHtml = "";
-    if (!isDedicatedPage) {
-      breadHtml = '<nav class="deep-dash-breadcrumbs"><a href="' + CAT_URLS.home + '" data-nav="home">Все категории</a>';
-      if (catId && reg[catId]) breadHtml += ' <span class="deep-dash-bc-sep">›</span> <span>' + reg[catId].categoryTitle + '</span>';
-      breadHtml += '</nav>';
-    }
-
+    /* Breadcrumbs + Header */
+    var breadHtml = '<nav class="deep-dash-breadcrumbs"><a href="#" data-nav="home">Все категории</a>';
+    if (catId && reg[catId]) breadHtml += ' <span class="deep-dash-bc-sep">›</span> <span>' + reg[catId].categoryTitle + '</span>';
+    breadHtml += '</nav>';
     var title = catId && reg[catId] ? reg[catId].categoryTitle : "Каталог тестов";
     var desc = catId && reg[catId] ? (reg[catId].categoryDescription || "") : "Выберите категорию слева или воспользуйтесь поиском.";
     headerEl.innerHTML = breadHtml + '<h1 class="deep-dash-title">' + title + '</h1><p class="deep-dash-desc">' + desc + '</p>';
@@ -743,9 +719,8 @@
       Object.keys(reg).forEach(function(cId) {
         var cat = reg[cId];
         var count = 0; cat.subcategories.forEach(function(s) { count += s.tests.length; });
-        var catUrl = CAT_URLS[cId] || "#";
         
-        cardsHtml += '<a href="' + catUrl + '" class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" data-nav="' + cId + '">';
+        cardsHtml += '<div class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" data-nav="' + cId + '">';
         
         /* Header area matching test cards */
         cardsHtml += '<div class="deep-tests-card-img" style="height:160px; background:linear-gradient(135deg, var(--dt-panel-2) 0%, var(--dt-bg) 100%); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--dt-border);">';
@@ -758,7 +733,7 @@
         cardsHtml += '<div class="deep-tests-card-text" style="font-size:13px; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (cat.categoryDescription || "") + '</div>';
         cardsHtml += '<div style="display:flex; gap:6px; flex-wrap:wrap;">';
         cardsHtml += '<span class="deep-tests-pill" style="font-size:11px; padding:4px 8px; font-weight:500; background:rgba(232,214,179,0.1); border-color:rgba(232,214,179,0.15); color:var(--dt-accent);">' + count + ' тестов</span>';
-        cardsHtml += '</div></div></a>';
+        cardsHtml += '</div></div></div>';
       });
       gridEl.innerHTML = '<div class="deep-dash-cat-grid">' + cardsHtml + '</div>';
 
@@ -801,7 +776,7 @@
       if (window.DEEP_TEST_REGISTRY) window.DEEP_TESTS = window.DEEP_TEST_REGISTRY;
     }
 
-    /* Detective initial category from URL — only on first call */
+    /* Detect initial category from URL — only on first call */
     if (!dashboardState.initialized) {
       var dMap = { personality: "personality", mental: "mental_functions", adaptation: "adaptation", psychiatry: "psychiatry", relationships: "relationships", career: "career", team: "team", organization: "organization", psychoanalytic: "psychoanalytic", therapy: "therapy_efficacy" };
       var loc = window.location.pathname.toLowerCase();
@@ -822,14 +797,14 @@
         '<button class="deep-dash-nav-close" id="deep-dash-nav-close">' + NAV_ICON_CLOSE + '</button>' +
       '</div>' +
       '<div class="deep-dash-nav-scroll">' +
-        '<a class="deep-dash-nav-item deep-dash-nav-home" href="' + (CAT_URLS.home || "#") + '" data-nav="home"><span>Категории</span></a>';
+        '<a class="deep-dash-nav-item deep-dash-nav-home" href="#" data-nav="home"><span>Категории</span></a>';
 
     Object.keys(reg).forEach(function(cId) {
       var cat = reg[cId];
       var emoji = CAT_ICONS[cId] || "📋";
       var testCount = 0; cat.subcategories.forEach(function(s) { testCount += s.tests.length; });
       navHtml += '<div class="deep-dash-nav-group">' +
-        '<a class="deep-dash-nav-item" href="' + (CAT_URLS[cId] || "#") + '" data-nav="' + cId + '">' +
+        '<a class="deep-dash-nav-item" href="#" data-nav="' + cId + '">' +
           '<span class="deep-dash-nav-emoji">' + emoji + '</span>' +
           '<span class="deep-dash-nav-label">' + (CAT_SHORT[cId] || cat.categoryTitle) + '</span>' +
           '<span class="deep-dash-nav-count">' + testCount + '</span>' +
@@ -872,12 +847,6 @@
     container.addEventListener("click", function(e) {
       var navItem = e.target.closest("[data-nav]");
       if (navItem) {
-        var targetCat = navItem.getAttribute("data-nav");
-        var isCurrentPage = (targetCat === "home" && !dashboardState.activeCategoryId) || (targetCat === dashboardState.activeCategoryId);
-        
-        // If it's a category transition, but NOT to the same page, we let it navigate normally (don't preventDefault)
-        if (!isCurrentPage) return; 
-
         e.preventDefault();
         
         // Handle accordion toggle FIRST if it's a category

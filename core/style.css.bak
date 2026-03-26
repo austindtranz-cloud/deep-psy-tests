@@ -246,58 +246,24 @@
   border-color: var(--dt-border-strong) !important;
 }
 
-/* ── Link Protection — Scoped Resets (Beats Tilda Global Styles) ── */
-.deep-dashboard a,
-.deep-page-container a,
-.deep-tests-overlay a,
-.deep-tests-card,
+/* Force override Tilda link colors inside our blocks */
+.deep-tests-card a,
+.deep-tests-card a:visited,
+.deep-tests-card a:hover,
+.deep-tests-modal a,
+.deep-tests-modal a:visited,
+.deep-tests-modal a:hover,
 .deep-tests-btn,
-.deep-dash-nav-item,
-.deep-dash-nav-sub-item,
-.deep-dash-alpha-index-link {
-  text-decoration: none !important;
+.deep-tests-btn:visited,
+.deep-tests-btn:hover {
   color: inherit !important;
-  border-bottom: none !important;
-  background: transparent;
-  outline: none !important;
-  box-shadow: none !important;
-  -webkit-tap-highlight-color: transparent;
+  text-decoration: none !important;
 }
 
-/* Force state overrides to prevent Tilda leaks on hover/visited */
-.deep-dashboard a:hover, .deep-dashboard a:active, .deep-dashboard a:visited, .deep-dashboard a:focus,
-.deep-page-container a:hover, .deep-page-container a:active, .deep-page-container a:visited, .deep-page-container a:focus,
-.deep-tests-overlay a:hover, .deep-tests-overlay a:active, .deep-tests-overlay a:visited, .deep-tests-overlay a:focus {
-  text-decoration: none !important;
-  color: inherit !important;
-  border-bottom: none !important;
-  background: transparent !important;
-}
-
-/* Specific component link overrides to maintain brand colors */
-.deep-tests-btn-primary, 
-.deep-tests-btn-primary:hover, 
-.deep-tests-btn-primary:visited {
+.deep-tests-btn-primary,
+.deep-tests-btn-primary:visited,
+.deep-tests-btn-primary:hover {
   color: var(--dt-black) !important;
-  background: var(--dt-accent) !important;
-}
-
-.deep-tests-btn-secondary,
-.deep-tests-btn-secondary:hover,
-.deep-tests-btn-secondary:visited {
-  color: var(--dt-text) !important;
-}
-
-.deep-nav a, 
-.deep-nav a:hover, 
-.deep-nav a:visited {
-  color: var(--dt-accent) !important;
-  opacity: 0.9;
-}
-
-.deep-dash-nav-item.active,
-.deep-dash-nav-item.active:hover {
-  color: var(--dt-bg) !important;
 }
 
 /* ── Subcategory sections ── */
@@ -1205,11 +1171,9 @@
 .deep-dash-nav {
   grid-column: 1;
   grid-row: 1;
-  background: radial-gradient(120% 90% at 0% 0%, rgba(232,214,179,0.04), transparent 34%), 
-              linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0)), 
-              #0d0d0d;
-  border: 1px solid rgba(232,214,179,0.10);
-  border-radius: 22px;
+  background: #0d0d0d;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
   position: sticky;
@@ -1219,7 +1183,6 @@
   z-index: 100;
   box-sizing: border-box;
   overflow: hidden;
-  box-shadow: 0 22px 54px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 /* Header — logo + close btn (mobile) */
@@ -1280,35 +1243,32 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
-  color: rgba(244,238,227,0.58);
+  padding: 11px 12px;
+  color: rgba(255,255,255,0.55);
   text-decoration: none;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 600; /* Semibold per request */
   font-family: var(--dt-f-body);
-  transition: background .22s ease, color .22s ease, border-color .22s ease, box-shadow .22s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
-  border: 1px solid transparent;
+  border: none;
   background: transparent;
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
   text-align: left;
-  border-radius: 12px;
+  border-radius: 8px;
   margin-bottom: 2px;
-  letter-spacing: 0.01em;
 }
 
 .deep-dash-nav-item:hover {
-  color: rgba(244,238,227,0.92);
-  background: rgba(255,255,255,0.045);
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.06);
 }
 
 .deep-dash-nav-item.active {
-  color: #F4EEE3;
-  background: linear-gradient(180deg, rgba(232,214,179,0.13), rgba(232,214,179,0.07));
-  border: 1px solid rgba(232,214,179,0.14);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 10px 24px rgba(0,0,0,0.16);
+  color: #fff;
+  background: rgba(232, 214, 179, 0.10);
   font-weight: 600;
 }
 
@@ -1332,7 +1292,7 @@
   left: 10px;
   right: 10px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.08); /* Нейтральное серое подчеркивание */
+  background: linear-gradient(90deg, rgba(232, 214, 179, 0.4) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 .deep-dash-nav-home:hover {
@@ -1343,8 +1303,6 @@
 .deep-dash-nav-home.active {
   background: transparent !important;
   color: var(--dt-accent) !important;
-  border: none !important;
-  box-shadow: none !important;
 }
 
 /* SVG icon container */
@@ -1370,43 +1328,39 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 15px;
-  font-weight: 600;
 }
 
 /* Counter badge (Matilda-style) */
 .deep-dash-nav-count {
-  min-width: 28px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.06);
-  color: rgba(244,238,227,0.48);
   font-size: 12px;
-  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.06);
+  padding: 2px 8px;
+  border-radius: 10px;
   flex-shrink: 0;
+  font-weight: 600;
+  min-width: 22px;
   text-align: center;
-  line-height: 1;
+  line-height: 1.4;
 }
 
 .deep-dash-nav-item.active .deep-dash-nav-count {
-  background: rgba(232, 214, 179, 0.16);
-  border-color: rgba(232, 214, 179, 0.16);
-  color: #F4EEE3;
+  background: rgba(232, 214, 179, 0.15);
+  color: var(--dt-accent);
 }
 
 /* Chevron */
 .deep-dash-nav-chevron {
   flex-shrink: 0;
   transition: transform 0.25s ease;
-  color: rgba(244,238,227,0.22);
+  color: rgba(255,255,255,0.25);
   display: flex;
   align-items: center;
 }
 
 .deep-dash-nav-group.expanded .deep-dash-nav-chevron {
   transform: rotate(180deg);
-  color: rgba(232, 214, 179, 0.88);
+  color: var(--dt-accent);
 }
 
 /* Sub-items drawer (grid trick — no layout lag) */
@@ -1431,17 +1385,17 @@
 
 .deep-dash-nav-sub-item {
   font-size: 14px;
-  color: rgba(244,238,227,0.44);
+  color: rgba(255,255,255,0.4);
   margin-left: 34px;
-  padding: 7px 12px;
-  line-height: 1.45;
-  border-radius: 8px;
-  transition: background .18s ease, color .18s ease;
+  padding: 6px 12px;
+  line-height: 1.4;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
   cursor: pointer;
   position: relative;
   display: block;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 400; /* Normal weight for sub-items */
   font-family: var(--dt-f-body);
 }
 
@@ -1453,9 +1407,9 @@
   left: -20px;
   width: 16px;
   height: 18px; /* Standard branch height */
-  border-left: 1px solid rgba(232,214,179,0.16);
-  border-bottom: 1px solid rgba(232,214,179,0.16);
-  border-bottom-left-radius: 8px;
+  border-left: 1px solid #2a2a2a;
+  border-bottom: 1px solid #2a2a2a;
+  border-bottom-left-radius: 6px;
   box-sizing: border-box;
 }
 
@@ -1467,7 +1421,7 @@
   bottom: 0;
   left: -20px;
   width: 1px;
-  background: linear-gradient(180deg, rgba(232,214,179,0.16), rgba(232,214,179,0.08));
+  background: #2a2a2a;
 }
 
 /* Stop the trunk at the branch of the last item */
@@ -1477,17 +1431,17 @@
 
 .deep-dash-nav-sub-item:hover,
 .deep-dash-nav-sub-item.active {
-  color: rgba(244,238,227,0.78);
-  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.06);
 }
 
 .deep-dash-nav-sub-item.active {
   color: var(--dt-accent);
-  background: rgba(232, 214, 179, 0.08);
+  background: rgba(232, 214, 179, 0.1);
 }
 
 .deep-dash-nav-sub-item span {
-  opacity: 0.55;
+  opacity: 0.5;
   font-size: 11px;
 }
 
@@ -1641,9 +1595,82 @@
 }
 
 .deep-dash-cat-card {
-  /* Мы будем использовать .deep-tests-card в разметке, 
-     но оставляем селектор для обратной совместимости, если нужно. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: var(--dt-panel-2);
+  border: 1px solid var(--dt-border);
+  border-radius: 14px;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.deep-dash-cat-card:hover {
+  border-color: var(--dt-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.deep-dash-cat-emoji {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 214, 179, 0.1);
+  border: 1px solid rgba(232, 214, 179, 0.15);
+  border-radius: 14px;
+  flex-shrink: 0;
+  color: var(--dt-accent);
+  transition: transform 0.3s ease;
+}
+
+.deep-dash-cat-card:hover .deep-dash-cat-emoji {
+  transform: scale(1.1);
+  background: rgba(232, 214, 179, 0.15);
+}
+
+.deep-dash-cat-info {
+  width: 100%;
+  min-width: 0;
+}
+
+.deep-dash-cat-header {
+  display: flex;
+  flex-direction: column; /* Stacked vertically per user request */
+  align-items: flex-start;
+  margin-bottom: 16px;
+  width: 100%;
+  gap: 8px; /* 8px gap between title and badge */
+}
+
+.deep-dash-cat-name {
+  font-family: var(--dt-f-head);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--dt-text);
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+  width: 100%;
+  overflow-wrap: break-word;
+}
+
+.deep-dash-cat-count {
+  font-size: 11px;
+  font-family: var(--dt-f-body);
+  color: var(--dt-muted);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  align-self: flex-start; /* Prevent stretching */
 }
 
 .deep-dash-cat-desc {
