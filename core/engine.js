@@ -68,13 +68,18 @@
   /* ── Overlay ── */
   function openOverlay() {
     if (!overlay) return;
+    overlay.style.display = "flex";
     overlay.classList.add("active");
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
   }
   function closeModal() {
     answerLock = false;
-    if (overlay) { overlay.classList.remove("active"); overlay.setAttribute("aria-hidden", "true"); }
+    if (overlay) { 
+      overlay.classList.remove("active"); 
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.style.display = "none";
+    }
     document.body.style.overflow = "";
     /* Re-render catalog to update badges in real-time */
     var catalogContainer = document.getElementById("personality-categories-container");
