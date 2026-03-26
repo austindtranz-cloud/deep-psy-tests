@@ -568,7 +568,7 @@
     therapy_efficacy: "Терапия"
   };
 
-  /* SPA state — single instance, never re-created */
+  /* Dashboard state (multi-page overview mode) */
   var dashboardState = {
     activeCategoryId: null,
     initialized: false
