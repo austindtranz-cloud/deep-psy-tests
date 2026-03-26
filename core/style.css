@@ -67,6 +67,18 @@
   text-decoration: none;
 }
 
+.deep-page-container a,
+.deep-page-container button,
+.deep-dashboard a,
+.deep-dashboard button,
+.deep-tests-overlay a,
+.deep-tests-overlay button,
+#deep-sidebar a,
+#deep-sidebar button {
+  color: inherit !important;
+  font-family: inherit !important;
+}
+
 @media (max-width: 960px) {
   .deep-page-container { padding-left: 40px; padding-right: 40px; }
 }

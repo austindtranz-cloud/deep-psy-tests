@@ -650,143 +650,36 @@
     var reg = window.DEEP_MASTER_REGISTRY;
     if (!reg) return;
 
-    var catId = dashboardState.activeCategoryId;
-    var query = dashboardState.searchQuery.toLowerCase().trim();
-    var isAlpha = dashboardState.mode === "alphabetical";
-
     var headerEl = document.getElementById("deep-dash-header-area");
     var gridEl = document.getElementById("deep-dash-grid-area");
     if (!headerEl || !gridEl) return;
 
-    /* Breadcrumbs + Header */
-    var breadHtml = '<nav class="deep-dash-breadcrumbs"><a href="/tests">Все категории</a>';
-    if (catId && reg[catId]) breadHtml += ' <span class="deep-dash-bc-sep">›</span> <span>' + reg[catId].categoryTitle + '</span>';
-    breadHtml += '</nav>';
-    var title = catId && reg[catId] ? reg[catId].categoryTitle : "Каталог тестов";
-    var desc = catId && reg[catId] ? (reg[catId].categoryDescription || "") : "Выберите категорию слева или воспользуйтесь поиском.";
-    headerEl.innerHTML = breadHtml + '<h1 class="deep-dash-title">' + title + '</h1><p class="deep-dash-desc">' + desc + '</p>';
+    headerEl.innerHTML = '<h1 class="deep-dash-title">Каталог тестов</h1><p class="deep-dash-desc">Выберите категорию и перейдите на отдельную страницу.</p>';
 
-    /* Tabs active state */
-    var btnCat = document.querySelector('[data-tab="categories"]');
-    var btnAlpha = document.querySelector('[data-tab="alphabetical"]');
-    if (btnCat && btnAlpha) {
-      if (isAlpha) { btnAlpha.classList.add("active"); btnCat.classList.remove("active"); }
-      else { btnCat.classList.add("active"); btnAlpha.classList.remove("active"); }
-    }
-
-    /* Left Nav active state — DOM manipulation, no event re-binding */
     document.querySelectorAll(".deep-dash-nav-item").forEach(function(el) {
       var navT = el.getAttribute("data-nav");
-      if ((navT === "home" && !catId) || navT === catId) el.classList.add("active");
+      if (navT === "home") el.classList.add("active");
       else el.classList.remove("active");
     });
-    if (!dashboardState.initialExpandDone) {
-      document.querySelectorAll(".deep-dash-nav-group").forEach(function(el) {
-        var a = el.querySelector(".deep-dash-nav-item.active");
-        if (a) el.classList.add("expanded");
-        else el.classList.remove("expanded");
-      });
-      dashboardState.initialExpandDone = true;
-    }
 
-    /* Grid Contents */
     var cardsHtml = "";
-    if (isAlpha) {
-      var allTests = [];
-      Object.keys(reg).forEach(function(cId) {
-        reg[cId].subcategories.forEach(function(sub) {
-          sub.tests.forEach(function(t) {
-            var tCopy = {};
-            for (var k in t) tCopy[k] = t[k];
-            tCopy._categoryTitle = reg[cId].categoryTitle;
-            allTests.push(tCopy);
-          });
-        });
-      });
-      allTests.sort(function(a, b) { return a.title.localeCompare(b.title, "ru"); });
-      if (query) allTests = allTests.filter(function(t) {
-        return t.title.toLowerCase().indexOf(query) !== -1 || (t.measures || "").toLowerCase().indexOf(query) !== -1;
-      });
+    Object.keys(reg).forEach(function(cId) {
+      var cat = reg[cId];
+      var count = 0; cat.subcategories.forEach(function(s) { count += s.tests.length; });
 
-      var lettersPresent = {};
-      allTests.forEach(function(t) {
-        var letter = t.title.charAt(0).toUpperCase();
-        if (!lettersPresent[letter]) lettersPresent[letter] = [];
-        lettersPresent[letter].push(t);
-      });
+      cardsHtml += '<a class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" href="' + (CATEGORY_PAGE_URLS[cId] || "/tests") + '">';
+      cardsHtml += '<div class="deep-tests-card-img" style="height:160px; background:linear-gradient(135deg, var(--dt-panel-2) 0%, var(--dt-bg) 100%); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--dt-border);">';
+      cardsHtml += '<div style="position:relative; z-index:2; color:var(--dt-accent); opacity:0.8; transform:scale(1.5);">' + (CAT_ICONS[cId] || "📋") + '</div>';
+      cardsHtml += '</div>';
+      cardsHtml += '<div style="padding:20px;">';
+      cardsHtml += '<h3 class="deep-tests-card-title" style="font-size:17px; margin:0 0 8px; line-height:1.25; font-weight:600;">' + cat.categoryTitle + '</h3>';
+      cardsHtml += '<div class="deep-tests-card-text" style="font-size:13px; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (cat.categoryDescription || "") + '</div>';
+      cardsHtml += '<div style="display:flex; gap:6px; flex-wrap:wrap;">';
+      cardsHtml += '<span class="deep-tests-pill" style="font-size:11px; padding:4px 8px; font-weight:500; background:rgba(232,214,179,0.1); border-color:rgba(232,214,179,0.15); color:var(--dt-accent);">' + count + ' тестов</span>';
+      cardsHtml += '</div></div></a>';
+    });
 
-      var sortedLetters = Object.keys(lettersPresent).sort(function(a, b) { return a.localeCompare(b, "ru"); });
-      
-      var indexHtml = '<div id="deep-dash-alpha-modal" class="deep-dash-alpha-modal">';
-      indexHtml += '<div class="deep-dash-alpha-modal-overlay" onclick="document.getElementById(\'deep-dash-alpha-modal\').classList.remove(\'open\')"></div>';
-      indexHtml += '<div class="deep-dash-alpha-modal-inner">';
-      indexHtml += '<div class="deep-dash-alpha-modal-header"><span>Выберите букву</span><button onclick="document.getElementById(\'deep-dash-alpha-modal\').classList.remove(\'open\')">✕</button></div>';
-      indexHtml += '<div class="deep-dash-alpha-index">';
-      sortedLetters.forEach(function(l) {
-        indexHtml += '<div class="deep-dash-alpha-index-link" data-scroll-to="alpha-' + l + '">' + l + '</div>';
-      });
-      indexHtml += '</div></div></div>';
-
-      sortedLetters.forEach(function(l) {
-        cardsHtml += '<div class="deep-dash-alpha-section" id="alpha-' + l + '">';
-        cardsHtml += '<div class="deep-dash-letter-header" style="cursor:pointer;" onclick="document.getElementById(\'deep-dash-alpha-modal\').classList.add(\'open\')">' + l + '</div>';
-        cardsHtml += '<div class="deep-dash-alpha-list">';
-        lettersPresent[l].forEach(function(t) {
-          cardsHtml += '<div class="deep-dash-alpha-item" onclick="window.deepTestsOpen(\'' + t.id + '\')">';
-          cardsHtml += '<div class="deep-dash-alpha-item-title">' + t.title + '</div>';
-          cardsHtml += '</div>';
-        });
-        cardsHtml += '</div></div>';
-      });
-
-      if (!allTests.length) cardsHtml = '<div class="deep-tests-note">По запросу ничего не найдено.</div>';
-      else cardsHtml = indexHtml + '<div class="deep-dash-alpha-grid">' + cardsHtml + '</div>';
-      gridEl.innerHTML = cardsHtml;
-
-    } else if (!catId && !query) {
-      Object.keys(reg).forEach(function(cId) {
-        var cat = reg[cId];
-        var count = 0; cat.subcategories.forEach(function(s) { count += s.tests.length; });
-        
-        cardsHtml += '<a class="deep-tests-card deep-dash-cat-card" style="padding:0; overflow:hidden; cursor:pointer;" href="' + (CATEGORY_PAGE_URLS[cId] || "/tests") + '">';
-        
-        /* Header area matching test cards */
-        cardsHtml += '<div class="deep-tests-card-img" style="height:160px; background:linear-gradient(135deg, var(--dt-panel-2) 0%, var(--dt-bg) 100%); display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1px solid var(--dt-border);">';
-        cardsHtml += '<div style="position:relative; z-index:2; color:var(--dt-accent); opacity:0.8; transform:scale(1.5);">' + (CAT_ICONS[cId] || "📋") + '</div>';
-        cardsHtml += '</div>';
-        
-        /* Content area matching test cards */
-        cardsHtml += '<div style="padding:20px;">';
-        cardsHtml += '<h3 class="deep-tests-card-title" style="font-size:17px; margin:0 0 8px; line-height:1.25; font-weight:600;">' + cat.categoryTitle + '</h3>';
-        cardsHtml += '<div class="deep-tests-card-text" style="font-size:13px; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (cat.categoryDescription || "") + '</div>';
-        cardsHtml += '<div style="display:flex; gap:6px; flex-wrap:wrap;">';
-        cardsHtml += '<span class="deep-tests-pill" style="font-size:11px; padding:4px 8px; font-weight:500; background:rgba(232,214,179,0.1); border-color:rgba(232,214,179,0.15); color:var(--dt-accent);">' + count + ' тестов</span>';
-        cardsHtml += '</div></div></a>';
-      });
-      gridEl.innerHTML = '<div class="deep-dash-cat-grid">' + cardsHtml + '</div>';
-
-    } else {
-      var catsToSearch = catId ? [catId] : Object.keys(reg);
-      catsToSearch.forEach(function(c) {
-        var data = reg[c];
-        if (!data) return;
-        data.subcategories.forEach(function(sub, idx) {
-          var filtered = sub.tests;
-          if (query) filtered = filtered.filter(function(t) {
-            return t.title.toLowerCase().indexOf(query) !== -1 || (t.measures || "").toLowerCase().indexOf(query) !== -1;
-          });
-          if (!filtered.length) return;
-          cardsHtml += '<div class="deep-subcategory"><h2 id="sub-' + c + '-' + idx + '">' + sub.subTitle + '</h2><div class="deep-tests-grid">';
-          filtered.forEach(function(t) { cardsHtml += buildCardHTML(t); });
-          cardsHtml += '</div></div>';
-        });
-      });
-      if (!cardsHtml) cardsHtml = '<div class="deep-tests-note">По запросу ничего не найдено.</div>';
-      gridEl.innerHTML = cardsHtml;
-    }
-    
-    // Clear active sub-items if we just rendered the grid and didn't explicitly click a sub-item
-    document.querySelectorAll(".deep-dash-nav-sub-item").forEach(function(el) { el.classList.remove("active"); });
+    gridEl.innerHTML = '<div class="deep-dash-cat-grid">' + cardsHtml + '</div>';
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -874,15 +767,6 @@
     var overlayHtml = '<div class="deep-dash-overlay" id="deep-dash-overlay"></div>';
     var contentHtml = '<div class="deep-dash-content" id="deep-dash-content">' +
       '<div id="deep-dash-header-area"></div>' +
-      '<div class="deep-dash-toolbar">' +
-        '<div class="deep-dash-search-wrap">' + NAV_ICON_SEARCH +
-          '<input type="text" class="deep-dash-search" id="deep-dash-search-input" placeholder="Поиск тестов..." />' +
-        '</div>' +
-        '<div class="deep-dash-tabs">' +
-          '<button class="deep-dash-tab" data-tab="categories">Категории</button>' +
-          '<button class="deep-dash-tab" data-tab="alphabetical">А — Я</button>' +
-        '</div>' +
-      '</div>' +
       '<div id="deep-dash-grid-area"></div>' +
     '</div>';
 
@@ -890,75 +774,20 @@
     container.innerHTML = navHtml + burgerHtml + overlayHtml + contentHtml;
 
     /* ── Attach events ONCE — never re-stacked ── */
-    var searchInput = document.getElementById("deep-dash-search-input");
-    searchInput.addEventListener("input", function(e) {
-      dashboardState.searchQuery = e.target.value;
-      updateDashboardGrid();
-    });
-
     container.addEventListener("click", function(e) {
-      var navItem = e.target.closest("[data-nav]");
-      if (navItem) {
-        var targetCat = navItem.getAttribute("data-nav");
-        if (targetCat !== "home") return;
-        e.preventDefault();
-        
-        // Handle accordion toggle FIRST if it's a category
-        var group = navItem.closest(".deep-dash-nav-group");
-        if (group) {
-          var wasExpanded = group.classList.contains("expanded");
-          // Close others
-          var allGroups = document.querySelectorAll(".deep-dash-nav-group");
-          for (var i = 0; i < allGroups.length; i++) {
-            allGroups[i].classList.remove("expanded");
-          }
-          // Toggle this one
-          if (!wasExpanded) group.classList.add("expanded");
-        }
-        
-        dashboardState.activeCategoryId = targetCat === "home" ? null : targetCat;
-        if (dashboardState.activeCategoryId) window.DEEP_CATEGORY_DATA = reg[dashboardState.activeCategoryId];
-        else window.DEEP_CATEGORY_DATA = null;
-        dashboardState.searchQuery = "";
-        searchInput.value = "";
-        dashboardState.mode = "categories";
-        syncURLState();
-        /* FIXED: just update grid + nav states, do NOT rebuild shell */
-        updateDashboardGrid();
-        
-        if (!targetCat || targetCat === "home") {
-          document.getElementById("deep-dash-nav").classList.remove("open");
-          document.getElementById("deep-dash-overlay").classList.remove("open");
-        }
-        return;
-      }
-
       var subItem = e.target.closest("[data-scroll-to]");
-      if (subItem) {
-        e.preventDefault();
-        
-        document.querySelectorAll(".deep-dash-nav-sub-item").forEach(function(el) { el.classList.remove("active"); });
-        subItem.classList.add("active");
+      if (!subItem) return;
+      e.preventDefault();
 
-        if (dashboardState.mode !== "categories") {
-          dashboardState.mode = "categories";
-          updateDashboardGrid(); // Must render the anchors before scrolling
-        }
+      document.querySelectorAll(".deep-dash-nav-sub-item").forEach(function(el) { el.classList.remove("active"); });
+      subItem.classList.add("active");
 
-        var targetId = subItem.getAttribute("data-scroll-to");
-        var targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        document.getElementById("deep-dash-nav").classList.remove("open");
-        document.getElementById("deep-dash-overlay").classList.remove("open");
-        return;
-      }
-      var tabBtn = e.target.closest("[data-tab]");
-      if (tabBtn) {
-        dashboardState.mode = tabBtn.getAttribute("data-tab");
-        updateDashboardGrid();
-      }
+      var targetId = subItem.getAttribute("data-scroll-to");
+      var targetEl = document.getElementById(targetId);
+      if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      document.getElementById("deep-dash-nav").classList.remove("open");
+      document.getElementById("deep-dash-overlay").classList.remove("open");
     });
 
     var mBurger = document.getElementById("deep-dash-burger");
