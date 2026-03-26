@@ -571,21 +571,8 @@
   /* SPA state — single instance, never re-created */
   var dashboardState = {
     activeCategoryId: null,
-    searchQuery: "",
-    mode: "categories",
     initialized: false
   };
-
-  function syncURLState() {
-    if (!history.pushState) return;
-    var url = new URL(window.location);
-    if (dashboardState.activeCategoryId) {
-      url.searchParams.set("category", dashboardState.activeCategoryId);
-    } else {
-      url.searchParams.delete("category");
-    }
-    history.pushState(null, "", url.toString());
-  }
 
   function getStatusBadge(testId) {
     try {
