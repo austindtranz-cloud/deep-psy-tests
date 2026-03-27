@@ -1,6 +1,56 @@
 /* ═══════════════════════════════════════════
-   DEEP PSY TESTS — DESIGN SYSTEM v4
+   DEEP PSY TESTS — DESIGN SYSTEM v4.1
    Core visual layer (shared across all pages)
+   ═══════════════════════════════════════════
+
+   TABLE OF CONTENTS
+   ─────────────────
+   §1  FOUNDATIONS
+       1.1  Google Fonts ................. @import
+       1.2  Reset / Tilda override ....... html, body, .t-rec
+       1.3  Design Tokens ................ :root (--dt-*)
+       1.4  Page Container ............... .deep-page-container
+       1.5  Typography ................... headings, kicker
+
+   §2  COMPONENTS
+       2.1  Grid ......................... .deep-tests-grid
+       2.2  Card (Matilda Hybrid) ........ .deep-tests-card
+       2.3  Pills / Badges ............... .deep-tests-pill
+       2.4  Buttons ...................... .deep-btn
+       2.5  Subcategory Sections ......... .deep-subcategory
+
+   §3  SIDEBAR & NAVIGATION
+       3.1  Sidebar Toggle Button ........ .deep-dash-burger
+       3.2  Sidebar Glassmorphism ........ .deep-tests-sidebar
+       3.3  Left Sidebar (Matilda) ....... .deep-dash-nav
+       3.4  Nav Items / Accordion ........ .deep-dash-nav-item
+       3.5  Sub-items Drawer ............. .deep-dash-nav-sub
+
+   §4  MODAL & OVERLAY
+       4.1  Modal Overlay ................ .deep-tests-overlay
+       4.2  Quiz Screens ................. .deep-tests-screen
+
+   §5  QUIZ
+       5.1  Progress Bar ................. .progress-bar
+       5.2  Quiz Options ................. .deep-tests-option
+       5.3  Results / Score Cards ........ .deep-tests-score-card
+       5.4  Accordion (interpretations) .. .deep-tests-accordion
+       5.5  Lead Capture Form ............ .deep-lead-form
+
+   §6  DASHBOARD
+       6.1  Content Area ................. .deep-dash-content
+       6.2  Toolbar (search + tabs) ...... .deep-dash-toolbar
+       6.3  Alphabetical (А-Я) List ...... .deep-alpha-section
+       6.4  Letter Quick-Picker .......... .deep-letter-popup
+       6.5  Tags 3-Column Grid .......... .deep-tags-grid
+       6.6  Category Overview Cards ...... .deep-dash-cat-card
+       6.7  Info Badge / Tooltip ......... .deep-card-info-badge
+
+   §7  RESPONSIVE
+       7.1  Mobile Menu .................. .deep-dash-burger
+       7.2  Mobile Overlay ............... @media (max-width: 900px)
+       7.3  Mobile Critical .............. @media (max-width: 639px)
+
    ═══════════════════════════════════════════ */
 
 /* Google Fonts */
