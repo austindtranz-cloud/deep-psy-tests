@@ -133,6 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 <!-- Базы данных тестов -->
 <script src="data/test_registry.js"></script>
-<script src="data/smil_566.js"></script>
-<script src="data/leongard.js"></script>
+<script src="data/tests/smil_566.js"></script>
+<script src="data/tests/leongard.js"></script>
 
