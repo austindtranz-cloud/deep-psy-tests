@@ -64,6 +64,20 @@
       return this.state.sessions[testId];
     },
 
+    /**
+     * Инкапсулированная запись ответа.
+     * Единая точка мутации — вместо прямого session.answers[qId] = value
+     * из внешних модулей. Автоматически сохраняет состояние.
+     * @param {string} testId - ID теста
+     * @param {string} qId   - ID вопроса
+     * @param {*}      value - Значение ответа (score / value / index)
+     */
+    setAnswer: function (testId, qId, value) {
+      var session = this.ensureSession(testId);
+      session.answers[qId] = value;
+      this.saveState();
+    },
+
     getActiveTest: function () {
       if (!this.state.activeTestId) return null;
       var reg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || window.DEEP_TEST_REGISTRY || {};

@@ -306,4 +306,8 @@ window.DEEP_MASTER_REGISTRY = {
       });
     });
   });
+
+  /* Уведомляем все модули, что реестр загружен. 
+     Используется вместо setInterval-поллинга в engine.js */
+  document.dispatchEvent(new CustomEvent('deep-registry-ready'));
 })();

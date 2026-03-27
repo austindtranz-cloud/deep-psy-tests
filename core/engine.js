@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════
-   DEEP PSY TESTS — ENGINE v15.0 (Modular)
-   Refactored monolith into specialized modules.
+   DEEP PSY TESTS — ENGINE v16 (Modular)
+   Orchestrator: init, events, actions.
    ═══════════════════════════════════════════ */
 (function () {
   "use strict";
@@ -68,14 +68,18 @@
       var testId = urlParams.get("openTest");
       if (!testId) return;
 
-      var attempts = 0;
-      var interval = setInterval(function() {
-        var reg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || window.DEEP_TEST_REGISTRY || {};
-        if (reg[testId] || ++attempts > 20) {
-          clearInterval(interval);
-          if (reg[testId]) window.DEEP_CORE.openTest(testId);
-        }
-      }, 100);
+      /* Вместо setInterval-поллинга слушаем CustomEvent от test_registry.js.
+         Если реестр уже загружен — открываем сразу. */
+      var reg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || {};
+      if (reg[testId]) {
+        window.DEEP_CORE.openTest(testId);
+      } else {
+        document.addEventListener('deep-registry-ready', function onReady() {
+          document.removeEventListener('deep-registry-ready', onReady);
+          var r = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || {};
+          if (r[testId]) window.DEEP_CORE.openTest(testId);
+        });
+      }
     },
 
     openTest: function (testId) {
@@ -137,15 +141,17 @@
         var idx = parseInt(btn.getAttribute("data-index"));
         var q = test.questions[session.currentIndex];
         var opt = q.options[idx];
-        session.answers[q.id] = (opt.score !== undefined ? opt.score : (opt.value !== undefined ? opt.value : idx));
-        window.DEEP_QUIZ.saveState();
-        
-        // Auto-advance with race-condition check
-        if (this._advancing) return;
-        this._advancing = true;
+        var value = (opt.score !== undefined ? opt.score : (opt.value !== undefined ? opt.value : idx));
+
+        /* Инкапсулированная запись ответа через DEEP_QUIZ.setAnswer() */
+        window.DEEP_QUIZ.setAnswer(testId, q.id, value);
+
+        /* Блокируем кнопки вариантов на время перехода (вместо _advancing flag) */
+        var options = document.querySelectorAll('.deep-tests-option');
+        options.forEach(function(o) { o.disabled = true; });
         setTimeout(function() {
+          options.forEach(function(o) { o.disabled = false; });
           window.DEEP_CORE.handleAction("next");
-          window.DEEP_CORE._advancing = false;
         }, 150);
       } else if (action === "next") {
         window.DEEP_QUIZ.advanceQuiz(session);
