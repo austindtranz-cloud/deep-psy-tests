@@ -19,11 +19,11 @@
       { type: "script", url: baseUrl + "core/engine_results.js" + v },
       { type: "script", url: baseUrl + "core/sidebar.js" + v },
       { type: "script", url: baseUrl + "core/success_modal.js" + v },
-      { type: "script", url: baseUrl + "data/smil_566.js" + v },
-      { type: "script", url: baseUrl + "data/leongard.js" + v },
-      { type: "script", url: baseUrl + "data/phq9.js" + v },
-      { type: "script", url: baseUrl + "data/gad7.js" + v },
-      { type: "script", url: baseUrl + "data/pss10.js" + v }
+      { type: "script", url: baseUrl + "data/tests/smil_566.js" + v },
+      { type: "script", url: baseUrl + "data/tests/leongard.js" + v },
+      { type: "script", url: baseUrl + "data/tests/phq9.js" + v },
+      { type: "script", url: baseUrl + "data/tests/gad7.js" + v },
+      { type: "script", url: baseUrl + "data/tests/pss10.js" + v }
     ];
 
     resources.forEach(function(res) {
