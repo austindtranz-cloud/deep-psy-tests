@@ -1,11 +1,13 @@
 # Handoff: Development Agent
 
 ## Current Context
-The agent has successfully set up a standalone worktree at `_worktrees/agent-dev-main` on branch `agent/dev-main-2026-03-28`. 
-This branch is isolated from other agents' worktrees, ensuring safe parallel development without destructive overlaps.
+Ветка `agent/dev-main-2026-03-28` в `_worktrees/agent-dev-main`.
+Проект: Интеграция тестов категории "Исследование личности".
+Тест `pid5bf` интегрирован, добавлен скрипт для его загрузки в `Алиас/js.txt`.
 
 ## Next steps
-- The agent will continue their main workload starting from this worktree.
+- Интеграция `ipip16.js`, `hexaco60.js`, `bis11.js`, `oejts.js`, `dsq40.js`, `opd_sqs.js`.
 
-## Open issues
-None yet.
+## Open issues / Dependencies
+- **Зависимость от агента test-research**: Нужны структуры данных JSON (вопросы, шкалы, варианты ответов) для `ipip16.js`, `hexaco60.js`, `bis11.js`, `oejts.js`, `dsq40.js`, `opd_sqs.js`.
+Без них dev-агент не может полноценно завершить Шаги 2 и 3 плана.
