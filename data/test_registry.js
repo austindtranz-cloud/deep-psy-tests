@@ -9,47 +9,52 @@ window.DEEP_MASTER_REGISTRY = {
   "personality": {
     categoryId: "personality",
     categoryTitle: "Исследование личности",
-    categoryDescription: "Комплексная оценка структуры личности, акцентуаций, темперамента, самооценки и личностных черт.",
+    categoryDescription: "Комплексная оценка структуры личности, акцентуаций, темперамента, самооценки, мотивации и личностных черт.",
     subcategories: [
       {
-        subId: "structure", subTitle: "Структура личности", tests: [
-          { id: "personality_smil_566", title: "СМИЛ (MMPI-2) — 566 вопросов", measures: "Многоаспектная структура личности", items: "566", time: "40-60 минут", legalStatus: "restricted", isRunnable: true },
-          { id: "16pf", title: "16PF (Кеттелл)", measures: "16 личностных факторов", items: "187", time: "35-50 минут", legalStatus: "proprietary", replacement: "IPIP 16PF", isRunnable: false },
-          { id: "neopir", title: "NEO-PI-R / NEO-FFI", measures: "Большая пятерка", items: "60 или 240", time: "15-45 минут", legalStatus: "proprietary", replacement: "IPIP-NEO", isRunnable: false }
+        subId: "clinical_screening", subTitle: "Клинический скрининг", tests: [
+          { id: "ipip_dsm5", title: "Теневая сторона личности", shortTitle: "IPIP-DSM5", measures: "5 доменов дезадаптации: негативная аффективность, отстранённость, антагонизм, расторможенность, психотизм", items: "25", time: "3-4 минуты", legalStatus: "public", isRunnable: false, replacement: "MMPI-2 / СМИЛ", titleEn: "IPIP-DSM-5 Proxy", authors: "L. Goldberg (IPIP)", marketingTitle: "Теневая сторона личности: Скрининг уязвимостей" }
+        ]
+      },
+      {
+        subId: "fundamental_traits", subTitle: "Фундаментальные черты (Big Five)", tests: [
+          { id: "ipip50", title: "ДНК Характера: Модель Большой Пятерки", shortTitle: "IPIP-50", measures: "OCEAN: Открытость, Добросовестность, Экстраверсия, Доброжелательность, Нейротизм", items: "50", time: "5-7 минут", legalStatus: "public", isRunnable: false, replacement: "NEO-PI-R / NEO-FFI", titleEn: "IPIP-50 Big Five Factor Markers", authors: "L. Goldberg (IPIP)", marketingTitle: "ДНК Характера: Модель Большой Пятерки" },
+          { id: "tipi", title: "TIPI-RU (Большая Пятёрка — экспресс)", shortTitle: "TIPI", measures: "5 факторов личности (экспресс)", items: "10", time: "2 минуты", legalStatus: "public", isRunnable: true }
+        ]
+      },
+      {
+        subId: "profiling", subTitle: "Профилирование и Soft-Skills", tests: [
+          { id: "ipip16", title: "Матрица 16 граней: Карьерный профиль", shortTitle: "IPIP-16", measures: "16 факторов характера: Теплота, Логика, Смелость, Доминантность, Тревожность и др.", items: "32", time: "3-4 минуты", legalStatus: "public", isRunnable: false, replacement: "16PF (Кеттелл)", titleEn: "IPIP-16 Short Proxy", authors: "L. Goldberg (IPIP)", marketingTitle: "Матрица 16 граней: Карьерный и бизнес-профиль" }
         ]
       },
       {
         subId: "accentuations", subTitle: "Акцентуации", tests: [
-          { id: "leongard", title: "Опросник Леонгарда–Шмишека", measures: "Типы акцентуаций характера", items: "88", time: "15-20 минут", legalStatus: "public", isRunnable: true },
-          { id: "pdo", title: "ПДО (Личко)", measures: "Типы акцентуаций", items: "143", time: "30-40 минут", legalStatus: "public", isRunnable: true }
+          { id: "leongard", title: "Карта скрытых конфликтов (Леонгард–Шмишек)", shortTitle: "ЛШ-88", measures: "10 типов акцентуаций характера", items: "88", time: "5-7 минут", legalStatus: "public", isRunnable: true, authors: "К. Леонгард, Н. Шмишек (1970)", titleEn: "Schmieschek Questionnaire", marketingTitle: "Карта скрытых конфликтов: Твои точки срыва" },
+          { id: "lichko_proxy", title: "Матрица Радикалов (IPIP-Lichko Proxy)", shortTitle: "ЛИЧКО", measures: "11 психологических радикалов: шизоидный, эпилептоидный, истероидный и др.", items: "33", time: "3-4 минуты", legalStatus: "public", isRunnable: false, replacement: "ПДО (Личко)", titleEn: "IPIP-Lichko Adult Character Style Matrix", authors: "Адаптация A.E. Личко для B2C", marketingTitle: "Матрица Радикалов: Ваш истинный психологический тип" },
+          { id: "sd3", title: "Dark Triad (SD3)", shortTitle: "SD3", measures: "Макиавеллизм, нарциссизм, психопатия", items: "27", time: "5-10 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
         subId: "temperament", subTitle: "Темперамент", tests: [
-          { id: "epiq", title: "EPI / EPQ (Айзенк)", measures: "Экстраверсия, нейротизм, психотизм", items: "от 57 до 90", time: "10-20 минут", legalStatus: "public", isRunnable: true }
+          { id: "ipip_pen", title: "Биологический код: Карта темперамента", shortTitle: "PEN-24", measures: "Экстраверсия, Нейротизм, Психотизм + Шкала лжи → Квадрат Галена-Айзенка", items: "24", time: "1.5-2 минуты", legalStatus: "public", isRunnable: false, replacement: "EPQ / EPI (Айзенк)", titleEn: "IPIP-PEN B2C Proxy", authors: "На базе H. Eysenck", marketingTitle: "Биологический код: Карта вашего темперамента" },
+          { id: "pavlov_proxy", title: "Neuro-Продуктивность: Запас прочности", shortTitle: "НС-21", measures: "Сила возбуждения, Сила торможения, Подвижность нервной системы", items: "21", time: "2-3 минуты", legalStatus: "public", isRunnable: false, replacement: "FCB-TI (Стреляу)", titleEn: "IPIP-Pavlovian Temperament Proxy", authors: "На базе Я. Стреляу / И.П. Павлова", marketingTitle: "Neuro-Продуктивность: Ваш запас прочности" }
         ]
       },
       {
-        subId: "autonomy", subTitle: "Автономия", tests: [
-          { id: "bpns", title: "Basic Psychological Needs Scale", measures: "Удовлетворенность базовых потребностей", items: "21", time: "5-10 минут", legalStatus: "public", isRunnable: true }
+        subId: "autonomy", subTitle: "Автономия и Сепарация", tests: [
+          { id: "separation_proxy", title: "Индекс Взрослости: Тест на сепарацию", shortTitle: "СЕП-20", measures: "4 вектора независимости: эмоциональная, конфликтная, функциональная, ценностная", items: "20", time: "2-3 минуты", legalStatus: "public", isRunnable: false, replacement: "PSI (Hoffman)", titleEn: "B2C Separation Proxy Index", authors: "На базе J. Hoffman (1984)", marketingTitle: "Индекс Взрослости: Тест на психологическую сепарацию" }
+        ]
+      },
+      {
+        subId: "motivation", subTitle: "Мотивация и Смысл", tests: [
+          { id: "bpnsfs", title: "Драйверы психики: Куда утекает энергия?", shortTitle: "БПНС-24", measures: "3 оси SDT: Автономия, Компетентность, Связанность (удовлетворение + фрустрация)", items: "24", time: "2-3 минуты", legalStatus: "public", isRunnable: false, authors: "E. Deci & R. Ryan (SDT)", titleEn: "BPNSFS (Basic Psychological Need Satisfaction & Frustration Scale)", marketingTitle: "Драйверы психики: Куда утекает ваша энергия?" }
         ]
       },
       {
         subId: "selfesteem", subTitle: "Самооценка", tests: [
-          { id: "rosenberg", title: "Шкала самоуважения Розенберга (RSES)", measures: "Глобальная самооценка", items: "10", time: "2-5 минут", legalStatus: "public", isRunnable: true }
-        ]
-      },
-      {
-        subId: "traits", subTitle: "Личностные черты", tests: [
-          { id: "tipi", title: "TIPI-RU (Большая Пятёрка — экспресс)", measures: "5 факторов личности", items: "10", time: "2 минуты", legalStatus: "public", isRunnable: true },
-          { id: "pid5bf", title: "PID-5-BF (DSM-5)", measures: "5 доменов патологических черт", items: "25", time: "5 минут", legalStatus: "public", isRunnable: true },
-          { id: "sd3", title: "Dark Triad (SD3)", measures: "Макиавеллизм, нарциссизм, психопатия", items: "27", time: "5-10 минут", legalStatus: "public", isRunnable: true }
-        ]
-      },
-      {
-        subId: "jungian", subTitle: "Юнгианские / психоаналитические", tests: [
-          { id: "mbti", title: "MBTI", measures: "Типология Юнга", items: "93 и более", time: "20-30 минут", legalStatus: "proprietary", replacement: "Open Jungian Type", isRunnable: false },
-          { id: "dsq", title: "DSQ-40", measures: "Стили психологических защит", items: "40", time: "10-15 минут", legalStatus: "public", isRunnable: true }
+          { id: "rosenberg", title: "Индекс Самоценности (Розенберг)", shortTitle: "RSES", measures: "Глобальная базовая самооценка, внутренний критик", items: "10", time: "<1 минуты", legalStatus: "public", isRunnable: true, authors: "Morris Rosenberg (1965)", titleEn: "Rosenberg Self-Esteem Scale (RSES)", marketingTitle: "Индекс Самоценности: Насколько силён ваш Внутренний Критик?" },
+          { id: "coopersmith_proxy", title: "Колесо Уверенности: Главный комплекс", shortTitle: "КУП-20", measures: "Самооценка в 4 контекстах: Профессия, Социум, Семья, Тело", items: "20", time: "2 минуты", legalStatus: "public", isRunnable: false, replacement: "Coopersmith SEI", titleEn: "IPIP-Multidimensional Self-Esteem B2C Proxy", authors: "На базе Coopersmith, IPIP", marketingTitle: "Колесо Уверенности: Где живёт ваш главный комплекс?" },
+          { id: "pid5bf", title: "PID-5-BF (DSM-5 — экспресс)", shortTitle: "PID5", measures: "5 доменов патологических черт", items: "25", time: "5 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -57,22 +62,24 @@ window.DEEP_MASTER_REGISTRY = {
   "mental_functions": {
     categoryId: "mental_functions",
     categoryTitle: "Психические функции",
-    categoryDescription: "Оценка эмоционального состояния, волевой регуляции, мотивации, когнитивных функций и восприятия.",
+    categoryDescription: "Сборник тестов для оценки когнитивных способностей, памяти, внимания, интеллекта и мышления.",
     subcategories: [
       {
-        subId: "emotions", subTitle: "Эмоции", tests: [
-          { id: "dass21", title: "DASS-21", measures: "Депрессия, тревога, стресс", items: "21", time: "5-10 минут", legalStatus: "public", isRunnable: true }
+        subId: "cognition", subTitle: "Когнитивные функции", tests: [
+          { id: "schulte", title: "Таблицы Шульте", measures: "Устойчивость внимания и темп деятельности", items: "5 таблиц", time: "5-10 минут", legalStatus: "public", isRunnable: true },
+          { id: "stroop", title: "Тест Струпа", measures: "Когнитивная гибкость и помехоустойчивость", items: "100 стимулов", time: "5 минут", legalStatus: "public", isRunnable: true },
+          { id: "bourdon", title: "Корректурная проба (Бурдон)", measures: "Концентрация внимания", items: "1 страница", time: "10 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "will_motivation", subTitle: "Воля и мотивация", tests: [
-          { id: "morosanova", title: "Шкала саморегуляции (Моросанова)", measures: "Стиль саморегуляции", items: "46", time: "15-20 минут", legalStatus: "public", isRunnable: true },
-          { id: "gse", title: "General Self-Efficacy Scale (Schwarzer)", measures: "Самоэффективность", items: "10", time: "3-5 минут", legalStatus: "public", isRunnable: true }
+        subId: "intelligence", subTitle: "Интеллект", tests: [
+          { id: "raven", title: "Прогрессивные матрицы Равена", measures: "Невербальный интеллект (g-фактор)", items: "60", time: "20-40 минут", legalStatus: "proprietary", isRunnable: false },
+          { id: "cfit", title: "CFIT (Тест Кеттелла)", measures: "Свободный от культуры интеллект", items: "50", time: "12-15 минут", legalStatus: "proprietary", isRunnable: false }
         ]
       },
       {
-        subId: "perception", subTitle: "Восприятие", tests: [
-          { id: "das_cog", title: "DAS (когнитивные искажения)", measures: "Дисфункциональные установки", items: "40", time: "15-20 минут", legalStatus: "public", isRunnable: true }
+        subId: "memory", subTitle: "Память", tests: [
+          { id: "luria_memory", title: "Методика Лурия '10 слов'", measures: "Объем кратковременной и долговременной памяти", items: "10 слов", time: "10 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -80,22 +87,25 @@ window.DEEP_MASTER_REGISTRY = {
   "adaptation": {
     categoryId: "adaptation",
     categoryTitle: "Адаптация и дезадаптация",
-    categoryDescription: "Быстрый скрининг выгорания, оценка стресса и копинг-стратегий, выявление деструктивных паттернов поведения.",
+    categoryDescription: "Скрининг стрессоустойчивости, выгорания и паттернов совладания с трудностями.",
     subcategories: [
       {
-        subId: "burnout", subTitle: "Быстрый скрининг выгорания", tests: [
-          { id: "cbi", title: "CBI (Copenhagen Burnout Inventory)", measures: "Персональное / рабочее / клиентское выгорание", items: "19", time: "5-10 минут", legalStatus: "public", isRunnable: true }
+        subId: "stress", subTitle: "Стресс", tests: [
+          { id: "holmes_rahe", title: "Шкала стрессовых событий Холмса-Рея", measures: "Уровень стрессовой нагрузки", items: "43", time: "5 минут", legalStatus: "public", isRunnable: true },
+          { id: "pss10", title: "PSS-10 (Perceived Stress Scale)", measures: "Воспринимаемый стресс", items: "10", time: "3-5 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "stress_coping", subTitle: "Стресс и копинги", tests: [
-          { id: "pss", title: "PSS (Perceived Stress Scale)", measures: "Воспринимаемый стресс", items: "10", time: "3-5 минут", legalStatus: "public", isRunnable: true },
-          { id: "cope", title: "COPE / Brief COPE", measures: "Стратегии совладания", items: "28", time: "10-15 минут", legalStatus: "public", isRunnable: true }
+        subId: "burnout", subTitle: "Выгорание", tests: [
+          { id: "cbi", title: "Копенгагенский опросник выгорания (CBI)", measures: "Личное, рабочее и клиентское выгорание", items: "19", time: "5-7 минут", legalStatus: "public", isRunnable: true },
+          { id: "uwes", title: "Шкала увлеченности работой (UWES)", measures: "Профессиональная вовлеченность", items: "17", time: "5 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "destructors", subTitle: "Деструкторы", tests: [
-          { id: "bpaq", title: "Buss–Perry Aggression Questionnaire", measures: "Агрессия (физическая, вербальная, гнев, враждебность)", items: "29", time: "7-10 минут", legalStatus: "public", isRunnable: true }
+        subId: "coping", subTitle: "Копинг-стратегии", tests: [
+          { id: "cope", title: "COPE / Brief-COPE", measures: "Стратегии совладания со стрессом", items: "28", time: "5-10 минут", legalStatus: "public", isRunnable: true },
+          { id: "wocq", title: "Опросник способов совладания (Lazarus)", measures: "Копинг-механизмы", items: "50", time: "10-15 минут", legalStatus: "public", isRunnable: true },
+          { id: "resilience14", title: "RS-14 (Шкала жизнестойкости)", measures: "Индивидуальная жизнестойкость", items: "14", time: "5 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -103,86 +113,68 @@ window.DEEP_MASTER_REGISTRY = {
   "psychiatry": {
     categoryId: "psychiatry",
     categoryTitle: "Психиатрия",
-    categoryDescription: "Скрининговые и клинические инструменты для оценки тревожных, депрессивных, личностных расстройств, зависимостей и психотических спектров.",
+    categoryDescription: "Клинические скрининги тревожных, депрессивных, личностных расстройств и зависимостей.",
     subcategories: [
       {
-        subId: "anxiety_depression_fast", subTitle: "Быстрый скрининг тревоги и депрессии", tests: [
+        subId: "anxiety_depression", subTitle: "Тревога и депрессия", tests: [
           { id: "phq9", title: "PHQ-9", measures: "Депрессия (скрининг)", items: "9", time: "3-5 минут", legalStatus: "public", isRunnable: true },
-          { id: "gad7", title: "GAD-7", measures: "Генерализованная тревога", items: "7", time: "2-3 минуты", legalStatus: "public", isRunnable: true }
-        ]
-      },
-      {
-        subId: "mood", subTitle: "Настроение (депрессия, БАР)", tests: [
-          { id: "mdq", title: "MDQ", measures: "Скрининг биполярного расстройства", items: "13 и более", time: "5 минут", legalStatus: "public", isRunnable: true }
-        ]
-      },
-      {
-        subId: "personality_disorders", subTitle: "Расстройства личности", tests: [
-          { id: "pid5", title: "PID-5 (полный)", measures: "Патологические черты (DSM-5)", items: "220", time: "30-40 минут", legalStatus: "public", isRunnable: true }
+          { id: "gad7", title: "GAD-7", measures: "Генерализованная тревога", items: "7", time: "2-3 минуты", legalStatus: "public", isRunnable: true },
+          { id: "mdq", title: "MDQ", measures: "Скрининг биполярного расстройства", items: "13+", time: "5 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
         subId: "addictions", subTitle: "Зависимости", tests: [
           { id: "audit", title: "AUDIT", measures: "Алкогольная зависимость", items: "10", time: "3 минуты", legalStatus: "public", isRunnable: true },
-          { id: "dast", title: "DAST", measures: "Наркотическая зависимость", items: "20", time: "5 минут", legalStatus: "public", isRunnable: true }
+          { id: "dast", title: "DAST", measures: "Наркотическая зависимость", items: "10-20", time: "5 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "eating", subTitle: "РПП", tests: [
+        subId: "eating_disorders", subTitle: "РПП", tests: [
           { id: "eat26", title: "EAT-26", measures: "Расстройства пищевого поведения", items: "26", time: "5-10 минут", legalStatus: "public", isRunnable: true },
           { id: "scoff", title: "SCOFF", measures: "Экспресс-скрининг РПП", items: "5", time: "1-2 минуты", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "asd", subTitle: "РАС", tests: [
-          { id: "aq", title: "AQ (Autism Spectrum Quotient)", measures: "Аутистические черты", items: "50", time: "10-15 минут", legalStatus: "public", isRunnable: true },
-          { id: "raadsr", title: "RAADS-R", measures: "РАС у взрослых", items: "80", time: "15-20 минут", legalStatus: "public", isRunnable: true }
-        ]
-      },
-      {
-        subId: "psychotic", subTitle: "Психотические спектры", tests: [
-          { id: "spq", title: "SPQ", measures: "Шизотипические черты", items: "74", time: "15-20 минут", legalStatus: "public", isRunnable: true },
-          { id: "pq16", title: "PQ-16", measures: "Продромальные симптомы", items: "16", time: "3-5 минут", legalStatus: "public", isRunnable: true }
+        subId: "neurodiversity", subTitle: "Нейроотличнось", tests: [
+          { id: "aq", title: "Опросник аутистического спектра (AQ)", measures: "Аутичные черты личности", items: "50", time: "10-15 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
   },
   "relationships": {
     categoryId: "relationships",
-    categoryTitle: "Межличностные отношения",
-    categoryDescription: "Диагностика привязанности, семейных систем и деструктивных паттернов в близких отношениях.",
+    categoryTitle: "Межличностные отношения и сексуальность",
+    categoryDescription: "Диагностика привязанности, семейных систем и сексуальной сферы.",
     subcategories: [
       {
         subId: "attachment", subTitle: "Привязанность", tests: [
-          { id: "ecrr", title: "ECR-R", measures: "Тревожность и избегание в привязанности", items: "36", time: "10-15 минут", legalStatus: "public", isRunnable: true }
+          { id: "ecrr", title: "ECR-R", measures: "Тревожность и избегание в привязанности", items: "36", time: "10 минут", legalStatus: "public", isRunnable: true },
+          { id: "ras", title: "RAS (Relationship Assessment Scale)", measures: "Удовлетворенность отношениями", items: "7", time: "2-3 минуты", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "destructive", subTitle: "Деструктивные отношения", tests: [
-          { id: "abi", title: "ABI (Abusive Behavior Inventory)", measures: "Абьюзивное поведение", items: "30", time: "10 минут", legalStatus: "public", isRunnable: true }
+        subId: "sexuality", subTitle: "Сексуальная сфера", tests: [
+          { id: "asex", title: "ASEX (Arizona Sexual Experience Scale)", measures: "Сексуальная дисфункция", items: "5", time: "2 минуты", legalStatus: "public", isRunnable: true },
+          { id: "fsfi", title: "FSFI (Female Sexual Function Index)", measures: "Сексуальное функционирование (жен)", items: "19", time: "7 минут", legalStatus: "public", isRunnable: true },
+          { id: "iief", title: "IIEF (International Index of Erectile Function)", measures: "Эректильная функция (муж)", items: "15", time: "5 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
   },
   "career": {
     categoryId: "career",
-    categoryTitle: "Карьера",
-    categoryDescription: "Профориентация, карьерные перспективы, лидерство, управленческие кризисы, синдром самозванца и профессиональная идентичность.",
+    categoryTitle: "Индивидуальное карьерное консультирование",
+    categoryDescription: "Профориентация, карьерная адаптивность и планирование развития.",
     subcategories: [
       {
-        subId: "prospects", subTitle: "Карьерные перспективы", tests: [
-          { id: "caas", title: "CAAS (Career Adapt-Abilities Scale)", measures: "Карьерная адаптивность", items: "24", time: "5-10 минут", legalStatus: "public", isRunnable: true },
-          { id: "cdse", title: "CDSE", measures: "Самоэффективность в карьерных решениях", items: "25", time: "5-10 минут", legalStatus: "public", isRunnable: true }
+        subId: "vocation", subTitle: "Профориентация", tests: [
+          { id: "holland", title: "Опросник Холланда (RIASEC)", measures: "Профессиональные типы личности", items: "42 пары", time: "10 минут", legalStatus: "public", isRunnable: true },
+          { id: "schein_anchors", title: "Якоря карьеры (Э. Шейн)", measures: "Профессиональные ценностные ориентации", items: "41", time: "15 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "leadership", subTitle: "Лидерство / Кризисы лидерства", tests: [
-          { id: "lses", title: "LSES", measures: "Самоэффективность лидера", items: "~20", time: "5-10 минут", legalStatus: "public", isRunnable: true }
-        ]
-      },
-      {
-        subId: "impostor", subTitle: "Синдром самозванца", tests: [
-          { id: "cips", title: "CIPS (Clance Impostor Phenomenon Scale)", measures: "Выраженность синдрома самозванца", items: "20", time: "5-10 минут", legalStatus: "public", isRunnable: true }
+        subId: "adaptability", subTitle: "Карьерная адаптивность", tests: [
+          { id: "savickas", title: "CAAS (Career Adapt-Abilities Scale)", measures: "Готовность к изменениям в карьере", items: "24", time: "10 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -190,16 +182,23 @@ window.DEEP_MASTER_REGISTRY = {
   "team": {
     categoryId: "team",
     categoryTitle: "Командное консультирование",
-    categoryDescription: "Оценка софт-скиллов, стилей поведения в команде, сильных/слабых сторон и конфликтных стратегий.",
+    categoryDescription: "Диагностика группового взаимодействия, сильных сторон и командного климата.",
     subcategories: [
       {
-        subId: "strengths", subTitle: "Сильные / слабые стороны", tests: [
-          { id: "via", title: "VIA Character Strengths Survey", measures: "24 черты характера", items: "120", time: "15-20 минут", legalStatus: "public", isRunnable: true }
+        subId: "team_dynamics", subTitle: "Командная динамика", tests: [
+          { id: "belbin", title: "Командные роли Белбина", measures: "Групповые роли по Белбину", items: "7 блоков", time: "20 минут", legalStatus: "proprietary", isRunnable: false },
+          { id: "wleis", title: "WLEIS (Emotion Intelligence)", measures: "Эмоциональный интеллект лидера/команды", items: "16", time: "5 минут", legalStatus: "public", isRunnable: true }
+        ]
+      },
+      {
+        subId: "strengths", subTitle: "Сильные стороны", tests: [
+          { id: "via_character", title: "VIA Character Strengths", measures: "Черты характера (сильные стороны)", items: "120", time: "20-30 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
         subId: "conflict", subTitle: "Конфликтология", tests: [
-          { id: "roci2", title: "ROCI-II (Rahim)", measures: "Организационный конфликт", items: "28", time: "7-10 минут", legalStatus: "public", isRunnable: true }
+          { id: "tki", title: "Тест Томаса–Килманна (TKI)", measures: "Стили поведения в конфликте", items: "30 пар", time: "10 минут", legalStatus: "proprietary", replacement: "ROCI-II", isRunnable: false },
+          { id: "roci2", title: "ROCI-II (Rahim)", measures: "Межличностные стили в конфликте", items: "28", time: "7 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -207,16 +206,18 @@ window.DEEP_MASTER_REGISTRY = {
   "organization": {
     categoryId: "organization",
     categoryTitle: "Организационное консультирование",
-    categoryDescription: "Оценка организационной культуры, климата, ролевых конфликтов и системных проблем внутри компании.",
+    categoryDescription: "Оценка организационной культуры, климата и вовлеченности сотрудников.",
     subcategories: [
       {
-        subId: "org_assessment", subTitle: "Оценка организации", tests: [
-          { id: "ocai", title: "OCAI", measures: "Тип организационной культуры", items: "24", time: "10-15 минут", legalStatus: "public", isRunnable: true }
+        subId: "culture", subTitle: "Корпоративная культура", tests: [
+          { id: "ocai", title: "OCAI (К. Камерон, Р. Куинн)", measures: "Тип организационной культуры", items: "24", time: "15 минут", legalStatus: "public", isRunnable: true },
+          { id: "docs", title: "Denison Organizational Culture Survey", measures: "Культура и эффективность", items: "60", time: "20 минут", legalStatus: "proprietary", isRunnable: false }
         ]
       },
       {
-        subId: "role_conflict", subTitle: "Ролевой конфликт", tests: [
-          { id: "rcra", title: "Role Conflict & Ambiguity Scale (Rizzo et al.)", measures: "Ролевой конфликт и неопределённость", items: "14", time: "5 минут", legalStatus: "public", isRunnable: true }
+        subId: "engagement", subTitle: "Вовлеченность и лояльность", tests: [
+          { id: "enps", title: "Employee NPS (eNPS)", measures: "Индекс лояльности сотрудников", items: "2", time: "2 минуты", legalStatus: "public", isRunnable: true },
+          { id: "jss", title: "Job Satisfaction Survey (Spector)", measures: "Удовлетворенность работой", items: "36", time: "10 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -224,22 +225,19 @@ window.DEEP_MASTER_REGISTRY = {
   "psychoanalytic": {
     categoryId: "psychoanalytic",
     categoryTitle: "Психоаналитическая диагностика",
-    categoryDescription: "Глубинная оценка уровня организации личности, психологических защит, объектных отношений, привязанности, ментализации и идентичности.",
+    categoryDescription: "Методики для глубинной оценки структуры личности и механизмов защиты.",
     subcategories: [
       {
-        subId: "defenses", subTitle: "Психологические защиты", tests: [
-          { id: "dsq", title: "DSQ-40", measures: "Стили психологических защит", items: "40", time: "10-15 минут", legalStatus: "public", isRunnable: true },
-          { id: "mipz", title: "МИПЗ (Плутчик–Келлерман–Конте)", measures: "Напряженность 8 типов защит", items: "97", time: "15-20 минут", legalStatus: "public", isRunnable: true }
+        subId: "structure_level", subTitle: "Уровень организации личности", tests: [
+          { id: "lsi_plutchik", title: "LSI / ИЖС (Плутчик–Келлерман)", measures: "Психологические защиты", items: "97", time: "15-20 минут", legalStatus: "public", isRunnable: true },
+          { id: "dsq40", title: "DSQ-40 (Defense Style)", measures: "Стили защитных механизмов", items: "40", time: "10 минут", legalStatus: "public", isRunnable: true },
+          { id: "ipo_kernberg", title: "IPO (Инвентарь Кернберга)", measures: "Пограничная организация личности", items: "83", time: "20 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "mentalization", subTitle: "Ментализация", tests: [
-          { id: "rfq", title: "RFQ", measures: "Рефлексивная функция", items: "8", time: "3-5 минут", legalStatus: "public", isRunnable: true }
-        ]
-      },
-      {
-        subId: "identity", subTitle: "Идентичность", tests: [
-          { id: "scim", title: "SCIM", measures: "Самоконцепция и идентичность", items: "27", time: "5-10 минут", legalStatus: "public", isRunnable: true }
+        subId: "mentalization", subTitle: "Ментализация и привязанность", tests: [
+          { id: "rfq", title: "RFQ (Reflective Functioning)", measures: "Способность к ментализации", items: "8", time: "3-5 минут", legalStatus: "public", isRunnable: true },
+          { id: "sct", title: "SCT (Sentence Completion Test)", measures: "Проективная диагностика смыслов", items: "60", time: "30 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -247,18 +245,18 @@ window.DEEP_MASTER_REGISTRY = {
   "therapy_efficacy": {
     categoryId: "therapy_efficacy",
     categoryTitle: "Оценка эффективности терапии",
-    categoryDescription: "Инструменты для мониторинга терапевтического альянса и результативности каждой сессии.",
+    categoryDescription: "Инструменты мониторинга прогресса в терапии и качества терапевтического альянса.",
     subcategories: [
       {
-        subId: "track", subTitle: "Терапевтический альянс", tests: [
-          { id: "wai", title: "WAI (Working Alliance Inventory)", measures: "Рабочий альянс", items: "36 / 12 (короткая)", time: "5-10 минут", legalStatus: "public", isRunnable: true },
-          { id: "seq", title: "SEQ (Session Evaluation Questionnaire)", measures: "Оценка сессии", items: "21", time: "3-5 минут", legalStatus: "public", isRunnable: true }
+        subId: "outcome", subTitle: "Мониторинг результатов", tests: [
+          { id: "core10", title: "CORE-10 (Psychological Distress)", measures: "Общий уровень неблагополучия", items: "10", time: "3 минуты", legalStatus: "public", isRunnable: true },
+          { id: "whodas2", title: "WHODAS 2.0 (WHO)", measures: "Уровень функциональной дезадаптации", items: "12", time: "5-7 минут", legalStatus: "public", isRunnable: true }
         ]
       },
       {
-        subId: "session", subTitle: "Результативность", tests: [
-          { id: "ors", title: "ORS (Outcome Rating Scale)", measures: "Субъективные результаты терапии", items: "4", time: "1-2 минуты", legalStatus: "public", isRunnable: true },
-          { id: "srs", title: "SRS (Session Rating Scale)", measures: "Удовлетворённость сессией", items: "4", time: "1-2 минуты", legalStatus: "public", isRunnable: true }
+        subId: "alliance", subTitle: "Терапевтический альянс", tests: [
+          { id: "wai", title: "WAI (Working Alliance Inventory)", measures: "Рабочий альянс (терапевт-клиент)", items: "12/36", time: "5-10 минут", legalStatus: "public", isRunnable: true },
+          { id: "seq", title: "Session Evaluation Questionnaire", measures: "Качество отдельной сессии", items: "21", time: "5 минут", legalStatus: "public", isRunnable: true }
         ]
       }
     ]
@@ -272,15 +270,15 @@ window.DEEP_MASTER_REGISTRY = {
 (function () {
   var categoryUrls = {
     "personality": "/tests/personality",
-    "functions": "/tests/functions",
-    "intelligence": "/tests/intelligence",
+    "mental_functions": "/tests/functions",
+    "adaptation": "/tests/adaptation",
     "psychiatry": "/tests/psychiatry",
-    "therapy": "/tests/therapy",
-    "family": "/tests/family",
+    "relationships": "/tests/relationships",
     "career": "/tests/career",
-    "social": "/tests/social",
-    "children": "/tests/children",
-    "scales": "/tests/scales"
+    "team": "/tests/team",
+    "organization": "/tests/organization",
+    "psychoanalytic": "/tests/psychoanalytic",
+    "therapy_efficacy": "/tests/therapy"
   };
 
   window.DEEP_TEST_REGISTRY = []; // Used by Sidebar.js (Array)
@@ -303,60 +301,9 @@ window.DEEP_MASTER_REGISTRY = {
           isRunnable: test.isRunnable !== false
         };
         window.DEEP_TEST_REGISTRY.push(testData);
-        window.DEEP_TESTS[test.id] = testData;
+        // Prevent data loss: Merge metadata with existing test logic if already loaded
+        window.DEEP_TESTS[test.id] = Object.assign({}, testData, window.DEEP_TESTS[test.id] || {});
       });
     });
   });
 })();
-
-/**
- * DEEP PSY TESTS — CORE TEST DATA (Runnable Questions)
- * Merges INTO existing DEEP_TESTS (populated by flat registry above)
- */
-Object.assign(window.DEEP_TESTS, {
-  /* ── Rosenberg Self-Esteem Scale ── */
-  "rosenberg": {
-    id: "rosenberg", title: "Шкала самоуважения Розенберга (RSES)", shortTitle: "RSES",
-    description: "Глобальная оценка самоуважения. 10 утверждений. Адаптация: Золотарева А.А., 2020.",
-    intro: "Выберите вариант, наиболее точно отражающий ваше согласие с утверждением.",
-    scales: { selfesteem: { title: "Самоуважение", max: 30, ranges: [{ min: 0, max: 14, label: "Низкое" }, { min: 15, max: 25, label: "Нормальное" }, { min: 26, max: 30, label: "Высокое" }] } },
-    questions: [
-      { id: "rs1", scale: "selfesteem", text: "В целом я доволен собой.", options: [{ text: "Полностью не согласен", value: 0 }, { text: "Не согласен", value: 1 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 3 }] },
-      { id: "rs2", scale: "selfesteem", text: "Временами мне кажется, что я не совсем хорош.", options: [{ text: "Полностью не согласен", value: 3 }, { text: "Не согласен", value: 2 }, { text: "Согласен", value: 1 }, { text: "Полностью согласен", value: 0 }] },
-      { id: "rs3", scale: "selfesteem", text: "Думаю, у меня есть ряд достоинств.", options: [{ text: "Полностью не согласен", value: 0 }, { text: "Не согласен", value: 1 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 3 }] },
-      { id: "rs4", scale: "selfesteem", text: "Многие вещи я способен делать не хуже большинства.", options: [{ text: "Полностью не согласен", value: 0 }, { text: "Не согласен", value: 1 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 3 }] },
-      { id: "rs5", scale: "selfesteem", text: "Мне кажется, что мне нечем гордиться.", options: [{ text: "Полностью не согласен", value: 3 }, { text: "Не согласен", value: 2 }, { text: "Согласен", value: 1 }, { text: "Полностью согласен", value: 0 }] },
-      { id: "rs6", scale: "selfesteem", text: "Иногда я чувствую себя бесполезным.", options: [{ text: "Полностью не согласен", value: 3 }, { text: "Не согласен", value: 2 }, { text: "Согласен", value: 1 }, { text: "Полностью согласен", value: 0 }] },
-      { id: "rs7", scale: "selfesteem", text: "Я считаю себя достойным и равным другим.", options: [{ text: "Полностью не согласен", value: 0 }, { text: "Не согласен", value: 1 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 3 }] },
-      { id: "rs8", scale: "selfesteem", text: "Мне бы хотелось больше уважать себя.", options: [{ text: "Полностью не согласен", value: 3 }, { text: "Не согласен", value: 2 }, { text: "Согласен", value: 1 }, { text: "Полностью согласен", value: 0 }] },
-      { id: "rs9", scale: "selfesteem", text: "По большому счету я считаю себя неудачником.", options: [{ text: "Полностью не согласен", value: 3 }, { text: "Не согласен", value: 2 }, { text: "Согласен", value: 1 }, { text: "Полностью согласен", value: 0 }] },
-      { id: "rs10", scale: "selfesteem", text: "Я хорошо отношусь к себе.", options: [{ text: "Полностью не согласен", value: 0 }, { text: "Не согласен", value: 1 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 3 }] }
-    ]
-  },
-  /* ── TIPI-RU ── */
-  "tipi": {
-    id: "tipi", title: "Экспресс-оценка Большой Пятерки (TIPI-RU)", shortTitle: "TIPI",
-    description: "Самый короткий (10 пунктов) инструмент для быстрой оценки пяти факторов личности.",
-    intro: "Я вижу себя как человека...",
-    scales: {
-      extraversion: { title: "Экстраверсия", max: 14, ranges: [{ min: 2, max: 5, label: "Низкий" }, { min: 6, max: 10, label: "Средний" }, { min: 11, max: 14, label: "Высокий" }] },
-      agreeableness: { title: "Доброжелательность", max: 14, ranges: [{ min: 2, max: 5, label: "Низкий" }, { min: 6, max: 10, label: "Средний" }, { min: 11, max: 14, label: "Высокий" }] },
-      conscientiousness: { title: "Добросовестность", max: 14, ranges: [{ min: 2, max: 5, label: "Низкий" }, { min: 6, max: 10, label: "Средний" }, { min: 11, max: 14, label: "Высокий" }] },
-      neuroticism: { title: "Нейротизм", max: 14, ranges: [{ min: 2, max: 5, label: "Низкий" }, { min: 6, max: 10, label: "Средний" }, { min: 11, max: 14, label: "Высокий" }] },
-      openness: { title: "Открытость опыту", max: 14, ranges: [{ min: 2, max: 5, label: "Низкий" }, { min: 6, max: 10, label: "Средний" }, { min: 11, max: 14, label: "Высокий" }] }
-    },
-    questions: [
-      { id: "t1", scale: "extraversion", text: "Экстравертного, полного энтузиазма.", options: [{ text: "Полностью не согласен", value: 1 }, { text: "Не согласен", value: 2 }, { text: "Немного не согласен", value: 3 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 5 }, { text: "Согласен", value: 6 }, { text: "Полностью согласен", value: 7 }] },
-      { id: "t2", scale: "agreeableness", text: "Критичного, склонного к ссорам.", options: [{ text: "Полностью не согласен", value: 7 }, { text: "Не согласен", value: 6 }, { text: "Немного не согласен", value: 5 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 3 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 1 }] },
-      { id: "t3", scale: "conscientiousness", text: "Надежного, дисциплинированного.", options: [{ text: "Полностью не согласен", value: 1 }, { text: "Не согласен", value: 2 }, { text: "Немного не согласен", value: 3 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 5 }, { text: "Согласен", value: 6 }, { text: "Полностью согласен", value: 7 }] },
-      { id: "t4", scale: "neuroticism", text: "Тревожного, легко расстраивающегося.", options: [{ text: "Полностью не согласен", value: 1 }, { text: "Не согласен", value: 2 }, { text: "Немного не согласен", value: 3 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 5 }, { text: "Согласен", value: 6 }, { text: "Полностью согласен", value: 7 }] },
-      { id: "t5", scale: "openness", text: "Открытого новому, разностороннего.", options: [{ text: "Полностью не согласен", value: 1 }, { text: "Не согласен", value: 2 }, { text: "Немного не согласен", value: 3 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 5 }, { text: "Согласен", value: 6 }, { text: "Полностью согласен", value: 7 }] },
-      { id: "t6", scale: "extraversion", text: "Сдержанного, тихого.", options: [{ text: "Полностью не согласен", value: 7 }, { text: "Не согласен", value: 6 }, { text: "Немного не согласен", value: 5 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 3 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 1 }] },
-      { id: "t7", scale: "agreeableness", text: "Относящегося с симпатией, теплого.", options: [{ text: "Полностью не согласен", value: 1 }, { text: "Не согласен", value: 2 }, { text: "Немного не согласен", value: 3 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 5 }, { text: "Согласен", value: 6 }, { text: "Полностью согласен", value: 7 }] },
-      { id: "t8", scale: "conscientiousness", text: "Неорганизованного, небрежного.", options: [{ text: "Полностью не согласен", value: 7 }, { text: "Не согласен", value: 6 }, { text: "Немного не согласен", value: 5 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 3 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 1 }] },
-      { id: "t9", scale: "neuroticism", text: "Спокойного, эмоционально стабильного.", options: [{ text: "Полностью не согласен", value: 7 }, { text: "Не согласен", value: 6 }, { text: "Немного не согласен", value: 5 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 3 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 1 }] },
-      { id: "t10", scale: "openness", text: "Традиционного, не креативного.", options: [{ text: "Полностью не согласен", value: 7 }, { text: "Не согласен", value: 6 }, { text: "Немного не согласен", value: 5 }, { text: "Нейтрально", value: 4 }, { text: "Немного согласен", value: 3 }, { text: "Согласен", value: 2 }, { text: "Полностью согласен", value: 1 }] }
-    ]
-  }
-});
-

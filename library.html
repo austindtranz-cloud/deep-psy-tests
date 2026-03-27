@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deep Psy Tests - Library</title>
+    <meta name="description" content="Библиотека психологических тестов Deep Psy">
+    <meta property="og:title" content="Deep Psy Tests - Library">
+    <meta property="og:description" content="Пройди психологические тесты онлайн">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="core/style.css">
 </head>
-<body style="margin:0; padding:0; background:#111111;">
+<body>
     <div id="deep-categories-container"></div>
-    <div class="deep-tests-overlay" id="deep-tests-overlay" aria-hidden="true">
+    <div class="deep-tests-overlay" id="deep-tests-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Тест">
       <div class="deep-tests-modal">
         <button class="deep-tests-close" aria-label="Закрыть">×</button>
         <div class="deep-tests-app" id="deep-tests-app"></div>
@@ -20,10 +25,13 @@
       <div style="padding: 20px; color: #fff;">Результаты теста будут здесь</div>
     </div>
     
-    <script src="data/phq9.js"></script>
-    <script src="data/gad7.js"></script>
-    <script src="data/pss10.js"></script>
     <script src="data/test_registry.js"></script>
+    <script src="core/router.js"></script>
+    <script src="core/quiz_core.js"></script>
+    <script src="core/ui_controller.js"></script>
+    <script src="core/engine_results.js"></script>
+    <script src="core/success_modal.js"></script>
+    <script src="core/integrations.js"></script>
     <script src="core/sidebar.js"></script>
     <script src="core/engine.js"></script>
     <script>

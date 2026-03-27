@@ -5,17 +5,16 @@
    ═══════════════════════════════════════════ */
 (function() {
   var baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
-  
-  /* HOTFIX: engine.js (старая версия на сервере) делает window.DEEP_TESTS = TESTS;
-     где TESTS не объявлен → ReferenceError → deepRenderCatalog не создаётся.
-     Объявляем TESTS в глобальной области ДО загрузки engine.js — ошибка исчезает. */
-  window.TESTS = window.DEEP_TESTS || {};
 
   function loadResources(v) {
     if (v) v = "?v=" + v;
     var resources = [
       { type: "style",  url: baseUrl + "core/style.css" + v },
       { type: "script", url: baseUrl + "data/test_registry.js" + v },
+      { type: "script", url: baseUrl + "core/router.js" + v },
+      { type: "script", url: baseUrl + "core/quiz_core.js" + v },
+      { type: "script", url: baseUrl + "core/ui_controller.js" + v },
+      { type: "script", url: baseUrl + "core/integrations.js" + v },
       { type: "script", url: baseUrl + "core/engine.js" + v },
       { type: "script", url: baseUrl + "core/engine_results.js" + v },
       { type: "script", url: baseUrl + "core/sidebar.js" + v },

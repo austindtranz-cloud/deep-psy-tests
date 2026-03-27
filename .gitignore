@@ -3,6 +3,9 @@
 *.log
 .DS_Store
 
+# Archive (local backups only, never pushed)
+/_archive/
+
 # Brain and internal files (important to keep private)
 /.gemini/
 /brain/
