@@ -276,7 +276,6 @@
     },
 
     renderQuiz: function(test, session) {
-      var ICONS = window.DEEP_TPL.ICONS;
       var q = test.questions[session.currentIndex];
       var total = test.questions.filter(x => !x.isIntro).length;
       var current = test.questions.slice(0, session.currentIndex + 1).filter(x => !x.isIntro).length;

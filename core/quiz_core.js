@@ -78,10 +78,27 @@
       this.saveState();
     },
 
+    _findTestInRegistry: function(testId) {
+      if (!testId) return null;
+      var testsReg = window.DEEP_TESTS || {};
+      if (testsReg[testId]) return testsReg[testId];
+      
+      var reg = window.DEEP_MASTER_REGISTRY || {};
+      for (var cId in reg) {
+        var subcats = reg[cId].subcategories || [];
+        for (var i = 0; i < subcats.length; i++) {
+          var tests = subcats[i].tests || [];
+          for (var j = 0; j < tests.length; j++) {
+            if (tests[j].id === testId) return tests[j];
+          }
+        }
+      }
+      return null;
+    },
+
     getActiveTest: function () {
       if (!this.state.activeTestId) return null;
-      var reg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || window.DEEP_TEST_REGISTRY || {};
-      return reg[this.state.activeTestId] || null;
+      return this._findTestInRegistry(this.state.activeTestId);
     },
 
     setActiveTest: function (testId) {
@@ -119,7 +136,7 @@
       
       // Update UI if on screen
       if (window.DEEP_UI) {
-        var test = window.DEEP_TESTS[testId] || window.DEEP_MASTER_REGISTRY[testId];
+        var test = this._findTestInRegistry(testId);
         window.DEEP_UI.renderScreen(test, session);
       }
     },
@@ -137,10 +154,9 @@
     loadTestData: function (testId) {
       var self = this;
       return new Promise(function (resolve, reject) {
-        var reg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || window.DEEP_TEST_REGISTRY || {};
         
         // If questions already exist or it's interactive, resolve immediately
-        var existing = reg[testId];
+        var existing = self._findTestInRegistry(testId);
         if (existing && (existing.questions || existing.interactive)) {
           return resolve(existing);
         }
@@ -166,8 +182,7 @@
 
         script.onload = function() {
           clearTimeout(timeout);
-          var updatedReg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || window.DEEP_TEST_REGISTRY || {};
-          var loaded = updatedReg[testId];
+          var loaded = self._findTestInRegistry(testId);
           if (loaded && (loaded.questions || loaded.interactive)) {
             resolve(loaded);
           } else {
@@ -177,9 +192,9 @@
         
         script.onerror = function() {
           clearTimeout(timeout);
-          var retryReg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || window.DEEP_TEST_REGISTRY || {};
-          if (retryReg[testId] && (retryReg[testId].questions || retryReg[testId].interactive)) {
-             resolve(retryReg[testId]);
+          var retryReg = self._findTestInRegistry(testId);
+          if (retryReg && (retryReg.questions || retryReg.interactive)) {
+             resolve(retryReg);
           } else {
              reject("Failed to load test data for " + testId);
           }

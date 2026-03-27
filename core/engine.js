@@ -70,14 +70,14 @@
 
       /* Вместо setInterval-поллинга слушаем CustomEvent от test_registry.js.
          Если реестр уже загружен — открываем сразу. */
-      var reg = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || {};
-      if (reg[testId]) {
+      var exists = window.DEEP_QUIZ && window.DEEP_QUIZ._findTestInRegistry(testId);
+      if (exists) {
         window.DEEP_CORE.openTest(testId);
       } else {
         document.addEventListener('deep-registry-ready', function onReady() {
           document.removeEventListener('deep-registry-ready', onReady);
-          var r = window.DEEP_TESTS || window.DEEP_MASTER_REGISTRY || {};
-          if (r[testId]) window.DEEP_CORE.openTest(testId);
+          var r = window.DEEP_QUIZ && window.DEEP_QUIZ._findTestInRegistry(testId);
+          if (r) window.DEEP_CORE.openTest(testId);
         });
       }
     },
@@ -86,8 +86,7 @@
       if (!testId || !window.DEEP_QUIZ || !window.DEEP_UI) return;
       if (testId === 'random') return this.openRandomTest();
       
-      var UI = window.DEEP_UI;
-      UI.openOverlay();
+      window.DEEP_UI.openOverlay();
       
       // Show loading state in overlay
       var app = document.getElementById("deep-tests-app");
@@ -97,7 +96,7 @@
         .then(function(test) {
           window.DEEP_QUIZ.setActiveTest(testId);
           var session = window.DEEP_QUIZ.ensureSession(testId);
-          UI.renderScreen(test, session);
+          window.DEEP_UI.renderScreen(test, session);
         })
         .catch(function(err) {
           console.error("DEEP: Loading failed", err);
@@ -124,9 +123,17 @@
     },
 
     openRandomTest: function() {
-      var reg = window.DEEP_TEST_REGISTRY;
-      if (!reg || !reg.length) return;
-      var runnable = reg.filter(t => t.isRunnable);
+      var runnable = [];
+      var reg = window.DEEP_MASTER_REGISTRY || {};
+      for (var cId in reg) {
+        var subcats = reg[cId].subcategories || [];
+        for (var i = 0; i < subcats.length; i++) {
+          var tests = subcats[i].tests || [];
+          for (var j = 0; j < tests.length; j++) {
+            if (tests[j].isRunnable) runnable.push(tests[j]);
+          }
+        }
+      }
       if (!runnable.length) return;
       var random = runnable[Math.floor(Math.random() * runnable.length)];
       this.openTest(random.id);
