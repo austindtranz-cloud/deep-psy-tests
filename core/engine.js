@@ -102,8 +102,23 @@
         .catch(function(err) {
           console.error("DEEP: Loading failed", err);
           if (app) {
-            app.innerHTML = '<div class="deep-tests-screen"><div class="deep-tests-scroll"><div class="quiz-intro"><h2 class="deep-page-title">Ошибка загрузки</h2><div class="err-msg"></div><button class="deep-btn deep-btn--primary" onclick="window.DEEP_UI.closeModal()">Закрыть</button></div></div></div>';
+            app.innerHTML = '<div class="deep-tests-screen"><div class="deep-tests-scroll"><div class="quiz-intro">' +
+              '<h2 class="deep-page-title">Ошибка загрузки</h2>' +
+              '<div class="err-msg"></div>' +
+              '<p class="deep-page-subtitle" style="margin:16px 0">Проверьте подключение к интернету.</p>' +
+              '<div class="btn-group" style="gap:12px">' +
+                '<button class="deep-btn deep-btn--primary" data-retry-id="' + testId + '">Попробовать снова</button>' +
+                '<button class="deep-btn deep-btn--outline" onclick="window.DEEP_UI.closeModal()">Закрыть</button>' +
+              '</div>' +
+            '</div></div></div>';
             app.querySelector(".err-msg").textContent = String(err);
+            /* Retry handler */
+            var retryBtn = app.querySelector('[data-retry-id]');
+            if (retryBtn) {
+              retryBtn.addEventListener('click', function() {
+                window.DEEP_CORE.openTest(retryBtn.getAttribute('data-retry-id'));
+              });
+            }
           }
         });
     },

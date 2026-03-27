@@ -138,6 +138,11 @@
         }
       });
 
+      /* Скрываем тултип при скролле — предотвращает отрыв от триггера */
+      window.addEventListener('scroll', function() {
+        tooltipEl.style.display = 'none';
+      }, { passive: true });
+
       // Letter Quick-Picker
       container.addEventListener('click', function(e) {
         var letterEl = e.target.closest('.deep-alpha-section-letter');

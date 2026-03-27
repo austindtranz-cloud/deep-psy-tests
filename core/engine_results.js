@@ -35,8 +35,8 @@
 
   /* ── Main Render function ── */
   window.deepTestsRenderResult = function (test, session, appEl, allTests) {
-    var UI = window.DEEP_UI;
-    if (!UI) return;
+    var TPL = window.DEEP_TPL;
+    if (!TPL) return;
 
     var result = calculateScores(test, session);
     var hasRisk = false, hasWarn = false;
@@ -47,10 +47,10 @@
       if (color === "warn") hasWarn = true;
       
       var pct = Math.min(100, Math.round((item.score / (item.max || 1)) * 100));
-      return UI.TEMPLATES.scoreCard(item.title, item.score, item.max, color, item.label, pct);
+      return TPL.TEMPLATES.scoreCard(item.title, item.score, item.max, color, item.label, pct);
     }).join("");
 
-    appEl.innerHTML = UI.TEMPLATES.resultScreen(test.title, getSummaryText(hasRisk, hasWarn), cardsHtml);
+    appEl.innerHTML = TPL.TEMPLATES.resultScreen(test.title, getSummaryText(hasRisk, hasWarn), cardsHtml);
 
     /* Render CTA Blocks into placeholders */
     renderCTAs(test, appEl, hasRisk, hasWarn);
@@ -72,14 +72,21 @@
     test.questions.forEach(q => {
       if (q.isIntro) return;
       var ansVal = session.answers[q.id];
-      if (ansVal === undefined) return;
+      if (ansVal === undefined || ansVal === null) return;
+
+      /* Строгая проверка типа: защита от NaN при кривых данных */
+      var numVal = Number(ansVal);
+      if (isNaN(numVal)) { console.warn('DEEP RESULTS: NaN answer for', q.id, ansVal); return; }
 
       var opt = q.options.find((o, i) => (o.score !== undefined ? o.score : (o.value !== undefined ? o.value : i)) === ansVal);
       if (opt && opt.score && typeof opt.score === "object") {
-        for (var s in opt.score) rawScores[s] = (rawScores[s] || 0) + opt.score[s];
+        for (var s in opt.score) {
+          var sv = Number(opt.score[s]);
+          rawScores[s] = (rawScores[s] || 0) + (isNaN(sv) ? 0 : sv);
+        }
       } else {
         var sk = q.scale || scaleKeys[0];
-        rawScores[sk] = (rawScores[sk] || 0) + (typeof ansVal === "number" ? ansVal : 0);
+        rawScores[sk] = (rawScores[sk] || 0) + numVal;
       }
     });
 
