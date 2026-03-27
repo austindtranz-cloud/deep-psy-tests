@@ -150,7 +150,7 @@
             <div id="quiz-result-next"></div>
             <div id="quiz-result-form"></div>
             <div class="deep-tests-bottom">
-              <button class="deep-btn deep-btn--outline" data-action="restart-test">Пройти заново</button>
+              <button class="deep-tests-btn deep-tests-btn-outline" data-action="restart-test">Пройти заново</button>
             </div>
           </div>
         </div>
@@ -161,10 +161,10 @@
     startScreen: function(test, qLen, estTime, scaleNames, hasProgress) {
       var actionBtn = hasProgress ? 
         `<div class="btn-group">
-          <button class="deep-btn deep-btn--primary" data-action="resume-test" style="flex:2">Продолжить</button>
-          <button class="deep-btn deep-btn--outline" data-action="restart-test" style="flex:1">Заново</button>
+          <button class="deep-tests-btn deep-tests-btn-primary" data-action="resume-test" style="flex:2">Продолжить</button>
+          <button class="deep-tests-btn deep-tests-btn-outline" data-action="restart-test" style="flex:1">Заново</button>
         </div>` :
-        `<button class="deep-btn deep-btn--primary full-width" data-action="start-test">Начать тест</button>`;
+        `<button class="deep-tests-btn deep-tests-btn-primary full-width" data-action="start-test">Начать тест</button>`;
 
       return `
         <div class="deep-tests-screen">

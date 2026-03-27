@@ -289,8 +289,8 @@
             <div class="intro-text">${q.text}</div>
           </div>
           <div class="deep-tests-bottom">
-            <button class="deep-btn deep-btn--outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
-            <button class="deep-btn deep-btn--primary" data-action="next">${q.buttonText || "Продолжить"}</button>
+            <button class="deep-tests-btn deep-tests-btn-outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
+            <button class="deep-tests-btn deep-tests-btn-primary" data-action="next">${q.buttonText || "Продолжить"}</button>
           </div>
         </div>` :
         `<div class="deep-tests-step-wrap">
@@ -304,13 +304,13 @@
             ${q.options.map((opt, idx) => {
               var isSel = (session.answers[q.id] === (opt.score !== undefined ? opt.score : (opt.value !== undefined ? opt.value : idx)));
               return `<button class="deep-tests-option ${isSel ? "is-selected" : ""}" data-action="answer" data-index="${idx}">
-                <span class="row"><span class="check"></span><span class="text">${opt.text}</span></span>
+                <span class="deep-tests-option-row"><span class="deep-tests-option-check"></span><span class="deep-tests-option-text">${opt.text}</span></span>
               </button>`;
             }).join("")}
           </div>
           <div class="deep-tests-bottom">
-            <button class="deep-btn deep-btn--outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
-            ${session.answers[q.id] !== undefined ? `<button class="deep-btn deep-btn--primary" data-action="next">${session.currentIndex < test.questions.length - 1 ? "Далее" : "Завершить"}</button>` : ""}
+            <button class="deep-tests-btn deep-tests-btn-outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
+            ${session.answers[q.id] !== undefined ? `<button class="deep-tests-btn deep-tests-btn-primary" data-action="next">${session.currentIndex < test.questions.length - 1 ? "Далее" : "Завершить"}</button>` : ""}
           </div>
         </div>`;
       this.app.innerHTML = `<div class="deep-tests-screen"><div class="deep-tests-scroll">${content}</div></div>`;

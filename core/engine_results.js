@@ -116,7 +116,7 @@
         <div class="quiz-stat-item" style="background:var(--dt-danger-bg); border-color:var(--dt-danger-border); padding:20px; border-radius:12px; margin-top:20px;">
           <div style="color:var(--dt-danger); font-weight:700;">Рекомендация</div>
           <p style="font-size:14px; margin-top:8px;">Ваши результаты требуют внимания специалиста. Рекомендуем записаться на консультацию.</p>
-          <a href="https://t.me/DeepPsySolutions" class="deep-btn deep-btn--primary">Написать психологу</a>
+          <a href="https://t.me/DeepPsySolutions" class="deep-tests-btn deep-tests-btn-primary">Написать психологу</a>
         </div>
       `;
     }
@@ -127,7 +127,7 @@
         <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--dt-border);">
           <h4 style="font-family:var(--dt-f-head); margin-bottom:12px;">Что дальше?</h4>
           <p style="font-size:14px; opacity:0.8; margin-bottom:16px;">Рекомендуем продолжить диагностику для более полной картины.</p>
-          <button class="deep-btn deep-btn--outline" onclick="window.DEEP_CORE.openTest('random')">Пройти другой тест</button>
+          <button class="deep-tests-btn deep-tests-btn-outline" onclick="window.DEEP_CORE.openTest('random')">Пройти другой тест</button>
         </div>
       `;
     }
@@ -138,7 +138,7 @@
           <div class="deep-page-kicker">Бонус</div>
           <h3 style="font-family:var(--dt-f-head); margin-bottom:12px;">Получить расшифровку PDF</h3>
           <input type="email" class="deep-dash-search" placeholder="Ваш e-mail" style="margin-bottom:12px;">
-          <button class="deep-btn deep-btn--primary" style="width:100%">Отправить на почту</button>
+          <button class="deep-tests-btn deep-tests-btn-primary" style="width:100%">Отправить на почту</button>
         </div>
       `;
     }
