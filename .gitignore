@@ -13,6 +13,10 @@
 # Local testing
 debug_index.html
 
+# Python
+__pycache__/
+*.pyc
+
 # Node (if any)
 node_modules/
 npm-debug.log
