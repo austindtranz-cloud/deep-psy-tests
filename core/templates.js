@@ -139,17 +139,17 @@
       return `
         <div class="deep-tests-screen">
           <div class="deep-tests-scroll">
-            <div class="quiz-intro">
+            <div class="deep-tests-quiz-intro">
               <div class="deep-page-kicker">Результат</div>
               <h2 class="deep-page-title">${title}</h2>
-              <div class="quiz-summary"><strong>Заключение:</strong> ${summary}</div>
+              <div class="deep-tests-summary"><strong>Заключение:</strong> ${summary}</div>
             </div>
             <div class="deep-tests-score-grid">${cardsHtml}</div>
-            <div class="quiz-disclaimer">Результаты носят ориентировочный характер и не являются клиническим диагнозом.</div>
+            <div class="deep-tests-disclaimer">Результаты носят ориентировочный характер и не являются клиническим диагнозом.</div>
             <div id="quiz-result-cta"></div>
             <div id="quiz-result-next"></div>
             <div id="quiz-result-form"></div>
-            <div class="quiz-footer">
+            <div class="deep-tests-bottom">
               <button class="deep-btn deep-btn--outline" data-action="restart-test">Пройти заново</button>
             </div>
           </div>
@@ -169,16 +169,16 @@
       return `
         <div class="deep-tests-screen">
           <div class="deep-tests-scroll">
-            <div class="quiz-intro">
+            <div class="deep-tests-quiz-intro">
               <div class="deep-page-kicker">Тест</div>
               <h1 class="deep-page-title">${test.title}</h1>
               <p class="deep-page-subtitle">${test.description}</p>
-              <div class="quiz-meta-row">
-                 <div class="quiz-meta-item">${ICONS.questions} <span>${qLen} вопросов</span></div>
-                 <div class="quiz-meta-item">${ICONS.time} <span>~${estTime} мин.</span></div>
+              <div class="deep-tests-meta-row">
+                 <div class="deep-tests-meta-item">${ICONS.questions} <span>${qLen} вопросов</span></div>
+                 <div class="deep-tests-meta-item">${ICONS.time} <span>~${estTime} мин.</span></div>
               </div>
-              ${scaleNames ? `<div class="quiz-scales"><span>Оценивает:</span> ${scaleNames}</div>` : ""}
-              <div class="quiz-actions">${actionBtn}</div>
+              ${scaleNames ? `<div class="deep-tests-scales"><span>Оценивает:</span> ${scaleNames}</div>` : ""}
+              <div class="deep-tests-actions">${actionBtn}</div>
             </div>
           </div>
         </div>

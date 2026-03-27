@@ -282,22 +282,22 @@
       var progress = Math.round((current / (total || 1)) * 100);
       
       var content = q.isIntro ? 
-        `<div class="quiz-step-intro">
-          <div class="quiz-progress-wrap"><div class="progress-bar"><span style="width:${progress}%"></span></div></div>
+        `<div class="deep-tests-step-wrap">
+          <div class="deep-tests-progress"><span style="width:${progress}%"></span></div>
           <div class="intro-content">
             ${q.title ? `<h2 class="intro-title">${q.title}</h2>` : ""}
             <div class="intro-text">${q.text}</div>
           </div>
-          <div class="quiz-footer">
+          <div class="deep-tests-bottom">
             <button class="deep-btn deep-btn--outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
             <button class="deep-btn deep-btn--primary" data-action="next">${q.buttonText || "Продолжить"}</button>
           </div>
         </div>` :
-        `<div class="quiz-step-question">
-          <div class="quiz-header">
-            <div class="quiz-counter">Вопрос ${current} из ${total}</div>
-            <div class="quiz-progress-wrap"><div class="progress-bar"><span style="width:${progress}%"></span></div></div>
-            ${test.intro ? `<div class="quiz-hint">${test.intro}</div>` : ""}
+        `<div class="deep-tests-step-wrap">
+          <div class="deep-tests-quiz-top">
+            <div class="deep-tests-counter">Вопрос ${current} из ${total}</div>
+            <div class="deep-tests-progress"><span style="width:${progress}%"></span></div>
+            ${test.intro ? `<div class="deep-tests-hint">${test.intro}</div>` : ""}
           </div>
           <div class="deep-tests-question">${q.text}</div>
           <div class="deep-tests-options">
@@ -308,7 +308,7 @@
               </button>`;
             }).join("")}
           </div>
-          <div class="quiz-footer">
+          <div class="deep-tests-bottom">
             <button class="deep-btn deep-btn--outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
             ${session.answers[q.id] !== undefined ? `<button class="deep-btn deep-btn--primary" data-action="next">${session.currentIndex < test.questions.length - 1 ? "Далее" : "Завершить"}</button>` : ""}
           </div>
