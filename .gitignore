@@ -20,3 +20,6 @@ __pycache__/
 # Node (if any)
 node_modules/
 npm-debug.log
+
+# Git Worktrees (для параллельной работы агентов)
+/_worktrees/
