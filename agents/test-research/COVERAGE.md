@@ -49,8 +49,8 @@
 | Psychoanalytic | `ipo_kernberg` | IPO (Кернберг) | 🔴 Отсутствует | `data/tests/ipo_kernberg.js` |
 | Psychoanalytic | `rfq` | RFQ | 🔴 Отсутствует | `data/tests/rfq.js` |
 | Psychoanalytic | `sct` | SCT | 🔴 Отсутствует | `data/tests/sct.js` |
-| Therapy | `core10` | CORE-10 | 🔴 Отсутствует | `data/tests/core10.js` |
-| Therapy | `whodas2` | WHODAS 2.0 | 🔴 Отсутствует | `data/tests/whodas2.js` |
+| Therapy | `core10` | CORE-10 | Готов | `data/tests/core10.js` |
+| Therapy | `whodas2` | WHODAS 2.0 | Готов | `data/tests/whodas2.js` |
 | Therapy | `wai` | WAI | 🔴 Отсутствует | `data/tests/wai.js` |
 | Therapy | `seq` | SEQ | 🔴 Отсутствует | `data/tests/seq.js` |
 
