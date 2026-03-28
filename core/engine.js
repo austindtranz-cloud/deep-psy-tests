@@ -6,6 +6,17 @@
   "use strict";
 
   window.DEEP_CORE = {
+    // Basic XSS Protection
+    escapeHTML: function (str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    },
+
     init: function () {
       if (window.DEEP_ROUTER) window.DEEP_ROUTER.init(document.body);
       if (window.DEEP_QUIZ) window.DEEP_QUIZ.init();

@@ -13,18 +13,15 @@
       { type: "script", url: baseUrl + "data/test_registry.js" + v },
       { type: "script", url: baseUrl + "core/router.js" + v },
       { type: "script", url: baseUrl + "core/quiz_core.js" + v },
+      { type: "script", url: baseUrl + "core/templates.js" + v },
+      { type: "script", url: baseUrl + "core/nav_controller.js" + v },
+      { type: "script", url: baseUrl + "core/grid_controller.js" + v },
       { type: "script", url: baseUrl + "core/ui_controller.js" + v },
       { type: "script", url: baseUrl + "core/integrations.js" + v },
-      { type: "script", url: baseUrl + "core/engine.js" + v },
       { type: "script", url: baseUrl + "core/engine_results.js" + v },
       { type: "script", url: baseUrl + "core/sidebar.js" + v },
       { type: "script", url: baseUrl + "core/success_modal.js" + v },
-      { type: "script", url: baseUrl + "data/tests/smil_566.js" + v },
-      { type: "script", url: baseUrl + "data/tests/leongard.js" + v },
-      { type: "script", url: baseUrl + "data/tests/phq9.js" + v },
-      { type: "script", url: baseUrl + "data/tests/gad7.js" + v },
-      { type: "script", url: baseUrl + "data/tests/pss10.js" + v },
-      { type: "script", url: baseUrl + "data/tests/pid5bf.js" + v }
+      { type: "script", url: baseUrl + "core/engine.js" + v }
     ];
 
     resources.forEach(function(res) {
@@ -120,28 +117,16 @@
     injectFullpageLoader();
   }
 
-  if (cachedV) {
+  // Исключаем лишние запросы к GitHub API, чтобы избежать лимитов (Rate Limiting).
+  // Генерируем cache buster на основе текущего часа
+  var currentHour = new Date().toISOString().slice(0, 13); // e.g., "2023-10-27T10"
+
+  if (cachedV && cachedV.startsWith(currentHour)) {
     loadResources(cachedV);
   } else {
-    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    var timeoutId;
-    if (controller) {
-      timeoutId = setTimeout(function() { controller.abort(); }, 2500); // Максимум 2.5с на ответ API
-    }
-    
-    var fetchOpts = controller ? { signal: controller.signal } : {};
-    fetch("https://api.github.com/repos/austindtranz-cloud/deep-psy-tests/commits/main", fetchOpts)
-      .then(function(r) { if(timeoutId) clearTimeout(timeoutId); return r.json(); })
-      .then(function(data) {
-        var commitSha = (data && data.sha) ? data.sha.substring(0, 8) : "live";
-        try { sessionStorage.setItem(CACHE_KEY, commitSha); } catch(e) {}
-        loadResources(commitSha);
-      })
-      .catch(function() {
-        // Ошибка или таймаут — грузим актуальное без кэшбастера
-        if(timeoutId) clearTimeout(timeoutId);
-        loadResources("");
-      });
+    var v = currentHour + "_" + Math.floor(Math.random() * 10000);
+    try { sessionStorage.setItem(CACHE_KEY, v); } catch(e) {}
+    loadResources(v);
   }
 })();
 </script>
