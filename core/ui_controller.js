@@ -285,9 +285,9 @@
       var content = q.isIntro ? 
         `<div class="deep-tests-step-wrap">
           <div class="deep-tests-progress"><span style="width:${progress}%"></span></div>
-          <div class="intro-content">
-            ${q.title ? `<h2 class="intro-title">${escapeHTML(q.title)}</h2>` : ""}
-            <div class="intro-text">${escapeHTML(q.text)}</div>
+          <div class="deep-intro-content">
+            ${q.title ? `<h2 class="deep-intro-title">${escapeHTML(q.title)}</h2>` : ""}
+            <div class="deep-intro-text">${escapeHTML(q.text)}</div>
           </div>
           <div class="deep-tests-bottom">
             <button class="deep-tests-btn deep-tests-btn-outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>

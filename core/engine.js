@@ -116,7 +116,7 @@
               '<h2 class="deep-page-title">Ошибка загрузки</h2>' +
               '<div class="err-msg"></div>' +
               '<p class="deep-page-subtitle" style="margin:16px 0">Проверьте подключение к интернету.</p>' +
-              '<div class="btn-group" style="gap:12px">' +
+              '<div class="deep-btn-group" style="gap:12px">' +
                 '<button class="deep-tests-btn deep-tests-btn-primary" data-retry-id="' + testId + '">Попробовать снова</button>' +
                 '<button class="deep-tests-btn deep-tests-btn-outline" onclick="window.DEEP_UI.closeModal()">Закрыть</button>' +
               '</div>' +

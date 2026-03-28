@@ -11,17 +11,7 @@
     var resources = [
       { type: "style",  url: baseUrl + "core/style.css" + v },
       { type: "script", url: baseUrl + "data/test_registry.js" + v },
-      { type: "script", url: baseUrl + "core/router.js" + v },
-      { type: "script", url: baseUrl + "core/quiz_core.js" + v },
-      { type: "script", url: baseUrl + "core/templates.js" + v },
-      { type: "script", url: baseUrl + "core/nav_controller.js" + v },
-      { type: "script", url: baseUrl + "core/grid_controller.js" + v },
-      { type: "script", url: baseUrl + "core/ui_controller.js" + v },
-      { type: "script", url: baseUrl + "core/integrations.js" + v },
-      { type: "script", url: baseUrl + "core/engine_results.js" + v },
-      { type: "script", url: baseUrl + "core/sidebar.js" + v },
-      { type: "script", url: baseUrl + "core/success_modal.js" + v },
-      { type: "script", url: baseUrl + "core/engine.js" + v }
+      { type: "script", url: baseUrl + "dist/engine.min.js" + v }
     ];
 
     resources.forEach(function(res) {

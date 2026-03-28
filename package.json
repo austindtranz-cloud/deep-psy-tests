@@ -1,0 +1,25 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "**Профессиональная психометрическая система**, оптимизированная для встраивания в Tilda / Webflow. Обеспечивает премиальный UX и высокую производительность.",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/austindtranz-cloud/deep-psy-tests.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/austindtranz-cloud/deep-psy-tests/issues"
+  },
+  "homepage": "https://github.com/austindtranz-cloud/deep-psy-tests#readme",
+  "devDependencies": {
+    "esbuild": "^0.27.4"
+  }
+}
