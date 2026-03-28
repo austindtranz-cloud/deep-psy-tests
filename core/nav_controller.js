@@ -23,7 +23,7 @@
         <div class="deep-dash-nav-header">
           <div class="deep-dash-logo">DEEP<span>Tests</span></div>
           <button class="deep-dash-nav-collapse" id="deep-dash-nav-collapse" aria-label="Свернуть меню" title="Свернуть панель">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+            <svg viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1L2.5 4.5L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <button class="deep-dash-nav-close" id="deep-dash-nav-close" aria-label="Закрыть меню">✕</button>
         </div>
@@ -153,8 +153,18 @@
       if (collapseBtn) {
         collapseBtn.addEventListener('click', function() {
           var shell = document.querySelector('.deep-dashboard');
-          if (shell) shell.classList.toggle('is-collapsed');
+          if (shell) {
+            var isNowCollapsed = shell.classList.toggle('is-collapsed');
+            try { localStorage.setItem('deepNavCollapsed', isNowCollapsed); } catch(e) {}
+          }
         });
+        // Restore saved state
+        try {
+          if (localStorage.getItem('deepNavCollapsed') === 'true') {
+            var shell = document.querySelector('.deep-dashboard');
+            if (shell && window.innerWidth > 900) shell.classList.add('is-collapsed');
+          }
+        } catch(e) {}
       }
     }
   };

@@ -1404,7 +1404,7 @@ a.deep-tests-btn-primary:hover {
 .deep-dash-nav {
   grid-column: 1;
   grid-row: 1;
-  background: linear-gradient(195deg, #131316 0%, #0d0d0f 40%, #0f0e11 100%);
+  background: linear-gradient(195deg, #121110 0%, #0d0c0b 40%, #0e0d0b 100%);
   border: 1px solid rgba(232, 214, 179, 0.08);
   border-right: 1px solid rgba(232, 214, 179, 0.12);
   border-radius: 14px;
@@ -1417,6 +1417,7 @@ a.deep-tests-btn-primary:hover {
   z-index: 100;
   box-sizing: border-box;
   overflow: hidden;
+  transition: width 0.4s ease, min-width 0.4s ease;
 }
 
 /* Header — logo + close btn (mobile) */
@@ -3564,73 +3565,110 @@ a.deep-tests-btn-primary:hover {
    UX / RESPONSIVE MICRO-FIXES
    ═══════════════════════════════════════════════════ */
 
-/* ── DESKTOP COLLAPSED SIDEBAR ── */
+/* ── MATILDA-STYLE COLLAPSE TAB (right edge of nav) ── */
+.deep-dash-nav-collapse {
+  display: none; /* Shown only on desktop via media query */
+  position: absolute;
+  right: -16px;
+  top: 18px;
+  width: 16px;
+  height: 26px;
+  border-radius: 0 6px 6px 0;
+  background: rgba(232, 214, 179, 0.08);
+  border: none;
+  cursor: pointer;
+  z-index: 101;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+.deep-dash-nav-collapse:hover {
+  background: rgba(232, 214, 179, 0.18);
+}
+.deep-dash-nav-collapse svg {
+  width: 9px;
+  height: 9px;
+  transition: transform 0.3s;
+}
 @media (min-width: 901px) {
+  .deep-dash-nav-collapse { display: flex; }
+  .deep-dash-nav { position: relative; }
+}
+
+/* ── DESKTOP COLLAPSED SIDEBAR (Matilda-style) ── */
+@media (min-width: 901px) {
+  .deep-dashboard {
+    transition: grid-template-columns 0.4s ease;
+  }
   .deep-dashboard.is-collapsed {
-    grid-template-columns: 80px 1fr !important;
+    grid-template-columns: 123px 1fr !important;
   }
   .deep-dashboard.is-collapsed.sidebar-open {
-    grid-template-columns: 80px 1fr 340px !important;
+    grid-template-columns: 123px 1fr 340px !important;
   }
   .deep-dashboard.is-collapsed .deep-dash-nav {
-    width: 80px !important;
+    width: 93px !important;
+    min-width: 93px !important;
   }
-  .deep-dashboard.is-collapsed .deep-dash-nav-header {
-    justify-content: center;
-    padding: 24px 0 16px;
+
+  /* Fade text labels smoothly (Matilda pattern: opacity + translateX) */
+  .deep-dash-nav-label,
+  .deep-dash-nav-count,
+  .deep-dash-nav-chevron,
+  .deep-dash-logo span {
+    transition: opacity 0.25s ease, transform 0.25s ease, max-width 0.25s ease;
+    white-space: nowrap;
   }
-  .deep-dashboard.is-collapsed .deep-dash-logo span,
   .deep-dashboard.is-collapsed .deep-dash-nav-label,
   .deep-dashboard.is-collapsed .deep-dash-nav-count,
   .deep-dashboard.is-collapsed .deep-dash-nav-chevron,
-  .deep-dashboard.is-collapsed .deep-dash-nav-sub,
+  .deep-dashboard.is-collapsed .deep-dash-logo span {
+    opacity: 0;
+    transform: translateX(-6px);
+    pointer-events: none;
+    max-width: 0;
+    overflow: hidden;
+  }
+  .deep-dashboard.is-collapsed .deep-dash-nav-sub {
+    display: none !important;
+  }
   .deep-dashboard.is-collapsed .deep-dash-nav-close {
     display: none !important;
   }
+
+  /* Logo shrinks to initials */
   .deep-dashboard.is-collapsed .deep-dash-logo {
-    font-size: 14px;
+    font-size: 16px;
     letter-spacing: 0;
-    display: none; /* Hide text completely to save space for toggle */
+    transform: translateX(5px);
   }
+
+  /* Emojis stay centered */
   .deep-dashboard.is-collapsed .deep-dash-nav-emoji {
     margin-right: 0;
-    font-size: 24px;
+    font-size: 22px;
   }
-  .deep-dashboard.is-collapsed .deep-dash-nav-item,
-  .deep-dashboard.is-collapsed .deep-dash-nav-home {
+  .deep-dashboard.is-collapsed .deep-dash-nav-item {
     justify-content: center;
-    padding: 16px 0;
-    text-indent: -9999px;
-    position: relative;
-    overflow: hidden;
+    padding: 14px 0;
+  }
+  .deep-dashboard.is-collapsed .deep-dash-nav-home {
+    font-size: 0;
+    padding: 14px 0;
+    text-align: center;
   }
   .deep-dashboard.is-collapsed .deep-dash-nav-home::after {
-    content: "🏠";
-    text-indent: 0;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 20px;
+    display: none;
   }
-  .deep-dashboard.is-collapsed .deep-dash-nav-item .deep-dash-nav-emoji {
-    text-indent: 0;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .deep-dashboard.is-collapsed #deep-dash-nav-collapse svg {
+
+  /* Rotate the collapse tab arrow */
+  .deep-dashboard.is-collapsed .deep-dash-nav-collapse svg {
     transform: rotate(180deg);
   }
 }
 
-/* ── NAV BUTTONS (HEADER) ── */
-.deep-dash-nav-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+/* ── MOBILE NAV CLOSE BUTTON ── */
 .deep-dash-nav-close {
   display: none;
   background: none;
@@ -3639,25 +3677,10 @@ a.deep-tests-btn-primary:hover {
   font-size: 22px;
   cursor: pointer;
   padding: 4px 12px;
+  transition: color 0.2s;
 }
-.deep-dash-nav-collapse {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--dt-muted);
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  padding: 0;
-}
-.deep-dash-nav-collapse:hover {
-  background: rgba(255,255,255,0.1);
+.deep-dash-nav-close:hover {
   color: var(--dt-text);
-  border-color: rgba(255,255,255,0.2);
 }
 @media (max-width: 900px) {
   .deep-dash-nav-collapse { display: none !important; }
