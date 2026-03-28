@@ -76,7 +76,7 @@
   line-height: 1.1;
   font-weight: 700;
   letter-spacing: -0.03em;
-  margin: 0 0 16px;
+  margin: 0 0 6px;
   color: var(--dt-text);
 }
 
@@ -344,7 +344,6 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
-  padding-right: 4px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -912,12 +911,23 @@
   .deep-tests-modal {
     width: 100vw;
     height: 100dvh;
-    min-height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
     border-radius: 0;
+    overflow: hidden;
   }
 
   .deep-tests-screen {
     padding: 20px 16px 18px;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .deep-tests-scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
   }
 
   .deep-tests-close {

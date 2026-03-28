@@ -193,6 +193,16 @@
       if (window.DEEP_INTEGRATIONS) {
         window.DEEP_INTEGRATIONS.submitToCRM(payload);
       }
+
+      /* 6.1 — Перевести кнопку в фирменный зелёный состояния "Отправлено" */
+      var submitBtn = document.querySelector('#deep-result-lead-form .deep-tests-btn-primary');
+      if (submitBtn) {
+        submitBtn.textContent = 'Отправлено ✓';
+        submitBtn.classList.remove('deep-tests-btn-primary');
+        submitBtn.classList.add('deep-tests-btn-sent');
+        submitBtn.disabled = true;
+        submitBtn.removeAttribute('onclick');
+      }
       
       if (typeof window.deepShowSuccessModal === "function") {
         window.deepShowSuccessModal("Результаты отправлены!", "Наш специалист свяжется с вами.");

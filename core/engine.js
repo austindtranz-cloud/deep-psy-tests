@@ -184,13 +184,19 @@
         /* Инкапсулированная запись ответа через DEEP_QUIZ.setAnswer() */
         window.DEEP_QUIZ.setAnswer(testId, q.id, value);
 
-        /* Блокируем кнопки вариантов на время перехода (вместо _advancing flag) */
+        /* Блокируем кнопки вариантов на время перехода */
         var options = document.querySelectorAll('.deep-tests-option');
         options.forEach(function(o) { o.disabled = true; });
+
+        /* Визуальная обратная связь — подсветить выбранный вариант */
+        options.forEach(function(o) { o.classList.remove('is-selected'); });
+        btn.classList.add('is-selected');
+
+        /* Автопереход без промежуточного рендера (5.1 — убираем мигание «Далее») */
         setTimeout(function() {
-          options.forEach(function(o) { o.disabled = false; });
-          window.DEEP_CORE.handleAction("next");
-        }, 150);
+          window.DEEP_QUIZ.advanceQuiz(session);
+          window.DEEP_UI.renderScreen(test, session);
+        }, 200);
       } else if (action === "next") {
         window.DEEP_QUIZ.advanceQuiz(session);
       } else if (action === "back") {

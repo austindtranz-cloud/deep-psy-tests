@@ -159,9 +159,10 @@
     },
 
     /* Result Screen Wrapper */
-    resultScreen: function (title, summary, cardsHtml) {
+    resultScreen: function (title, summary, cardsHtml, categoryLabel) {
       return `
         <div class="deep-tests-screen">
+          ${categoryLabel ? '<div class="deep-tests-modal-pill">' + categoryLabel + '</div>' : ''}
           <div class="deep-tests-scroll">
             <div class="deep-tests-quiz-intro">
               <div class="deep-page-kicker">Результат</div>
@@ -173,11 +174,11 @@
             <div id="quiz-result-cta"></div>
             <div id="quiz-result-next"></div>
             <div id="quiz-result-form"></div>
-            <div class="deep-tests-bottom">
-              <button class="deep-tests-btn deep-tests-btn-outline" data-action="restart-test">Пройти заново</button>
+            <div class="deep-tests-bottom" style="margin-top: 24px;">
+              <button class="deep-tests-btn deep-tests-btn-secondary deep-full-width" data-action="restart-test">Пройти заново</button>
             </div>
             <div style="text-align:center; margin-top:20px; padding-bottom:8px;">
-              <a data-action="report-error" style="font-size:12px; color:var(--dt-accent); opacity:0.6; cursor:pointer;">Сообщить об ошибке</a>
+              <a data-action="report-error" class="deep-tests-report-error">Сообщить об ошибке</a>
             </div>
           </div>
         </div>
@@ -185,7 +186,7 @@
     },
 
     /* Quiz Start Screen */
-    startScreen: function (test, qLen, estTime, scaleNames, hasProgress) {
+    startScreen: function (test, qLen, estTime, scaleNames, hasProgress, categoryLabel) {
       var actionBtn = hasProgress
         ? `<div class="deep-btn-group">
           <button class="deep-tests-btn deep-tests-btn-primary" data-action="resume-test" style="flex:2">Продолжить</button>
@@ -195,6 +196,7 @@
 
       return `
         <div class="deep-tests-screen">
+          ${categoryLabel ? '<div class="deep-tests-modal-pill">' + categoryLabel + '</div>' : ''}
           <div class="deep-tests-scroll">
             <div class="deep-tests-quiz-intro">
               <h1 class="deep-page-title">${test.title}</h1>
@@ -207,7 +209,7 @@
               <div class="deep-tests-actions">${actionBtn}</div>
             </div>
             <div style="text-align:center; margin-top:24px; padding-bottom:8px;">
-              <a data-action="report-error" style="font-size:12px; color:var(--dt-accent); opacity:0.6; cursor:pointer;">Сообщить об ошибке</a>
+              <a data-action="report-error" class="deep-tests-report-error">Сообщить об ошибке</a>
             </div>
           </div>
         </div>

@@ -22,9 +22,6 @@
       var html = `
         <div class="deep-dash-nav-header">
           <div class="deep-dash-logo">DEEP<span>Tests</span></div>
-          <button class="deep-dash-nav-collapse" id="deep-dash-nav-collapse" aria-label="Свернуть меню" title="Свернуть панель">
-            <svg viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 1L2.5 4.5L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
           <button class="deep-dash-nav-close" id="deep-dash-nav-close" aria-label="Закрыть меню">✕</button>
         </div>
         <div class="deep-dash-nav-scroll">
@@ -150,11 +147,13 @@
         });
       }
       
-      if (collapseBtn) {
+      if (collapseBtn && !collapseBtn.dataset.attached) {
+        collapseBtn.dataset.attached = 'true';
         collapseBtn.addEventListener('click', function() {
           var shell = document.querySelector('.deep-dashboard');
           if (shell) {
             var isNowCollapsed = shell.classList.toggle('is-collapsed');
+            this.title = isNowCollapsed ? 'Развернуть панель' : 'Свернуть панель';
             try { localStorage.setItem('deepNavCollapsed', isNowCollapsed); } catch(e) {}
           }
         });
