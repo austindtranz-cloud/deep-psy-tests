@@ -24,30 +24,55 @@
     try { localStorage.setItem(META_CACHE_KEY, JSON.stringify(cache)); } catch(e) {}
   }
 
-  /* Cache current page's DEEP_CATEGORY_DATA */
+  /* Cache categories — works with both DEEP_CATEGORY_DATA (single page) and DEEP_MASTER_REGISTRY (dashboard) */
   function cacheCurrentCategory() {
-    var data = window.DEEP_CATEGORY_DATA;
-    if (!data || !data.categoryId) return;
     var cache = loadMetaCache();
-    var entry = {
-      categoryId: data.categoryId,
-      categoryTitle: data.categoryTitle,
-      subcategories: []
-    };
-    if (data.subcategories) {
-      data.subcategories.forEach(function(sub) {
-        var subEntry = { subId: sub.subId, subTitle: sub.subTitle, tests: [] };
-        if (sub.tests) {
-          sub.tests.forEach(function(t) {
+    var reg = window.DEEP_MASTER_REGISTRY;
+    if (reg) {
+      for (var catId in reg) {
+        var cat = reg[catId];
+        var entry = { categoryId: catId, categoryTitle: cat.categoryTitle, pageUrl: location.pathname, subcategories: [] };
+        (cat.subcategories || []).forEach(function(sub) {
+          var subEntry = { subId: sub.subId, subTitle: sub.subTitle, tests: [] };
+          (sub.tests || []).forEach(function(t) {
             subEntry.tests.push({ id: t.id, title: t.title, isRunnable: t.isRunnable });
           });
-        }
-        entry.subcategories.push(subEntry);
+          entry.subcategories.push(subEntry);
+        });
+        cache[catId] = entry;
+      }
+      saveMetaCache(cache);
+      return;
+    }
+    var data = window.DEEP_CATEGORY_DATA;
+    if (!data || !data.categoryId) return;
+    var entry2 = { categoryId: data.categoryId, categoryTitle: data.categoryTitle, pageUrl: location.pathname, subcategories: [] };
+    (data.subcategories || []).forEach(function(sub) {
+      var subEntry = { subId: sub.subId, subTitle: sub.subTitle, tests: [] };
+      (sub.tests || []).forEach(function(t) {
+        subEntry.tests.push({ id: t.id, title: t.title, isRunnable: t.isRunnable });
+      });
+      entry2.subcategories.push(subEntry);
+    });
+    cache[data.categoryId] = entry2;
+    saveMetaCache(cache);
+  }
+
+  /* Build flat test list from DEEP_MASTER_REGISTRY for search */
+  function getTestRegistry() {
+    if (window.DEEP_TEST_REGISTRY) return window.DEEP_TEST_REGISTRY;
+    var reg = window.DEEP_MASTER_REGISTRY;
+    if (!reg) return [];
+    var list = [];
+    for (var cId in reg) {
+      var cat = reg[cId];
+      (cat.subcategories || []).forEach(function(sub) {
+        (sub.tests || []).forEach(function(t) {
+          list.push({ id: t.id, title: t.title, category: cat.categoryTitle, url: location.pathname, tags: t.measures || '' });
+        });
       });
     }
-    cache[data.categoryId] = entry;
-    cache[data.categoryId].pageUrl = location.pathname;
-    saveMetaCache(cache);
+    return list;
   }
 
   /* ── State helpers ── */
@@ -131,7 +156,7 @@
     var counts = countTests(data);
 
     // Always show if search/registry is available, otherwise show only if there is activity
-    if (counts.total === 0 && !window.DEEP_TEST_REGISTRY) {
+    if (counts.total === 0 && !window.DEEP_MASTER_REGISTRY) {
       el.style.display = "none";
       return;
     }
@@ -223,9 +248,10 @@
           return;
         }
         
-        if (!window.DEEP_TEST_REGISTRY) return;
+        var testRegistry = getTestRegistry();
+        if (!testRegistry.length) return;
         
-        var filtered = window.DEEP_TEST_REGISTRY.filter(function(t) {
+        var filtered = testRegistry.filter(function(t) {
           return t.title.toLowerCase().indexOf(query) > -1 || (t.tags && t.tags.toLowerCase().indexOf(query) > -1);
         }).slice(0, 5);
 
@@ -422,11 +448,12 @@
     }
     
     function showAlphabeticalIndex() {
-      if (!window.DEEP_TEST_REGISTRY) { alert("База тестов еще загружается..."); return; }
+      var testRegistry = getTestRegistry();
+      if (!testRegistry.length) { alert("База тестов еще загружается..."); return; }
       
       var grouped = {};
-      var sorted = window.DEEP_TEST_REGISTRY.slice().sort(function(a, b) {
-        return a.title.localeCompare(b.title);
+      var sorted = testRegistry.slice().sort(function(a, b) {
+        return a.title.localeCompare(b.title, 'ru');
       });
       
       sorted.forEach(function(t) {
@@ -508,15 +535,14 @@
 
       if (action === "go-to-test") {
         var testId = btn.getAttribute("data-test-id");
-        var pageUrl = btn.getAttribute("data-page-url");
         if (!testId) return;
-        /* If we're already on the right page, open test directly */
-        if (pageUrl && location.pathname === pageUrl && typeof window.deepOpenTestById === "function") {
+        /* v16: use DEEP_CORE.openTest directly (all tests available from dashboard) */
+        if (window.DEEP_CORE) {
+          window.DEEP_CORE.openTest(testId);
+          sidebar.classList.remove("is-open");
+        } else if (typeof window.deepOpenTestById === "function") {
           window.deepOpenTestById(testId);
           sidebar.classList.remove("is-open");
-        } else if (pageUrl) {
-          /* Navigate to the correct page with openTest param */
-          window.location.href = pageUrl + "?openTest=" + encodeURIComponent(testId);
         }
       }
 
@@ -568,13 +594,17 @@
 
         var payload = {
           type: "batch_sidebar",
+          title: pendingLabel,
           label: pendingLabel,
           user: { name: nameVal, email: emailVal, contact_alt: altVal, consent: consent, newsletter: news },
           results: pendingResults
         };
 
-        if (WEBHOOK_URL) {
-          try { fetch(WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); } catch(err){}
+        /* Отправка через DEEP_INTEGRATIONS (Telegram + CRM) */
+        if (window.DEEP_INTEGRATIONS) {
+          window.DEEP_INTEGRATIONS.submitToCRM(payload, function(ok) {
+            if (!ok) console.warn("DEEP: Ошибка отправки результатов");
+          });
         }
 
         closeModal();
@@ -582,7 +612,7 @@
         if (typeof window.deepShowSuccessModal === "function") {
           window.deepShowSuccessModal(
             "Результаты отправлены!",
-            "Отправлено тестов: " + pendingResults.length + ". PDF будет выслан на ваш e-mail."
+            "Отправлено тестов: " + pendingResults.length + ". Наш специалист свяжется с вами."
           );
         } else {
           alert("Отправлено!");

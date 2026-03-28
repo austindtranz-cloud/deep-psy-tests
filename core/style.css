@@ -1848,7 +1848,7 @@ a.deep-tests-btn-primary:hover {
   font-family: var(--dt-f-head);
   font-size: 13px;
   font-weight: 700;
-  color: var(--dt-accent);
+  color: var(--dt-text) !important;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 12px 0 8px;
@@ -1863,8 +1863,7 @@ a.deep-tests-btn-primary:hover {
   opacity: 1;
 }
 
-.deep-alpha-section-list {
-}
+
 
 /* Compact alphabet picker */
 .deep-alpha-picker {
@@ -1886,15 +1885,15 @@ a.deep-tests-btn-primary:hover {
   font-family: var(--dt-f-body);
   font-size: 12px;
   font-weight: 600;
-  color: var(--dt-muted);
+  color: var(--dt-muted) !important;
   background: transparent;
-  text-decoration: none;
+  text-decoration: none !important;
   transition: all 0.15s;
   border: 1px solid transparent;
 }
 
 .deep-alpha-pick:hover {
-  color: var(--dt-accent);
+  color: var(--dt-accent) !important;
   background: rgba(232, 214, 179, 0.06);
   border-color: rgba(232, 214, 179, 0.1);
 }

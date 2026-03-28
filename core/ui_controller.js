@@ -331,4 +331,28 @@
       if (sb) sb.classList.remove("is-open");
     }
   };
+
+  /* ── Global Success Modal ── */
+  window.deepShowSuccessModal = function(title, text) {
+    var overlay = document.getElementById("deep-success-overlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "deep-success-overlay";
+      overlay.className = "deep-tests-overlay is-active";
+      overlay.style.cssText = "display:flex; align-items:center; justify-content:center; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999999; backdrop-filter:blur(5px);";
+      document.body.appendChild(overlay);
+    }
+    
+    overlay.innerHTML = `
+      <div class="deep-tests-modal" style="max-width:380px; text-align:center; padding:40px 24px;">
+        <div style="font-size:54px; margin-bottom:16px; animation:deep-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">✨</div>
+        <h3 style="margin:0 0 12px; color:var(--dt-text); font-size:22px;">\${title}</h3>
+        <p style="margin:0 0 24px; color:var(--dt-muted); font-size:14px; line-height:1.5;">\${text}</p>
+        <button class="deep-tests-btn deep-tests-btn-outline deep-full-width" onclick="document.getElementById('deep-success-overlay').remove()">Отлично</button>
+      </div>
+      <style>
+        @keyframes deep-pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+      </style>
+    `;
+  };
 })();

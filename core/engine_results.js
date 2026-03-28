@@ -141,17 +141,76 @@
     }
 
     if (formArea) {
+      /* Try to pre-fill from profile */
+      var p = {};
+      try { p = JSON.parse(localStorage.getItem("deep-tests-user-profile")) || {}; } catch(e) {}
+      
       formArea.innerHTML = `
-        <div class="deep-tests-form">
+        <div class="deep-tests-form" id="deep-result-lead-form">
           <div class="deep-page-kicker">Бонус</div>
-          <h3 class="deep-tests-form-title">Получить расшифровку PDF</h3>
+          <h3 class="deep-tests-form-title">Получить полную расшифровку PDF</h3>
           <div class="deep-tests-input-group">
-            <input type="email" class="deep-tests-input" placeholder="Ваш e-mail">
+            <input type="text" class="deep-tests-input" id="end_lead_name" placeholder="Имя (как к вам обращаться?)" value="${p.name || ''}">
           </div>
-          <button class="deep-tests-btn deep-tests-btn-primary deep-full-width">Отправить на почту</button>
+          <div class="deep-tests-input-group">
+            <input type="email" class="deep-tests-input" id="end_lead_email" placeholder="E-mail (куда прислать отчёт)" value="${p.email || ''}">
+          </div>
+          <div class="deep-tests-input-group">
+            <label>Альтернативный способ связи</label>
+            <input type="text" class="deep-tests-input" id="end_contact_alt" placeholder="Напишите ваши контакты / @никнейм (Telegram)" value="${p.contact_alt || ''}">
+          </div>
+          <label class="deep-tests-checkbox-group">
+            <input type="checkbox" id="end_lead_consent" checked>
+            <span>Согласен(на) на обработку персональных данных и политику конфиденциальности</span>
+          </label>
+          <button class="deep-tests-btn deep-tests-btn-primary deep-full-width" style="margin-top: 14px;" onclick="window._submitEndForm('${test.id}', '${test.title}')">
+            Отправить результаты
+          </button>
         </div>
       `;
     }
+    
+    window._submitEndForm = function(testId, testTitle) {
+      var name = document.getElementById("end_lead_name").value.trim();
+      var email = document.getElementById("end_lead_email").value.trim();
+      var alt = document.getElementById("end_contact_alt").value.trim();
+      var consent = document.getElementById("end_lead_consent").checked;
+      
+      if (!consent) { alert("Необходимо согласие на обработку данных."); return; }
+      if (!name || (!email && !alt)) { alert("Пожалуйста, укажите имя и способ связи (e-mail или Telegram)."); return; }
+      
+      try { localStorage.setItem("deep-tests-user-profile", JSON.stringify({ name: name, email: email, contact_alt: alt })); } catch(e) {}
+      
+      var session = window.DEEP_QUIZ ? window.DEEP_QUIZ.state.sessions[testId] : {};
+      
+      var payload = {
+        type: "single_test_result",
+        title: testTitle,
+        user: { name: name, email: email, contact_alt: alt, consent: consent },
+        answers: session.answers || {}
+      };
+      
+      if (window.DEEP_INTEGRATIONS) {
+        window.DEEP_INTEGRATIONS.submitToCRM(payload);
+      }
+      
+      if (typeof window.deepShowSuccessModal === "function") {
+        window.deepShowSuccessModal("Результаты отправлены!", "Наш специалист свяжется с вами.");
+      } else {
+        var formBlock = document.getElementById("deep-result-lead-form");
+        if (formBlock) {
+           formBlock.innerHTML = `
+             <div style="text-align:center; padding: 40px 20px;">
+               <div style="font-size:48px; margin-bottom:16px;">✨</div>
+               <h3 style="color:#A3C9A8; margin:0 0 10px;">Успешно отправлено!</h3>
+               <p style="color:var(--dt-muted); margin:0; line-height:1.4;">Наш специалист свяжется с вами в ближайшее время.</p>
+             </div>
+           `;
+        } else {
+           alert("Результаты успешно отправлены!");
+        }
+      }
+    };
   }
 
 })();

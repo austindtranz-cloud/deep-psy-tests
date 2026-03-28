@@ -166,7 +166,8 @@
 
       if (action === "start-test" || action === "restart-test") {
         session = window.DEEP_QUIZ.resetSession(testId);
-        window.DEEP_QUIZ.advanceQuiz(session);
+        session.mode = "quiz";
+        window.DEEP_QUIZ.saveState();
       } else if (action === "resume-test") {
         session.mode = "quiz";
         window.DEEP_QUIZ.saveState();
@@ -213,6 +214,7 @@
     if (window.DEEP_UI) window.DEEP_UI.renderDashboardShell(containerId);
     window.DEEP_CORE.init();
     if (window.DEEP_UI) window.DEEP_UI.updateDashboardGrid();
+    if (typeof window.deepSidebarRefresh === "function") window.deepSidebarRefresh();
   };
 
 })();
