@@ -52,7 +52,7 @@
               <div class="deep-dash-nav-sub-inner">
                 ${cat.subcategories.map(sub => `
                   <div class="deep-dash-nav-sub-item ${activeCatId === cId && window.DEEP_ROUTER.state.activeSubId === sub.subId ? "active" : ""}" 
-                       onclick="event.stopPropagation(); window.DEEP_ROUTER.navigate('${cId}', '${sub.subId}'); var np=document.getElementById('deep-dash-nav-area'), mo=document.getElementById('deep-dash-overlay'); if(np) np.classList.remove('open'); if(mo) mo.classList.remove('open');">
+                       onclick="event.stopPropagation(); window.DEEP_ROUTER.navigate('${cId}', '${sub.subId}'); var np=document.getElementById('deep-dash-nav-area'), mo=document.getElementById('deep-dash-overlay'); if(np) np.classList.remove('open'); if(mo) mo.classList.remove('open'); document.body.style.overflow='';">
                     ${sub.subTitle} <span>(${sub.tests.length})</span>
                   </div>
                 `).join("")}
@@ -138,7 +138,6 @@
       }
       
       var closeBtn = document.getElementById("deep-dash-nav-close");
-      var collapseBtn = document.getElementById("deep-dash-nav-collapse");
       
       if (closeBtn) {
         closeBtn.addEventListener('click', function() {
@@ -148,23 +147,6 @@
           if (mo) mo.classList.remove('open');
           document.body.style.overflow = '';
         });
-      }
-      
-      if (collapseBtn) {
-        collapseBtn.addEventListener('click', function() {
-          var shell = document.querySelector('.deep-dashboard');
-          if (shell) {
-            var isNowCollapsed = shell.classList.toggle('is-collapsed');
-            try { localStorage.setItem('deepNavCollapsed', isNowCollapsed); } catch(e) {}
-          }
-        });
-        // Restore saved state
-        try {
-          if (localStorage.getItem('deepNavCollapsed') === 'true') {
-            var shell = document.querySelector('.deep-dashboard');
-            if (shell && window.innerWidth > 900) shell.classList.add('is-collapsed');
-          }
-        } catch(e) {}
       }
     }
   };

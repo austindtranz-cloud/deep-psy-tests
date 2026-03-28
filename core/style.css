@@ -1400,27 +1400,21 @@ a.deep-tests-btn-primary:hover {
   position: relative;
 }
 
-/* ── LEFT SIDEBAR (Matilda floating panel) ── */
+/* ── LEFT SIDEBAR (Standard integrated panel) ── */
 .deep-dash-nav {
   grid-column: 1;
   grid-row: 1;
-  background: linear-gradient(195deg, #121110 0%, #0d0c0b 40%, #0e0d0b 100%);
-  border: 1px solid rgba(232, 214, 179, 0.08);
-  border-right: 1px solid rgba(232, 214, 179, 0.12);
-  border-radius: 14px;
+  background: var(--dt-panel);
+  border-right: 1px solid var(--dt-border);
   display: flex;
   flex-direction: column;
   position: sticky;
-  top: 12px;
-  height: calc(100vh - 24px);
-  margin: 12px 0 12px 12px;
+  top: 0;
+  height: 100vh;
   z-index: 100;
   box-sizing: border-box;
   overflow: hidden;
-  transition: width 0.4s ease, min-width 0.4s ease;
 }
-
-/* Header — logo + close btn (mobile) */
 .deep-dash-nav-header {
   display: flex;
   align-items: center;
