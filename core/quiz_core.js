@@ -169,10 +169,17 @@
         if (scripts.length) {
           var src = scripts[scripts.length - 1].src;
           baseUrl = src.substring(0, src.lastIndexOf("/core/") + 1);
+        } else {
+          // Fallback to absolute base if no script matches (e.g. loaded via blob or bundler)
+          baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
         }
         
+        // Cache buster for test files to match Smart Loader cache behavior
+        var currentHour = new Date().toISOString().slice(0, 13);
+        var cacheBuster = "?v=" + currentHour;
+
         var script = document.createElement("script");
-        script.src = baseUrl + "data/tests/" + testId + ".js";
+        script.src = baseUrl + "data/tests/" + testId + ".js" + cacheBuster;
         script.async = true;
         
         var timeout = setTimeout(function() {
