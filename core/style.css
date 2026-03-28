@@ -16,7 +16,7 @@
        2.1  Grid ......................... .deep-tests-grid
        2.2  Card (Matilda Hybrid) ........ .deep-tests-card
        2.3  Pills / Badges ............... .deep-tests-pill
-       2.4  Buttons ...................... .deep-btn
+       2.4  Buttons ...................... .deep-tests-btn
        2.5  Subcategory Sections ......... .deep-subcategory
 
    §3  SIDEBAR & NAVIGATION
@@ -31,7 +31,7 @@
        4.2  Quiz Screens ................. .deep-tests-screen
 
    §5  QUIZ
-       5.1  Progress Bar ................. .progress-bar
+       5.1  Progress Bar ................. .deep-progress-bar
        5.2  Quiz Options ................. .deep-tests-option
        5.3  Results / Score Cards ........ .deep-tests-score-card
        5.4  Accordion (interpretations) .. .deep-tests-accordion
@@ -57,9 +57,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 /* Reset for Tilda T123 */
-html, body {
-  margin: 0;
-  padding: 0;
+.deep-page-container, .deep-tests-overlay, .deep-tests-sidebar, .deep-dashboard-mode {
+
+
   background: var(--dt-bg);
   color: var(--dt-text);
   font-family: var(--dt-f-body);
@@ -67,7 +67,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.t-rec * {
+.deep-page-container *, .deep-tests-overlay *, .deep-tests-sidebar *, .deep-dashboard-mode * {
   box-sizing: border-box !important;
 }
 
@@ -327,7 +327,7 @@ html, body {
   font-weight: 700;
   line-height: 1.2;
   cursor: pointer;
-  transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease, opacity .2s ease;
   text-decoration: none !important;
   display: inline-flex;
   align-items: center;
@@ -336,8 +336,14 @@ html, body {
   text-align: center;
 }
 
-.deep-tests-btn:hover {
+.deep-tests-btn:hover:not(:disabled) {
   transform: translateY(-1px);
+}
+
+.deep-tests-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .deep-tests-btn-primary {
@@ -345,17 +351,17 @@ html, body {
   color: var(--dt-black) !important;
 }
 
-.deep-tests-btn-primary:hover {
+.deep-tests-btn-primary:hover:not(:disabled) {
   background: var(--dt-accent-2) !important;
 }
 
-.deep-tests-btn-secondary {
+.deep-tests-btn-outline {
   background: rgba(255, 255, 255, 0.03) !important;
   color: var(--dt-text) !important;
   border: 1px solid var(--dt-border) !important;
 }
 
-.deep-tests-btn-secondary:hover {
+.deep-tests-btn-outline:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.05) !important;
   border-color: var(--dt-border-strong) !important;
 }
@@ -366,6 +372,21 @@ html, body {
   box-shadow: 0 0 0 4px rgba(232, 214, 179, 0.2);
 }
 
+.deep-btn-group {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.deep-btn-sm {
+  padding: 10px 16px;
+  font-size: 13px;
+}
+
+.deep-full-width {
+  width: 100%;
+}
+
 /* Force override Tilda link colors inside our blocks */
 .deep-tests-card a,
 .deep-tests-card a:visited,
@@ -373,16 +394,16 @@ html, body {
 .deep-tests-modal a,
 .deep-tests-modal a:visited,
 .deep-tests-modal a:hover,
-.deep-tests-btn,
-.deep-tests-btn:visited,
-.deep-tests-btn:hover {
+a.deep-tests-btn,
+a.deep-tests-btn:visited,
+a.deep-tests-btn:hover {
   color: inherit !important;
   text-decoration: none !important;
 }
 
-.deep-tests-btn-primary,
-.deep-tests-btn-primary:visited,
-.deep-tests-btn-primary:hover {
+a.deep-tests-btn-primary,
+a.deep-tests-btn-primary:visited,
+a.deep-tests-btn-primary:hover {
   color: var(--dt-black) !important;
 }
 
@@ -1148,7 +1169,7 @@ html, body {
   }
 
   .deep-tests-overlay {
-    padding: 0;
+
   }
 
   .deep-tests-modal {
@@ -1738,7 +1759,7 @@ html, body {
 }
 
 .deep-alpha-section-list {
-  padding: 0;
+
 }
 
 /* Compact alphabet picker */
@@ -2209,7 +2230,7 @@ html, body {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.4);
   line-height: 1.5;
-  margin: 0;
+
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -2373,7 +2394,7 @@ html, body {
   font-size: 13px;
   color: var(--dt-muted);
   background: transparent;
-  padding: 0;
+
   border-radius: 0;
   white-space: normal;
 }
@@ -2596,81 +2617,7 @@ html, body {
   }
 }
 
-/* ═══════════════════════════════════════════════════
-   BEM BUTTON SYSTEM (used in quiz, results, CTA)
-   Maps: .deep-btn → base, --primary, --outline
-   ═══════════════════════════════════════════════════ */
-.deep-btn {
-  appearance: none;
-  border: 0;
-  outline: 0;
-  border-radius: 18px;
-  padding: 15px 22px;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.2;
-  cursor: pointer;
-  transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
-  text-decoration: none !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
 
-.deep-btn:hover {
-  transform: translateY(-1px);
-}
-
-.deep-btn--primary {
-  background: var(--dt-accent) !important;
-  color: var(--dt-black) !important;
-}
-
-.deep-btn--primary:hover {
-  background: var(--dt-accent-2) !important;
-}
-
-.deep-btn--outline {
-  background: rgba(255, 255, 255, 0.03) !important;
-  color: var(--dt-text) !important;
-  border: 1px solid var(--dt-border) !important;
-}
-
-.deep-btn--outline:hover {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: var(--dt-border-strong) !important;
-}
-
-.btn-group {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-}
-
-.btn-sm {
-  padding: 10px 16px;
-  font-size: 13px;
-}
-
-.full-width {
-  width: 100%;
-}
-
-/* Force override link styling for BEM buttons */
-a.deep-btn,
-a.deep-btn:visited,
-a.deep-btn:hover {
-  color: inherit !important;
-  text-decoration: none !important;
-}
-
-a.deep-btn--primary,
-a.deep-btn--primary:visited,
-a.deep-btn--primary:hover {
-  color: var(--dt-black) !important;
-}
 
 /* ═══════════════════════════════════════════════════
    QUIZ SCREEN LAYOUT (intro, questions, results)
@@ -2715,22 +2662,22 @@ a.deep-btn--primary:hover {
   margin-top: 12px;
 }
 
-.intro-title {
+.deep-intro-title {
   font-family: var(--dt-f-head) !important;
   font-size: 24px;
   font-weight: 600;
   color: var(--dt-text);
-  margin: 0;
+
 }
 
-.intro-text {
+.deep-intro-text {
   font-size: 15px;
   color: var(--dt-muted);
   line-height: 1.5;
 }
 
 /* ── Generic progress bar (quiz + results) ── */
-.progress-bar {
+.deep-progress-bar {
   width: 100%;
   height: 6px;
   background: rgba(255, 255, 255, 0.05);
@@ -2738,7 +2685,7 @@ a.deep-btn--primary:hover {
   overflow: hidden;
 }
 
-.progress-bar span {
+.deep-progress-bar span {
   display: block;
   height: 100%;
   border-radius: 999px;
@@ -3036,9 +2983,9 @@ a.deep-btn--primary:hover {
   .deep-tests-quiz-top { padding-right: 40px; }
   .deep-tests-meta-row { gap: 14px; padding: 14px; }
   .deep-tests-bottom { flex-direction: row; }
-  .deep-btn { padding: 13px 18px; font-size: 14px; }
-  .btn-group { flex-direction: column; }
-  .btn-group .deep-btn { width: 100%; }
+  .deep-tests-btn { padding: 13px 18px; font-size: 14px; }
+  .deep-btn-group { flex-direction: column; }
+  .deep-btn-group .deep-tests-btn { width: 100%; }
   .deep-success-modal { margin: 20px; padding: 32px 24px; }
   .deep-dash-top-bar { flex-direction: column; align-items: stretch; }
 }

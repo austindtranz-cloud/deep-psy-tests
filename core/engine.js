@@ -6,6 +6,17 @@
   "use strict";
 
   window.DEEP_CORE = {
+    // Basic XSS Protection
+    escapeHTML: function (str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    },
+
     init: function () {
       if (window.DEEP_ROUTER) window.DEEP_ROUTER.init(document.body);
       if (window.DEEP_QUIZ) window.DEEP_QUIZ.init();
@@ -105,9 +116,9 @@
               '<h2 class="deep-page-title">Ошибка загрузки</h2>' +
               '<div class="err-msg"></div>' +
               '<p class="deep-page-subtitle" style="margin:16px 0">Проверьте подключение к интернету.</p>' +
-              '<div class="btn-group" style="gap:12px">' +
-                '<button class="deep-btn deep-btn--primary" data-retry-id="' + testId + '">Попробовать снова</button>' +
-                '<button class="deep-btn deep-btn--outline" onclick="window.DEEP_UI.closeModal()">Закрыть</button>' +
+              '<div class="deep-btn-group" style="gap:12px">' +
+                '<button class="deep-tests-btn deep-tests-btn-primary" data-retry-id="' + testId + '">Попробовать снова</button>' +
+                '<button class="deep-tests-btn deep-tests-btn-outline" onclick="window.DEEP_UI.closeModal()">Закрыть</button>' +
               '</div>' +
             '</div></div></div>';
             app.querySelector(".err-msg").textContent = String(err);

@@ -116,7 +116,7 @@
         <div class="deep-sb-scroll">
           ${contentHtml || '<div style="padding:10px; opacity:0.5; font-size:12px">Нет активных тестов</div>'}
         </div>
-        ${completedTotal > 0 && WEBHOOK_URL ? `<button class="deep-btn deep-btn--primary" style="margin-top:12px; width:100%;" onclick="window.deepOpenSendForm()">Отправить все (${completedTotal})</button>` : ""}
+        ${completedTotal > 0 && WEBHOOK_URL ? `<button class="deep-tests-btn deep-tests-btn-primary" style="margin-top:12px; width:100%;" onclick="window.deepOpenSendForm()">Отправить все (${completedTotal})</button>` : ""}
       </div>
     `;
     

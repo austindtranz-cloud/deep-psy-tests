@@ -18,7 +18,7 @@
         </div>
         <h4 id="deep-success-title">Результаты отправлены!</h4>
         <p id="deep-success-text">PDF с результатами будет выслан на указанный e-mail. Мы свяжемся с вами в ближайшее время.</p>
-        <button type="button" class="deep-btn deep-btn--primary" id="deep-success-close" style="width:100%">Хорошо</button>
+        <button type="button" class="deep-tests-btn deep-tests-btn-primary" id="deep-success-close" style="width:100%">Хорошо</button>
       </div>
     </div>`;
 
