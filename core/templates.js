@@ -175,6 +175,7 @@
             <div id="quiz-result-form"></div>
             <div class="deep-tests-bottom">
               <button class="deep-tests-btn deep-tests-btn-outline" data-action="restart-test">Пройти заново</button>
+              <button class="deep-tests-btn deep-tests-btn-ghost" data-action="report-error" style="font-size:12px;opacity:0.5;margin-top:8px">⚠ Сообщить об ошибке</button>
             </div>
           </div>
         </div>
@@ -203,6 +204,7 @@
               </div>
               ${scaleNames ? `<div class="deep-tests-scales"><span>Оценивает:</span> ${scaleNames}</div>` : ""}
               <div class="deep-tests-actions">${actionBtn}</div>
+              <button class="deep-tests-btn deep-tests-btn-ghost" data-action="report-error" style="font-size:12px;opacity:0.5;margin-top:12px">⚠ Сообщить об ошибке</button>
             </div>
           </div>
         </div>

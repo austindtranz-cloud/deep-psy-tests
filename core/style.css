@@ -907,33 +907,29 @@ a.deep-tests-btn-primary:hover {
 
 .deep-tests-score-head {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 14px;
-  flex-wrap: wrap;
 }
 
 .deep-tests-score-title {
-  font-size: 18px;
-  line-height: 1.2;
-  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 600;
   color: var(--dt-text);
-  flex: 1 1 auto;
-  min-width: 0;
 }
 
 .deep-tests-score-value {
-  font-size: clamp(22px, 5vw, 32px);
+  font-size: 28px;
   line-height: 1;
   font-weight: 800;
   white-space: nowrap;
-  flex: 0 0 auto;
 }
 
 .deep-tests-score-value span {
   font-size: 14px;
-  color: var(--dt-muted);
+  color: inherit;
+  opacity: 0.45;
   font-weight: 500;
 }
 
@@ -1261,13 +1257,16 @@ a.deep-tests-btn-primary:hover {
   }
 
   .deep-tests-overlay {
+    background: rgba(0, 0, 0, 0.6);
   }
 
   .deep-tests-modal {
     width: 100vw;
-    height: 100dvh;
-    min-height: 100dvh;
+    height: 100svh;
+    min-height: 100svh;
+    min-height: -webkit-fill-available;
     border-radius: 0;
+    overflow-y: auto;
   }
 
   .deep-tests-screen {
@@ -1309,7 +1308,8 @@ a.deep-tests-btn-primary:hover {
   }
 
   .deep-tests-card-image {
-    height: 140px;
+    height: 180px;
+    min-height: 180px;
   }
 
   .deep-tests-card-content {
@@ -2750,7 +2750,6 @@ a.deep-tests-btn-primary:hover {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-right: 48px;
 }
 
 .deep-tests-scales {
@@ -3110,9 +3109,6 @@ a.deep-tests-btn-primary:hover {
    MOBILE — additional quiz/button responsive
    ═══════════════════════════════════════════════════ */
 @media (max-width: 639px) {
-  .deep-tests-quiz-intro {
-    padding-right: 40px;
-  }
   .deep-tests-quiz-top {
     padding-right: 40px;
   }
@@ -3568,23 +3564,24 @@ a.deep-tests-btn-primary:hover {
 /* ── MATILDA-STYLE COLLAPSE TAB (right edge of nav) ── */
 .deep-dash-nav-collapse {
   display: none; /* Shown only on desktop via media query */
-  position: absolute;
-  right: -16px;
-  top: 18px;
-  width: 16px;
-  height: 26px;
-  border-radius: 0 6px 6px 0;
-  background: rgba(232, 214, 179, 0.08);
-  border: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(232, 214, 179, 0.06);
+  border: 1px solid rgba(232, 214, 179, 0.1);
   cursor: pointer;
   z-index: 101;
   padding: 0;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s;
+  transition: all 0.3s;
+  flex-shrink: 0;
+  color: var(--dt-muted);
 }
 .deep-dash-nav-collapse:hover {
-  background: rgba(232, 214, 179, 0.18);
+  background: rgba(232, 214, 179, 0.15);
+  border-color: rgba(232, 214, 179, 0.2);
+  color: var(--dt-accent);
 }
 .deep-dash-nav-collapse svg {
   width: 9px;
@@ -3593,7 +3590,6 @@ a.deep-tests-btn-primary:hover {
 }
 @media (min-width: 901px) {
   .deep-dash-nav-collapse { display: flex; }
-  .deep-dash-nav { position: relative; }
 }
 
 /* ── DESKTOP COLLAPSED SIDEBAR (Matilda-style) ── */
