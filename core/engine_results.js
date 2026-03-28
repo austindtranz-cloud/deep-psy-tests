@@ -57,8 +57,9 @@
     
     // Animate bars
     setTimeout(() => {
-        appEl.querySelectorAll('.progress-bar span').forEach(s => {
-            s.style.width = s.parentElement.previousElementSibling.querySelector('.deep-tests-score-value').textContent.split('/')[0].trim() + '%'; // Simplified for demo
+        appEl.querySelectorAll('.deep-tests-bar span').forEach(s => {
+            var w = s.getAttribute('style');
+            if (w) { var m = w.match(/width:\s*(\d+)%/); if (m) { s.style.width = '0'; setTimeout(() => { s.style.width = m[1] + '%'; }, 50); }}
         });
     }, 100);
   };
@@ -113,20 +114,27 @@
 
     if (hasRisk && ctaArea) {
       ctaArea.innerHTML = `
-        <div class="quiz-stat-item" style="background:var(--dt-danger-bg); border-color:var(--dt-danger-border); padding:20px; border-radius:12px; margin-top:20px;">
-          <div style="color:var(--dt-danger); font-weight:700;">Рекомендация</div>
-          <p style="font-size:14px; margin-top:8px;">Ваши результаты требуют внимания специалиста. Рекомендуем записаться на консультацию.</p>
+        <div class="deep-tests-cta-block" style="border-color:var(--dt-danger-border); background:var(--dt-danger-bg);">
+          <h4 style="color:var(--dt-danger);">Рекомендация</h4>
+          <p>Ваши результаты требуют внимания специалиста. Рекомендуем записаться на консультацию.</p>
           <a href="https://t.me/DeepPsySolutions" class="deep-tests-btn deep-tests-btn-primary">Написать психологу</a>
+        </div>
+      `;
+    } else if (hasWarn && ctaArea) {
+      ctaArea.innerHTML = `
+        <div class="deep-tests-cta-block" style="border-color:var(--dt-warning-border);">
+          <h4>Обратите внимание</h4>
+          <p>Некоторые показатели находятся в субклиническом диапазоне. Рекомендуем проконсультироваться со специалистом.</p>
+          <a href="https://t.me/DeepPsySolutions" class="deep-tests-btn deep-tests-btn-outline">Записаться на консультацию</a>
         </div>
       `;
     }
 
     if (nextArea) {
-      // Pick random next test
       nextArea.innerHTML = `
-        <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--dt-border);">
-          <h4 style="font-family:var(--dt-f-head); margin-bottom:12px;">Что дальше?</h4>
-          <p style="font-size:14px; opacity:0.8; margin-bottom:16px;">Рекомендуем продолжить диагностику для более полной картины.</p>
+        <div class="deep-tests-cta-block">
+          <h4>Что дальше?</h4>
+          <p>Рекомендуем продолжить диагностику для более полной картины.</p>
           <button class="deep-tests-btn deep-tests-btn-outline" onclick="window.DEEP_CORE.openTest('random')">Пройти другой тест</button>
         </div>
       `;
@@ -134,11 +142,13 @@
 
     if (formArea) {
       formArea.innerHTML = `
-        <div class="deep-tests-form" style="margin-top:40px;">
+        <div class="deep-tests-form">
           <div class="deep-page-kicker">Бонус</div>
-          <h3 style="font-family:var(--dt-f-head); margin-bottom:12px;">Получить расшифровку PDF</h3>
-          <input type="email" class="deep-dash-search" placeholder="Ваш e-mail" style="margin-bottom:12px;">
-          <button class="deep-tests-btn deep-tests-btn-primary" style="width:100%">Отправить на почту</button>
+          <h3 class="deep-tests-form-title">Получить расшифровку PDF</h3>
+          <div class="deep-tests-input-group">
+            <input type="email" class="deep-tests-input" placeholder="Ваш e-mail">
+          </div>
+          <button class="deep-tests-btn deep-tests-btn-primary deep-full-width">Отправить на почту</button>
         </div>
       `;
     }
