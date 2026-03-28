@@ -92,11 +92,13 @@
         burger.addEventListener('click', function() {
           navPanel.classList.toggle('open');
           if (overlay) overlay.classList.toggle('open');
+          document.body.style.overflow = navPanel.classList.contains('open') ? 'hidden' : '';
         });
         if (overlay) {
           overlay.addEventListener('click', function() {
             navPanel.classList.remove('open');
             overlay.classList.remove('open');
+            document.body.style.overflow = '';
           });
         }
       }
@@ -339,19 +341,38 @@
       overlay = document.createElement("div");
       overlay.id = "deep-success-overlay";
       overlay.className = "deep-tests-overlay is-active";
-      overlay.style.cssText = "display:flex; align-items:center; justify-content:center; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999999; backdrop-filter:blur(5px);";
+      overlay.style.cssText = "display:flex; align-items:center; justify-content:center; position:fixed; inset:0; background:rgba(13,13,13,0.85); z-index:9999999; backdrop-filter:blur(8px); animation:deep-fade-in 0.3s ease; transition:opacity 0.3s ease;";
       document.body.appendChild(overlay);
     }
     
     overlay.innerHTML = `
-      <div class="deep-tests-modal" style="max-width:380px; text-align:center; padding:40px 24px;">
-        <div style="font-size:54px; margin-bottom:16px; animation:deep-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">✨</div>
-        <h3 style="margin:0 0 12px; color:var(--dt-text); font-size:22px;">\${title}</h3>
-        <p style="margin:0 0 24px; color:var(--dt-muted); font-size:14px; line-height:1.5;">\${text}</p>
-        <button class="deep-tests-btn deep-tests-btn-outline deep-full-width" onclick="document.getElementById('deep-success-overlay').remove()">Отлично</button>
+      <div class="deep-tests-modal" style="width:100%; max-width:440px; background:#111; border:1px solid rgba(255,255,255,0.05); border-radius:16px; text-align:center; padding:50px 30px 40px; margin: 0 16px; box-shadow:0 30px 60px rgba(0,0,0,0.6); animation:deep-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div class="deep-success-circle">
+          <svg viewBox="0 0 24 24" fill="none" class="deep-success-check"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 style="margin:0 0 16px; color:var(--dt-text, #fff); font-size:24px; font-weight:700; font-family:var(--dt-f-head, sans-serif);">\${title}</h3>
+        <p style="margin:0 0 32px; color:var(--dt-muted, #999); font-size:15px; font-family:var(--dt-f-body, serif);">\${text}</p>
+        <button class="deep-tests-btn deep-tests-btn-primary deep-full-width" style="height:56px; font-size:16px; font-weight:600; border-radius:12px; color:#111; background:#E2D1B8; border:none;" onclick="var el=document.getElementById('deep-success-overlay'); el.style.opacity=0; setTimeout(()=>el.remove(),300)">Хорошо</button>
       </div>
       <style>
-        @keyframes deep-pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes deep-fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes deep-slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .deep-success-circle {
+          width: 80px; height: 80px; margin: 0 auto 32px; border-radius: 50%;
+          border: 2px solid #8B9D83; display: flex; align-items: center; justify-content: center;
+          color: #8B9D83; position: relative;
+        }
+        .deep-success-circle::before {
+          content: ""; position: absolute; inset: -10px; border-radius: 50%;
+          background: rgba(139, 157, 131, 0.1); animation: deep-pulse-circle 2s infinite;
+        }
+        .deep-success-check {
+          width: 40px; height: 40px;
+          stroke-dasharray: 40; stroke-dashoffset: 40;
+          animation: deep-draw-check 0.5s cubic-bezier(0.65, 0, 0.45, 1) 0.2s forwards;
+        }
+        @keyframes deep-pulse-circle { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
+        @keyframes deep-draw-check { to { stroke-dashoffset: 0; } }
       </style>
     `;
   };

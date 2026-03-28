@@ -22,6 +22,10 @@
       var html = `
         <div class="deep-dash-nav-header">
           <div class="deep-dash-logo">DEEP<span>Tests</span></div>
+          <button class="deep-dash-nav-collapse" id="deep-dash-nav-collapse" aria-label="Свернуть меню" title="Свернуть панель">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+          </button>
+          <button class="deep-dash-nav-close" id="deep-dash-nav-close" aria-label="Закрыть меню">✕</button>
         </div>
         <div class="deep-dash-nav-scroll">
           <div class="deep-dash-nav-home ${!activeCatId ? "active" : ""}" data-nav="home">Каталог</div>
@@ -130,6 +134,26 @@
           var mo = document.getElementById('deep-dash-overlay');
           if (np) np.classList.remove('open');
           if (mo) mo.classList.remove('open');
+        });
+      }
+      
+      var closeBtn = document.getElementById("deep-dash-nav-close");
+      var collapseBtn = document.getElementById("deep-dash-nav-collapse");
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          var np = document.getElementById('deep-dash-nav-area');
+          var mo = document.getElementById('deep-dash-overlay');
+          if (np) np.classList.remove('open');
+          if (mo) mo.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      }
+      
+      if (collapseBtn) {
+        collapseBtn.addEventListener('click', function() {
+          var shell = document.querySelector('.deep-dashboard');
+          if (shell) shell.classList.toggle('is-collapsed');
         });
       }
     }
