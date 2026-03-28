@@ -227,6 +227,12 @@
               document.removeEventListener("click", closePopup);
             }
           });
+          window.addEventListener("scroll", function closeOnScroll() {
+            if (document.body.contains(popup)) {
+              popup.remove();
+            }
+            window.removeEventListener("scroll", closeOnScroll);
+          }, { passive: true });
         }, 200);
       });
     },
@@ -379,10 +385,19 @@
           </div>
           <div class="deep-tests-bottom">
             <button class="deep-tests-btn deep-tests-btn-outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
-            ${session.answers[q.id] !== undefined ? `<button class="deep-tests-btn deep-tests-btn-primary" data-action="next">${session.currentIndex < test.questions.length - 1 ? "Далее" : "Завершить"}</button>` : ""}
           </div>
         </div>`;
-      this.app.innerHTML = `<div class="deep-tests-screen"><div class="deep-tests-scroll">${content}</div></div>`;
+      this.app.innerHTML = `<div class="deep-tests-screen">
+        <div class="deep-tests-scroll">
+          <div class="deep-tests-modal-topbar">
+            ${categoryLabel ? '<div class="deep-tests-modal-pill">' + categoryLabel + '</div>' : '<div></div>'}
+          </div>
+          ${content}
+          <div style="text-align:center; padding-top:24px; padding-bottom:16px;">
+            <a data-action="report-error" class="deep-tests-report-error">Сообщить об ошибке</a>
+          </div>
+        </div>
+      </div>`;
     },
 
     /* ── Sidebar helpers ── */

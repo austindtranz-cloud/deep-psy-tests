@@ -162,8 +162,10 @@
     resultScreen: function (title, summary, cardsHtml, categoryLabel) {
       return `
         <div class="deep-tests-screen">
-          ${categoryLabel ? '<div class="deep-tests-modal-pill">' + categoryLabel + '</div>' : ''}
           <div class="deep-tests-scroll">
+            <div class="deep-tests-modal-topbar">
+              ${categoryLabel ? '<div class="deep-tests-modal-pill">' + categoryLabel + '</div>' : '<div></div>'}
+            </div>
             <div class="deep-tests-quiz-intro">
               <div class="deep-page-kicker">Результат</div>
               <h2 class="deep-page-title">${title}</h2>
@@ -175,7 +177,7 @@
             <div id="quiz-result-next"></div>
             <div id="quiz-result-form"></div>
             <div class="deep-tests-bottom" style="margin-top: 24px;">
-              <button class="deep-tests-btn deep-tests-btn-secondary deep-full-width" data-action="restart-test">Пройти заново</button>
+              <button class="deep-tests-btn deep-tests-btn-outline deep-full-width" data-action="restart-test">Пройти заново</button>
             </div>
             <div style="text-align:center; margin-top:20px; padding-bottom:8px;">
               <a data-action="report-error" class="deep-tests-report-error">Сообщить об ошибке</a>
@@ -196,8 +198,10 @@
 
       return `
         <div class="deep-tests-screen">
-          ${categoryLabel ? '<div class="deep-tests-modal-pill">' + categoryLabel + '</div>' : ''}
           <div class="deep-tests-scroll">
+            <div class="deep-tests-modal-topbar">
+              ${categoryLabel ? '<div class="deep-tests-modal-pill">' + categoryLabel + '</div>' : '<div></div>'}
+            </div>
             <div class="deep-tests-quiz-intro">
               <h1 class="deep-page-title">${test.title}</h1>
               <p class="deep-page-subtitle">${test.description}</p>

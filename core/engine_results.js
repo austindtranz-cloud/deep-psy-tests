@@ -194,12 +194,10 @@
         window.DEEP_INTEGRATIONS.submitToCRM(payload);
       }
 
-      /* 6.1 — Перевести кнопку в фирменный зелёный состояния "Отправлено" */
+      /* Возвращаем штатный стиль, просто блокируем кнопку */
       var submitBtn = document.querySelector('#deep-result-lead-form .deep-tests-btn-primary');
       if (submitBtn) {
-        submitBtn.textContent = 'Отправлено ✓';
-        submitBtn.classList.remove('deep-tests-btn-primary');
-        submitBtn.classList.add('deep-tests-btn-sent');
+        submitBtn.textContent = 'Отправлено';
         submitBtn.disabled = true;
         submitBtn.removeAttribute('onclick');
       }
