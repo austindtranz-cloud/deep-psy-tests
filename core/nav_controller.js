@@ -138,6 +138,7 @@
       }
       
       var closeBtn = document.getElementById("deep-dash-nav-close");
+      var collapseBtn = document.getElementById("deep-dash-nav-collapse");
       
       if (closeBtn) {
         closeBtn.addEventListener('click', function() {
@@ -147,6 +148,22 @@
           if (mo) mo.classList.remove('open');
           document.body.style.overflow = '';
         });
+      }
+      
+      if (collapseBtn) {
+        collapseBtn.addEventListener('click', function() {
+          var shell = document.querySelector('.deep-dashboard');
+          if (shell) {
+            var isNowCollapsed = shell.classList.toggle('is-collapsed');
+            try { localStorage.setItem('deepNavCollapsed', isNowCollapsed); } catch(e) {}
+          }
+        });
+        try {
+          if (localStorage.getItem('deepNavCollapsed') === 'true') {
+            var shell = document.querySelector('.deep-dashboard');
+            if (shell && window.innerWidth > 900) shell.classList.add('is-collapsed');
+          }
+        } catch(e) {}
       }
     }
   };

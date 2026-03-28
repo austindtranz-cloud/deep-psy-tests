@@ -175,7 +175,9 @@
             <div id="quiz-result-form"></div>
             <div class="deep-tests-bottom">
               <button class="deep-tests-btn deep-tests-btn-outline" data-action="restart-test">Пройти заново</button>
-              <a data-action="report-error" style="display:block; text-align:center; font-size:12px; color:var(--dt-accent); opacity:0.6; cursor:pointer; margin-top:20px;">Сообщить об ошибке</a>
+            </div>
+            <div style="text-align:center; margin-top:20px; padding-bottom:8px;">
+              <a data-action="report-error" style="font-size:12px; color:var(--dt-accent); opacity:0.6; cursor:pointer;">Сообщить об ошибке</a>
             </div>
           </div>
         </div>
@@ -195,7 +197,6 @@
         <div class="deep-tests-screen">
           <div class="deep-tests-scroll">
             <div class="deep-tests-quiz-intro">
-              <div class="deep-page-kicker">Тест</div>
               <h1 class="deep-page-title">${test.title}</h1>
               <p class="deep-page-subtitle">${test.description}</p>
               <div class="deep-tests-meta-row">
@@ -204,7 +205,9 @@
               </div>
               ${scaleNames ? `<div class="deep-tests-scales"><span>Оценивает:</span> ${scaleNames}</div>` : ""}
               <div class="deep-tests-actions">${actionBtn}</div>
-              <a data-action="report-error" style="display:block; text-align:center; font-size:12px; color:var(--dt-accent); opacity:0.6; cursor:pointer; margin-top:24px;">Сообщить об ошибке</a>
+            </div>
+            <div style="text-align:center; margin-top:24px; padding-bottom:8px;">
+              <a data-action="report-error" style="font-size:12px; color:var(--dt-accent); opacity:0.6; cursor:pointer;">Сообщить об ошибке</a>
             </div>
           </div>
         </div>

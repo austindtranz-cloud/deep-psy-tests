@@ -262,8 +262,15 @@
             { x: function(i) { return pts[i].x - 40; }, y: function(i) { return pts[i].y - 40; }, opacity: 1, duration: 0.7, ease: "power3.out" }
         )
         .to('.p-dot', { opacity: 0, scale: 0, duration: 0.2, stagger: 0.01 })
-        .to('.deep-success-circle', { strokeDashoffset: 0, opacity: 1, duration: 0.3 }, "-=0.3")
-        .to('.deep-success-check', { strokeDashoffset: 0, duration: 0.4, ease: "back.out(2)" }, "-=0.1");
+        .to('.deep-success-circle', { strokeDashoffset: 0, opacity: 1, stroke: '#22c55e', duration: 0.3 }, "-=0.3")
+        .to('.deep-success-check', { strokeDashoffset: 0, stroke: '#22c55e', duration: 0.4, ease: "back.out(2)" }, "-=0.1");
+
+        /* Перекрашиваем кнопку в зелёный */
+        var btn = document.getElementById('deep-success-close');
+        if (btn) {
+            btn.style.background = '#22c55e';
+            btn.style.color = '#fff';
+        }
     }
 
     function showModal() {

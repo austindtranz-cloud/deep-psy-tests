@@ -164,9 +164,13 @@
       var session = window.DEEP_QUIZ.state.sessions[testId];
       var test = window.DEEP_QUIZ.getActiveTest();
 
-      if (action === "start-test" || action === "restart-test") {
+      if (action === "start-test") {
         session = window.DEEP_QUIZ.resetSession(testId);
         session.mode = "quiz";
+        window.DEEP_QUIZ.saveState();
+      } else if (action === "restart-test") {
+        session = window.DEEP_QUIZ.resetSession(testId);
+        session.mode = "start";
         window.DEEP_QUIZ.saveState();
       } else if (action === "resume-test") {
         session.mode = "quiz";
