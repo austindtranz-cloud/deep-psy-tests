@@ -127,6 +127,18 @@
 
   function injectSidebar() {
     if (document.getElementById("deep-sidebar")) return;
+
+    // Floating toggle button
+    var toggle = document.createElement("button");
+    toggle.className = "deep-sidebar-toggle";
+    toggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg><span>История</span>';
+    toggle.addEventListener("click", function() {
+      var sb = document.getElementById("deep-sidebar");
+      if (sb) sb.classList.toggle("is-open");
+    });
+    document.body.appendChild(toggle);
+
+    // Sidebar panel
     var sidebar = document.createElement("div");
     sidebar.id = "deep-sidebar";
     document.body.appendChild(sidebar);

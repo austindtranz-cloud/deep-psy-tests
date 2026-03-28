@@ -1,0 +1,109 @@
+<!-- ════════════════════════════════════════════════
+     DEEP PSY TESTS — ГЛАВНАЯ СТРАНИЦА
+     Скопируй ВСЁ содержимое в HTML-блок Tilda (T123)
+     Обновлено: 2026-03-29
+     ════════════════════════════════════════════════ -->
+
+<!-- Каталог тестов -->
+<div id="deep-categories-container"></div>
+
+<!-- Overlay + Modal для прохождения тестов -->
+<div class="deep-tests-overlay" id="deep-tests-overlay">
+  <div class="deep-tests-modal">
+    <button type="button" class="deep-tests-close" aria-label="Закрыть">✕</button>
+    <div class="deep-tests-app" id="deep-tests-app"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var baseUrl = "https://austindtranz-cloud.github.io/deep-psy-tests/";
+
+  function loadResources(v) {
+    if (v) v = "?v=" + v;
+    var resources = [
+      { type: "style",  url: baseUrl + "core/style.css" + v },
+      { type: "script", url: baseUrl + "data/test_registry.js" + v },
+      { type: "script", url: baseUrl + "dist/engine.min.js" + v }
+    ];
+    resources.forEach(function(res) {
+      if (res.type === "style") {
+        var link = document.createElement("link");
+        link.rel = "stylesheet"; link.href = res.url;
+        document.head.appendChild(link);
+      } else {
+        var script = document.createElement("script");
+        script.src = res.url; script.async = false;
+        document.head.appendChild(script);
+      }
+    });
+    init();
+  }
+
+  var preloaderFailsafe;
+
+  function injectFullpageLoader() {
+    if (document.getElementById("deep-full-preloader")) return;
+    var pl = document.createElement("div");
+    pl.id = "deep-full-preloader";
+    pl.innerHTML = '<style>' +
+      '#deep-full-preloader { position:fixed; top:0; left:0; width:100%; height:100vh; background:#0f0f0f; z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.6s ease; margin:0; padding:0; overflow:hidden; } ' +
+      '.deep-glow { position:absolute; width:300px; height:300px; background:rgba(213,203,186,0.03); filter:blur(50px); border-radius:50%; animation:deep-pulse-glow 4s infinite alternate; } ' +
+      '.deep-spinner-box { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; } ' +
+      '.deep-spinner { width:40px; height:40px; border:2px solid rgba(213,203,186,0.1); border-top-color:rgba(213,203,186,0.8); border-radius:50%; animation:deep-spin 1s cubic-bezier(0.4, 0.1, 0.4, 1) infinite; margin-bottom:20px; } ' +
+      '@keyframes deep-spin { to { transform:rotate(360deg); } } ' +
+      '@keyframes deep-pulse-glow { from { transform:scale(0.9); opacity:0.6; } to { transform:scale(1.1); opacity:1; } } ' +
+      '</style>' +
+      '<div class="deep-glow"></div>' +
+      '<div class="deep-spinner-box">' +
+        '<div class="deep-spinner"></div>' +
+        '<div style="color:rgba(213,203,186,0.4); font-family:system-ui,-apple-system,sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase;">Загрузка</div>' +
+      '</div>';
+    var parent = document.body || document.documentElement;
+    if (parent) parent.appendChild(pl);
+    preloaderFailsafe = setTimeout(removePreloader, 4000);
+  }
+
+  function removePreloader() {
+    if (preloaderFailsafe) clearTimeout(preloaderFailsafe);
+    var pl = document.getElementById("deep-full-preloader");
+    if (pl) {
+      pl.style.opacity = "0";
+      setTimeout(function() { if (pl.parentNode) pl.parentNode.removeChild(pl); }, 600);
+    }
+  }
+
+  function init() {
+    var attempts = 0;
+    var checkReady = setInterval(function() {
+      attempts++;
+      if (attempts > 100) { clearInterval(checkReady); removePreloader(); return; }
+      if (window.deepRenderCatalog && window.DEEP_MASTER_REGISTRY) {
+        clearInterval(checkReady);
+        var container = document.getElementById("deep-categories-container") || document.querySelector("[data-category-id]");
+        if (!container) { removePreloader(); return; }
+        var categoryId = container.getAttribute("data-category-id");
+        if (categoryId && window.DEEP_MASTER_REGISTRY[categoryId]) {
+          window.DEEP_CATEGORY_DATA = window.DEEP_MASTER_REGISTRY[categoryId];
+        }
+        window.deepRenderCatalog(container.id);
+        removePreloader();
+      }
+    }, 100);
+  }
+
+  var CACHE_KEY = "deep_psy_version";
+  var cachedV = null;
+  try { cachedV = sessionStorage.getItem(CACHE_KEY); } catch(e) {}
+  if (!cachedV) { injectFullpageLoader(); }
+
+  var currentHour = new Date().toISOString().slice(0, 13);
+  if (cachedV && cachedV.startsWith(currentHour)) {
+    loadResources(cachedV);
+  } else {
+    var v = currentHour + "_" + Math.floor(Math.random() * 10000);
+    try { sessionStorage.setItem(CACHE_KEY, v); } catch(e) {}
+    loadResources(v);
+  }
+})();
+</script>
