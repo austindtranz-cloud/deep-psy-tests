@@ -195,6 +195,17 @@
       this.overlay.style.display = "flex";
       this.overlay.classList.add("active");
       document.body.style.overflow = "hidden";
+
+      // Ensure we re-render the underlying dashboard content correctly when the modal opens/closes
+      // by setting up an event listener if it's not already set
+      if (!this._stateListenerAttached) {
+        document.addEventListener("deep-state-changed", () => {
+          if (window.DEEP_ROUTER && window.DEEP_ROUTER.state.initialized && this.overlay && !this.overlay.classList.contains("active")) {
+             this._updateContentOnly();
+          }
+        });
+        this._stateListenerAttached = true;
+      }
     },
 
     closeModal: function() {
@@ -280,31 +291,32 @@
       var total = test.questions.filter(x => !x.isIntro).length;
       var current = test.questions.slice(0, session.currentIndex + 1).filter(x => !x.isIntro).length;
       var progress = Math.round((current / (total || 1)) * 100);
+      var escapeHTML = window.DEEP_CORE && window.DEEP_CORE.escapeHTML ? window.DEEP_CORE.escapeHTML : (s => s);
       
       var content = q.isIntro ? 
         `<div class="deep-tests-step-wrap">
           <div class="deep-tests-progress"><span style="width:${progress}%"></span></div>
-          <div class="intro-content">
-            ${q.title ? `<h2 class="intro-title">${q.title}</h2>` : ""}
-            <div class="intro-text">${q.text}</div>
+          <div class="deep-intro-content">
+            ${q.title ? `<h2 class="deep-intro-title">${escapeHTML(q.title)}</h2>` : ""}
+            <div class="deep-intro-text">${escapeHTML(q.text)}</div>
           </div>
           <div class="deep-tests-bottom">
             <button class="deep-tests-btn deep-tests-btn-outline" data-action="${session.currentIndex > 0 ? "back" : "back-to-start"}">${session.currentIndex > 0 ? "Назад" : "К началу"}</button>
-            <button class="deep-tests-btn deep-tests-btn-primary" data-action="next">${q.buttonText || "Продолжить"}</button>
+            <button class="deep-tests-btn deep-tests-btn-primary" data-action="next">${escapeHTML(q.buttonText || "Продолжить")}</button>
           </div>
         </div>` :
         `<div class="deep-tests-step-wrap">
           <div class="deep-tests-quiz-top">
             <div class="deep-tests-counter">Вопрос ${current} из ${total}</div>
             <div class="deep-tests-progress"><span style="width:${progress}%"></span></div>
-            ${test.intro ? `<div class="deep-tests-hint">${test.intro}</div>` : ""}
+            ${test.intro ? `<div class="deep-tests-hint">${escapeHTML(test.intro)}</div>` : ""}
           </div>
-          <div class="deep-tests-question">${q.text}</div>
+          <div class="deep-tests-question">${escapeHTML(q.text)}</div>
           <div class="deep-tests-options">
             ${q.options.map((opt, idx) => {
               var isSel = (session.answers[q.id] === (opt.score !== undefined ? opt.score : (opt.value !== undefined ? opt.value : idx)));
               return `<button class="deep-tests-option ${isSel ? "is-selected" : ""}" data-action="answer" data-index="${idx}">
-                <span class="deep-tests-option-row"><span class="deep-tests-option-check"></span><span class="deep-tests-option-text">${opt.text}</span></span>
+                <span class="deep-tests-option-row"><span class="deep-tests-option-check"></span><span class="deep-tests-option-text">${escapeHTML(opt.text)}</span></span>
               </button>`;
             }).join("")}
           </div>

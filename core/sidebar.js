@@ -72,8 +72,19 @@
       if (catTests.length) activeCats.push({ ...cat, activeTests: catTests });
     });
 
-    if (totalActive === 0 && !window.DEEP_MASTER_REGISTRY) { el.style.display = "none"; return; }
-    el.style.display = "block";
+    var fab = document.getElementById("deep-sidebar-fab");
+
+    if (totalActive === 0) {
+      if (fab) fab.classList.add("hidden");
+      el.classList.remove("is-open"); // Hide if nothing to show
+      return;
+    } else {
+      if (fab) {
+        fab.classList.remove("hidden");
+        var badge = fab.querySelector(".deep-sb-badge-fab");
+        if (badge) badge.textContent = totalActive;
+      }
+    }
 
     var contentHtml = activeCats.map(cat => {
       var subGroups = {};
@@ -126,16 +137,41 @@
   }
 
   function injectSidebar() {
-    if (document.getElementById("deep-sidebar")) return;
-    var sidebar = document.createElement("div");
-    sidebar.id = "deep-sidebar";
-    document.body.appendChild(sidebar);
+    if (!document.getElementById("deep-sidebar-fab")) {
+      var fab = document.createElement("div");
+      fab.id = "deep-sidebar-fab";
+      fab.className = "hidden";
+      fab.innerHTML = 'Ваша активность <span class="deep-sb-badge-fab">0</span>';
+      fab.onclick = function() {
+        var el = document.getElementById("deep-sidebar");
+        if (el) el.classList.toggle("is-open");
+      };
+      document.body.appendChild(fab);
+    }
+
+    if (!document.getElementById("deep-sidebar")) {
+      var sidebar = document.createElement("div");
+      sidebar.id = "deep-sidebar";
+      document.body.appendChild(sidebar);
+
+      // Close sidebar when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!sidebar.contains(e.target) && e.target.id !== 'deep-sidebar-fab' && !document.getElementById('deep-sidebar-fab').contains(e.target)) {
+          sidebar.classList.remove("is-open");
+        }
+      });
+    }
     renderSidebar();
   }
 
   function init() {
     cacheCurrentCategory();
     injectSidebar();
+
+    // Listen to global state changes from quiz_core.js to sync the history panel in real time.
+    document.addEventListener("deep-state-changed", function() {
+      renderSidebar();
+    });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

@@ -6,6 +6,17 @@
   "use strict";
 
   window.DEEP_CORE = {
+    // Basic XSS Protection
+    escapeHTML: function (str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    },
+
     init: function () {
       if (window.DEEP_ROUTER) window.DEEP_ROUTER.init(document.body);
       if (window.DEEP_QUIZ) window.DEEP_QUIZ.init();
@@ -86,6 +97,23 @@
       if (!testId || !window.DEEP_QUIZ || !window.DEEP_UI) return;
       if (testId === 'random') return this.openRandomTest();
       
+      // Check if test exists and is marked as runnable/exists in registry
+      var regEntry = window.DEEP_QUIZ._findTestInRegistry(testId);
+      if (regEntry && regEntry.isRunnable === false) {
+        window.DEEP_UI.openOverlay();
+        var app = document.getElementById("deep-tests-app");
+        if (app) {
+          app.innerHTML = '<div class="deep-tests-screen"><div class="deep-tests-scroll"><div class="quiz-intro">' +
+            '<h2 class="deep-page-title">В разработке</h2>' +
+            '<p class="deep-page-subtitle" style="margin:16px 0">Этот тест находится в стадии разработки и пока недоступен для прохождения.</p>' +
+            '<div class="deep-btn-group" style="gap:12px">' +
+              '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.DEEP_UI.closeModal()">Понятно</button>' +
+            '</div>' +
+          '</div></div></div>';
+        }
+        return;
+      }
+
       window.DEEP_UI.openOverlay();
       
       // Show loading state in overlay
@@ -105,7 +133,7 @@
               '<h2 class="deep-page-title">Ошибка загрузки</h2>' +
               '<div class="err-msg"></div>' +
               '<p class="deep-page-subtitle" style="margin:16px 0">Проверьте подключение к интернету.</p>' +
-              '<div class="btn-group" style="gap:12px">' +
+              '<div class="deep-btn-group" style="gap:12px">' +
                 '<button class="deep-tests-btn deep-tests-btn-primary" data-retry-id="' + testId + '">Попробовать снова</button>' +
                 '<button class="deep-tests-btn deep-tests-btn-outline" onclick="window.DEEP_UI.closeModal()">Закрыть</button>' +
               '</div>' +

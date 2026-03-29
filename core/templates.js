@@ -128,7 +128,7 @@
             <span class="deep-tests-score-title">${title}</span>
             <span class="deep-tests-score-value score-${color}">${val} <span>/ ${max}</span></span>
           </div>
-          <div class="progress-bar"><span style="width:${pct}%" class="bar-${color}"></span></div>
+          <div class="deep-tests-bar"><span style="width:${pct}%" class="bar-${color}"></span></div>
           <span class="deep-tests-status status-${color}">${label}</span>
         </div>
       `;
