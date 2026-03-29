@@ -100,3 +100,78 @@ def get_available_test_files() -> list[str]:
         for f in os.listdir(TESTS_DIR)
         if f.endswith(".js")
     ]
+
+
+def search_tests(query: str, category: str = "") -> dict:
+    """
+    Ищет тесты по ключевому слову в названии, описании или категории.
+
+    Args:
+        query: Поисковая строка (например, "депрессия", "anxiety", "Big Five").
+        category: Фильтр по категории (опционально).
+
+    Returns:
+        Список тестов, соответствующих запросу.
+    """
+    try:
+        with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
+            content = f.read()
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+    query_lower = query.lower()
+    category_lower = category.lower() if category else ""
+
+    # Извлекаем блоки тестов из реестра
+    # Ищем паттерн id: "...", title: "..."
+    test_blocks = re.findall(
+        r'(?:id\s*:\s*[\'"]([^\'"]+)[\'"]'
+        r'[\s\S]*?title\s*:\s*[\'"]([^\'"]+)[\'"]'
+        r'(?:[\s\S]*?description\s*:\s*[\'"]([^\'"]*)[\'"])?'
+        r'(?:[\s\S]*?categoryTitle\s*:\s*[\'"]([^\'"]*)[\'"])?)',
+        content
+    )
+
+    results = []
+    seen = set()
+    category_ids = {
+        "personality", "mental_functions", "adaptation", "psychiatry",
+        "relationships", "career", "team", "organization",
+        "psychoanalytic", "therapy_efficacy"
+    }
+
+    for match in test_blocks:
+        tid = match[0]
+        title = match[1] if len(match) > 1 else ""
+        desc = match[2] if len(match) > 2 else ""
+        cat = match[3] if len(match) > 3 else ""
+
+        if tid in category_ids or tid in seen:
+            continue
+
+        # Проверяем совпадение с запросом
+        searchable = f"{tid} {title} {desc} {cat}".lower()
+        if query_lower not in searchable:
+            continue
+
+        # Фильтр по категории
+        if category_lower and category_lower not in cat.lower():
+            continue
+
+        seen.add(tid)
+        results.append({
+            "test_id": tid,
+            "title": title,
+            "description": desc[:200] if desc else "",
+            "category": cat,
+            "has_data_file": os.path.exists(os.path.join(TESTS_DIR, f"{tid}.js"))
+        })
+
+    return {
+        "status": "success",
+        "query": query,
+        "category_filter": category or None,
+        "results": results,
+        "total_found": len(results)
+    }
+

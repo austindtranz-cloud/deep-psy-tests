@@ -1,23 +1,24 @@
 # ═══════════════════════════════════════════════════════════════
-#  DEEP PSY ENGINE — MCP SERVER v2.0 (Модульная архитектура)
+#  DEEP PSY ENGINE — MCP SERVER v3.0 (Модульная архитектура)
 #  Оркестратор: регистрирует все модули как MCP-инструменты.
-#  Обновлено: 2026-03-27 (МСК+2)
+#  Обновлено: 2026-03-30 — MCP Best Practices, Pydantic, Annotations
 # ═══════════════════════════════════════════════════════════════
 
 import sys
 import os
 import json
 import logging
+from typing import Any
 
 # Гарантируем, что корень mcp-server в sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from mcp.server.fastmcp import FastMCP
-from config import MCP_SERVER_NAME, MCP_VERSION, REGISTRY_PATH
+from config import MCP_SERVER_NAME, MCP_VERSION, REGISTRY_PATH, TESTS_DIR
 
 # ── Импорт модулей ──
 from modules.registry import (
-    list_all_tests, get_test_file_content, get_test_data, get_available_test_files
+    list_all_tests, get_test_file_content, get_test_data, get_available_test_files, search_tests
 )
 from modules.scoring import calculate_for_test
 from modules.secure_scoring import secure_calculate
@@ -30,7 +31,7 @@ from modules.comparator import compare_profiles, compare_team
 from modules.combined_report import build_combined_profile
 from modules.whitelabel import register_brand, get_brand_config, list_brands
 
-# Заглушки (пока не активированы, но доступны для вызова)
+# Заглушки (пока не активированы полностью, но доступны для вызова)
 from modules.pdf_report import generate_pdf_report
 from modules.email_sender import send_results_email
 from modules.telegram import send_notification, send_critical_alert
@@ -47,281 +48,590 @@ from modules.watermark import add_watermark_to_pdf
 mcp = FastMCP(MCP_SERVER_NAME)
 logger = logging.getLogger(__name__)
 
-logger.info(f"═══ {MCP_SERVER_NAME} v{MCP_VERSION} — Запуск с {20} модулями ═══")
+logger.info(f"═══ {MCP_SERVER_NAME} v{MCP_VERSION} — Запуск с 23 модулями ═══")
+
+
+def error_response(msg: str, err: Exception, suggestion: str = "") -> dict:
+    """Стандартный формат ответа об ошибке с рекомендациями."""
+    response = {
+        "status": "error",
+        "message": msg,
+        "error_type": type(err).__name__,
+        "details": str(err)
+    }
+    if suggestion:
+        response["suggestion"] = suggestion
+    return response
 
 
 # ════════════════════════════════════════════
 #  ГРУППА 1: ЯДРО (Реестр и Скоринг)
 # ════════════════════════════════════════════
 
-@mcp.tool()
-def list_tests() -> str:
-    """Список всех психологических тестов и категорий из реестра."""
-    return json.dumps(list_all_tests(), indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_list_tests",
+    annotations={
+        "title": "Список всех тестов",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def list_tests() -> dict:
+    """
+    Возвращает список всех доступных психологических тестов и категорий из реестра.
+    Позволяет агенту узнать доступные ID тестов (test_id) для дальнейшего использования.
+    
+    Returns:
+        dict: JSON с массивом 'tests_found' (все test_id) и 'categories'.
+    """
+    return list_all_tests()
 
 
-@mcp.tool()
-def get_test_details(test_id: str) -> str:
-    """Полное содержимое файла теста (вопросы, шкалы, интерпретации)."""
+@mcp.tool(
+    name="deep_psy_search_tests",
+    annotations={
+        "title": "Поиск тестов по запросу",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def search_tests_tool(query: str, category: str = "") -> dict:
+    """
+    Ищет тесты по ключевому слову в названии, описании или категории.
+    Используйте этот инструмент, когда нужно найти подходящий тест (например, "депрессия").
+    
+    Args:
+        query: Поисковая строка.
+        category: Опциональный фильтр по категории.
+        
+    Returns:
+        dict: Выборка тестов с их test_id, названием и описанием.
+    """
+    return search_tests(query, category)
+
+
+@mcp.tool(
+    name="deep_psy_get_test",
+    annotations={
+        "title": "Получить полную структуру теста",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def get_test_details(test_id: str) -> dict | str:
+    """
+    Получает полное содержимое файла теста, включая вопросы, шкалы и логику интерпретации.
+    
+    Args:
+        test_id: Уникальный идентификатор теста (например, "phq9", "bfq").
+        
+    Returns:
+        dict: Полный JSON с объектами 'questions' и 'scales'.
+    """
     content = get_test_file_content(test_id)
     if content is None:
-        return f"Тест '{test_id}' не найден."
-    return content
+        return {"status": "error", "message": f"Тест '{test_id}' не найден."}
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return content
 
 
-@mcp.tool()
-def calculate_results(test_id: str, answers_json: str) -> str:
+@mcp.tool(
+    name="deep_psy_calculate",
+    annotations={
+        "title": "Подсчёт результатов теста",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def calculate_results(test_id: str, answers: dict[str, Any]) -> dict:
     """
-    Подсчёт результатов теста.
-    answers_json: JSON-строка {questionId: числовое_значение}.
+    Подсчитывает баллы по тесту на основе ответов пользователя.
+    
+    Args:
+        test_id: Уникальный идентификатор теста.
+        answers: Объект (словарь), где ключ — ID вопроса, а значение — выбранный балл. 
+                 Пример: {"q1": 3, "q2": 1, "q3": 0}
+                 
+    Returns:
+        dict: Результаты скоринга ('score', 'interpretation' или разбивка по 'scales').
     """
     try:
-        answers = json.loads(answers_json)
-        result = calculate_for_test(test_id, answers)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return calculate_for_test(test_id, answers)
     except Exception as e:
-        return f"Ошибка расчёта: {e}"
+        return error_response(
+            "Ошибка расчёта результатов теста.", 
+            e,
+            "Убедитесь, что ID теста верный и ответы переданы в формате {\"q1\": 1}"
+        )
 
 
 # ════════════════════════════════════════════
 #  ГРУППА 2: ОТЧЁТЫ И ДОКУМЕНТЫ
 # ════════════════════════════════════════════
 
-@mcp.tool()
-def generate_pdf(test_id: str, answers_json: str, brand_id: str = "deep") -> str:
-    """Генерация красивого PDF-отчёта с результатами теста."""
+@mcp.tool(
+    name="deep_psy_generate_pdf",
+    annotations={
+        "title": "Генерация PDF отчёта",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": True
+    }
+)
+def generate_pdf(test_id: str, answers: dict[str, Any], brand_id: str = "deep") -> dict | str:
+    """
+    Создаёт красивый PDF-отчёт с результатами пройденного теста.
+    
+    Args:
+        test_id: ID теста.
+        answers: Ответы пользователя.
+        brand_id: Идентификатор бренда (whitelabel).
+    """
     try:
-        answers = json.loads(answers_json)
         scores = calculate_for_test(test_id, answers)
         brand = get_brand_config(brand_id)
-        result = generate_pdf_report(test_id, scores, brand.get("brand", {}).get("name", "DEEP"))
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return generate_pdf_report(test_id, scores, brand.get("brand", {}).get("name", "DEEP"))
     except Exception as e:
-        return f"Ошибка генерации PDF: {e}"
+        return error_response("Ошибка при генерации PDF отчёта.", e)
 
 
-@mcp.tool()
-def send_email(to_email: str, test_id: str, answers_json: str) -> str:
-    """Отправка результатов теста на email клиента."""
+@mcp.tool(
+    name="deep_psy_send_email",
+    annotations={
+        "title": "Отправка email с результатами",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": True
+    }
+)
+def send_email(to_email: str, test_id: str, answers: dict[str, Any]) -> dict | str:
+    """
+    Считает баллы и отправляет результаты теста на email клиента.
+    
+    Args:
+        to_email: Электронная почта клиента.
+        test_id: ID пройденного теста.
+        answers: Ответы пользователя.
+    """
     try:
-        answers = json.loads(answers_json)
         scores = calculate_for_test(test_id, answers)
-        result = send_results_email(to_email, test_id, scores)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return send_results_email(to_email, test_id, scores)
     except Exception as e:
-        return f"Ошибка отправки email: {e}"
+        return error_response("Ошибка при отправке email.", e)
 
 
-@mcp.tool()
-def build_profile(test_results_json: str) -> str:
+@mcp.tool(
+    name="deep_psy_build_profile",
+    annotations={
+        "title": "Сборный психологический профиль",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def build_profile(test_results: list[dict[str, Any]]) -> dict | str:
     """
-    Объединённый психологический портрет из нескольких тестов.
-    test_results_json: [{"test_id": "phq9", "answers": {...}}, ...]
+    Строит объединённый психологический портрет человека на основе сразу нескольких тестов,
+    выполняя перекрестный анализ между шкалами разных опросников.
+    
+    Args:
+        test_results: Массив словарей прохождений. Каждый элемент: {'test_id': '...', 'answers': {...}}
     """
     try:
-        data = json.loads(test_results_json)
-        result = build_combined_profile(data)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return build_combined_profile(test_results)
     except Exception as e:
-        return f"Ошибка построения профиля: {e}"
+        return error_response("Ошибка объединения профилей.", e)
 
 
 # ════════════════════════════════════════════
 #  ГРУППА 3: БИЗНЕС-ИНТЕГРАЦИИ
 # ════════════════════════════════════════════
 
-@mcp.tool()
-def notify_telegram(message: str, chat_id: str = "") -> str:
-    """Отправить уведомление в Telegram специалисту."""
-    result = send_notification(message, chat_id)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_notify_telegram",
+    annotations={
+        "title": "Отправка уведомления в Telegram",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": True
+    }
+)
+def notify_telegram(message: str, chat_id: str = "") -> dict:
+    """Отправляет сервисное уведомление администратору или психологу в Telegram."""
+    return send_notification(message, chat_id)
 
 
-@mcp.tool()
-def alert_critical(test_id: str, scores_json: str, contact: str = "") -> str:
-    """Критический алерт в Telegram: результат на красном уровне."""
+@mcp.tool(
+    name="deep_psy_alert_critical",
+    annotations={
+        "title": "Критический алерт специалисту",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": True
+    }
+)
+def alert_critical(test_id: str, scores: dict[str, Any], contact: str = "") -> dict:
+    """Отправляет критический алерт в Telegram (например, при высоком суицидальном риске)."""
     try:
-        scores = json.loads(scores_json)
-        result = send_critical_alert(test_id, scores, contact)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return send_critical_alert(test_id, scores, contact)
     except Exception as e:
-        return f"Ошибка алерта: {e}"
+        return error_response("Ошибка при отправке алерта.", e)
 
 
-@mcp.tool()
-def create_crm_lead(name: str, email: str = "", phone: str = "", test_id: str = "") -> str:
-    """Создать карточку лида в CRM с результатами теста."""
-    result = create_lead(name, email, phone, test_id)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_create_lead",
+    annotations={
+        "title": "Создание лида в CRM",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": True
+    }
+)
+def create_crm_lead(name: str, email: str = "", phone: str = "", test_id: str = "") -> dict:
+    """Создает карточку нового лида (потенциального клиента) в CRM системе."""
+    return create_lead(name, email, phone, test_id)
 
 
-@mcp.tool()
-def get_calendar_slots(days_ahead: int = 7) -> str:
-    """Получить свободные слоты для записи на консультацию."""
-    result = get_available_slots(days_ahead)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_calendar_slots",
+    annotations={
+        "title": "Доступные слоты календаря",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": True
+    }
+)
+def get_calendar_slots_tool(days_ahead: int = 7) -> dict | list:
+    """Получает свободные слоты в расписании для записи на консультацию."""
+    return get_available_slots(days_ahead)
 
 
-@mcp.tool()
-def export_hr_report(team_data_json: str, output_format: str = "csv") -> str:
-    """Сформировать сводку по команде в Excel/CSV для HR."""
+@mcp.tool(
+    name="deep_psy_export_hr",
+    annotations={
+        "title": "Экспорт HR-отчёта",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def export_hr_report_tool(team_data: list[dict[str, Any]], output_format: str = "csv") -> dict | str:
+    """Формирует и выгружает сводную таблицу результатов для команды."""
     try:
-        data = json.loads(team_data_json)
-        result = export_team_results(data, output_format)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return export_team_results(team_data, output_format)
     except Exception as e:
-        return f"Ошибка HR-выгрузки: {e}"
+        return error_response("Ошибка при выгрузке HR-отчёта.", e)
 
 
 # ════════════════════════════════════════════
 #  ГРУППА 4: БЕЗОПАСНОСТЬ
 # ════════════════════════════════════════════
 
-@mcp.tool()
-def secure_calculate_scores(test_id: str, answers_json: str, fingerprint: str = "") -> str:
-    """Защищённый (серверный) подсчёт баллов с подписью подлинности."""
+@mcp.tool(
+    name="deep_psy_secure_calc",
+    annotations={
+        "title": "Защищенный подсчет баллов",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def secure_calculate_scores(test_id: str, answers: dict[str, Any], fingerprint: str = "") -> dict:
+    """Защищённый (серверный) подсчёт баллов с проверкой подлинности по отпечатку клиента."""
     try:
-        answers = json.loads(answers_json)
-        result = secure_calculate(test_id, answers, fingerprint)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return secure_calculate(test_id, answers, fingerprint)
     except Exception as e:
-        return f"Ошибка серверного скоринга: {e}"
+        return error_response("Ошибка защищенного серверного скоринга.", e)
 
 
-@mcp.tool()
-def detect_behavior(timestamps_json: str, total_questions: int) -> str:
-    """Анализ паттерна ответов: не кликал ли юзер наугад?"""
+@mcp.tool(
+    name="deep_psy_detect_behavior",
+    annotations={
+        "title": "Анализ паттерна поведения (Anti-cheat)",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def detect_behavior(timestamps: dict[str, Any], total_questions: int) -> dict:
+    """
+    Анализирует паттерн ответов и время на каждый вопрос для выявления "random clickers"
+    
+    Args:
+        timestamps: Словарь {"q1": 2500, "q2": 1500} - время ответа в мс
+        total_questions: Всего вопросов в тесте
+    """
     try:
-        timestamps = json.loads(timestamps_json)
-        result = analyze_response_pattern(timestamps, total_questions)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return analyze_response_pattern(timestamps, total_questions)
     except Exception as e:
-        return f"Ошибка детектора: {e}"
+        return error_response("Ошибка детектора поведения.", e)
 
 
 # ════════════════════════════════════════════
-#  ГРУППА 5: УМНЫЙ ПОМОЩНИК
+#  ГРУППА 5: УМНЫЙ ПОМОЩНИК & ИНСТРУМЕНТЫ
 # ════════════════════════════════════════════
 
-@mcp.tool()
-def convert_test(raw_text: str, test_id_suggestion: str = "") -> str:
-    """Автоконвертация текста (из Word/PDF) в JSON-тест."""
-    result = convert_text_to_test(raw_text, test_id_suggestion)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_convert_test",
+    annotations={
+        "title": "Конвертер текста в JSON",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def convert_test(raw_text: str, test_id_suggestion: str = "") -> dict:
+    """Конвертирует сырой текст теста (word/pdf) в рабочий JSON-формат."""
+    return convert_text_to_test(raw_text, test_id_suggestion)
 
 
-@mcp.tool()
-def validate_tests() -> str:
-    """Полный аудит библиотеки: ищет ошибки, пробелы и «сирот»."""
-    result = validate_library()
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_validate",
+    annotations={
+        "title": "Линтинг библиотеки тестов",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def validate_tests() -> dict | list:
+    """Выполняет аудит библиотеки тестов на ошибки."""
+    return validate_library()
 
 
-# ════════════════════════════════════════════
-#  ГРУППА 6: КЛИЕНТСКОЕ ВЗАИМОДЕЙСТВИЕ
-# ════════════════════════════════════════════
-
-@mcp.tool()
-def get_ai_insight(test_id: str, scores_json: str) -> str:
-    """Персональные ИИ-рекомендации на основе результатов."""
+@mcp.tool(
+    name="deep_psy_ai_insight",
+    annotations={
+        "title": "Генерация ИИ-рекомендаций",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": True
+    }
+)
+def get_ai_insight(test_id: str, scores: dict[str, Any]) -> dict | str:
+    """Генерирует персональные советы LLM на основе посчитанных результатов."""
     try:
-        scores = json.loads(scores_json)
-        result = generate_personal_insight(test_id, scores)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return generate_personal_insight(test_id, scores)
     except Exception as e:
-        return f"Ошибка ИИ-советов: {e}"
+        return error_response("Ошибка генерации ИИ-советов.", e)
 
 
-@mcp.tool()
-def translate(test_id: str, target_lang: str = "en") -> str:
-    """Перевод теста на другой язык."""
+@mcp.tool(
+    name="deep_psy_translate",
+    annotations={
+        "title": "Перевод теста",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": True
+    }
+)
+def translate(test_id: str, target_lang: str = "en") -> dict | str:
+    """Переводит тест (вопросы, опции, интерпретации) на другой язык с сохранением структуры JSON."""
     test_data = get_test_data(test_id)
     if not test_data:
-        return f"Тест '{test_id}' не найден."
-    result = translate_test(test_data, target_lang)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+        return {"status": "error", "message": f"Тест '{test_id}' не найден."}
+    return translate_test(test_data, target_lang)
 
 
-@mcp.tool()
-def recommend_next(test_id: str) -> str:
-    """Какой тест пройти следующим? Умный подбор."""
-    result = get_recommendations(test_id)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_recommend",
+    annotations={
+        "title": "Рекомендатор следующих тестов",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def recommend_next(test_id: str) -> dict | list:
+    """Рекомендует следующие тесты для клиента на основе дерева зависимостей."""
+    return get_recommendations(test_id)
 
 
 # ════════════════════════════════════════════
-#  ГРУППА 7: ТЕХНИЧЕСКИЕ СПОСОБНОСТИ
+#  ГРУППА 6: ТЕХНИЧЕСКИЕ СПОСОБНОСТИ
 # ════════════════════════════════════════════
 
-@mcp.tool()
-def compare(profile_a_json: str, profile_b_json: str, test_id: str) -> str:
-    """Сравнить профили двух людей по одному тесту."""
+@mcp.tool(
+    name="deep_psy_compare",
+    annotations={
+        "title": "Сравнение психологических профилей",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def compare(profile_a: dict[str, Any], profile_b: dict[str, Any], test_id: str) -> dict:
+    """Производит кросс-сравнение психологических профилей двух людей по одному конкретному тесту."""
     try:
-        a = json.loads(profile_a_json)
-        b = json.loads(profile_b_json)
-        result = compare_profiles(a, b, test_id)
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return compare_profiles(profile_a, profile_b, test_id)
     except Exception as e:
-        return f"Ошибка сравнения: {e}"
+        return error_response("Ошибка выполнения сравнения профилей.", e)
 
 
-@mcp.tool()
-def session_create(test_id: str, fingerprint: str = "") -> str:
-    """Создать защищённую серверную сессию для прохождения теста."""
-    result = create_session(test_id, fingerprint)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_session_create",
+    annotations={
+        "title": "Создать серверную сессию",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": False
+    }
+)
+def session_create_tool(test_id: str, fingerprint: str = "") -> dict:
+    """Создаёт защищённую серверную сессию для пошагового прохождения теста."""
+    return create_session(test_id, fingerprint)
 
 
-@mcp.tool()
-def session_save(token: str, question_id: str, value: int) -> str:
-    """Сохранить ответ на вопрос в серверной сессии."""
-    result = save_answer(token, question_id, value)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_session_save",
+    annotations={
+        "title": "Сохранить ответ в сессии",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": False
+    }
+)
+def session_save_tool(token: str, question_id: str, value: int) -> dict:
+    """Сохраняет отдельный ответ клиента в защищенную сессию по токену."""
+    return save_answer(token, question_id, value)
 
 
-@mcp.tool()
-def session_delete(token: str) -> str:
-    """Удалить сессию (кнопка «Удалить мои данные»)."""
-    result = delete_session(token)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_session_delete",
+    annotations={
+        "title": "Удалить сессию",
+        "readOnlyHint": False,
+        "destructiveHint": True,
+        "idempotentHint": False,
+        "openWorldHint": False
+    }
+)
+def session_delete_tool(token: str) -> dict:
+    """Очищает сессию тестирования."""
+    return delete_session(token)
 
 
-@mcp.tool()
-def question_analytics(test_id: str) -> str:
-    """Отчёт: на каком вопросе люди чаще бросают тест?"""
-    result = get_drop_off_report(test_id)
-    return json.dumps(result, indent=2, ensure_ascii=False)
+@mcp.tool(
+    name="deep_psy_analytics",
+    annotations={
+        "title": "Аналитика прерываний теста",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def question_analytics(test_id: str) -> dict | str:
+    """Собирает список вопросов, на которых пользователи чаще всего бросают (drop-off) тест."""
+    return get_drop_off_report(test_id)
+
+
+@mcp.tool(
+    name="deep_psy_adaptive_check",
+    annotations={
+        "title": "Адаптивное ветвление",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+def adaptive_check(test_id: str, answers: dict[str, Any], current_index: int = 0) -> dict:
+    """Рассчитывает логику адаптивного IRT тестирования на лету (заглушка)."""
+    return calculate_adaptive_path(test_id, current_index, answers)
+
+
+@mcp.tool(
+    name="deep_psy_watermark",
+    annotations={
+        "title": "Защита PDF ватермаркой",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": False
+    }
+)
+def watermark_pdf(pdf_path: str, watermark_text: str) -> dict:
+    """Накладывает водяной знак на PDF отчет с результатами."""
+    return add_watermark_to_pdf(pdf_path, watermark_text)
 
 
 # ════════════════════════════════════════════
-#  РЕСУРСЫ И ПРОМПТЫ
+#  РЕСУРСЫ MCP
 # ════════════════════════════════════════════
 
 @mcp.resource("file://registry")
-def get_registry_resource():
-    """Доступ к реестру тестов как ресурсу."""
+def get_registry_resource() -> str:
+    """Доступ к JSON-реестру всех тестов как к единому файлу-справочнику."""
     with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
         return f.read()
 
+@mcp.resource("config://server")
+def get_server_config_resource() -> str:
+    """Статус сервера, версия и список активных модулей."""
+    return json.dumps({
+        "server_name": MCP_SERVER_NAME,
+        "version": MCP_VERSION,
+        "registry_path": REGISTRY_PATH,
+        "modules_active": 23
+    }, indent=2)
+
+@mcp.resource("test://{test_id}")
+def get_test_direct_resource(test_id: str) -> str:
+    """Прямой доступ к исходному файлу конкретного теста."""
+    content = get_test_file_content(test_id)
+    if not content:
+        return json.dumps({"error": f"Тест '{test_id}' не найден"})
+    return content
+
+
+# ════════════════════════════════════════════
+#  ПРОМПТЫ MCP
+# ════════════════════════════════════════════
 
 @mcp.prompt()
-def analyze_test_logic(test_id: str):
-    """Промпт для анализа математической целостности шкал теста."""
+def analyze_test_logic(test_id: str) -> str:
+    """Шаблон для агента по глубокому математическому аудиту теста."""
     return (
-        f"Прочитай тест '{test_id}' через get_test_details и проверь:\n"
-        f"1. Покрывают ли ranges все возможные значения баллов?\n"
-        f"2. Нет ли пробелов между диапазонами?\n"
-        f"3. Совпадает ли max шкалы с реальным максимумом?"
+        f"Прочитай тест '{test_id}' через ресурс test://{test_id} и проверь его логику подсчёта:\n"
+        f"1. Покрывают ли ranges все возможные числовые значения балла?\n"
+        f"2. Нет ли накладок (overlapping) между интервалами?\n"
     )
 
-
 @mcp.prompt()
-def full_audit():
-    """Промпт для полного аудита всей библиотеки тестов."""
+def full_audit() -> str:
+    """Промпт для ревью всей библиотеки тестов."""
     return (
-        "Запусти validate_tests() и проанализируй результат.\n"
-        "Для каждой ошибки уровня 'error' предложи конкретное решение.\n"
-        "Для 'warning' — оцени критичность."
+        "Запусти инструмент deep_psy_validate и предложи решения для всех ошибок (errors).\n"
+        "Затем проверь warnings и оцени, какие из них критичны.\n"
     )
 
 

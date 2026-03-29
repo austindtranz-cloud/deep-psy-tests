@@ -49,6 +49,13 @@
       } catch (e) {
         console.error("DEEP QUIZ: Failed to save state", e);
       }
+
+      /* Event Bus: уведомляем все UI-модули об изменении состояния.
+         Sidebar обновляет badge/список, grid обновляет статусы карточек.
+         Интеграция из ветки Jules (deep-state-changed). */
+      try {
+        document.dispatchEvent(new CustomEvent("deep-state-changed", { detail: this.state }));
+      } catch(e) {}
     },
 
     ensureSession: function (testId) {

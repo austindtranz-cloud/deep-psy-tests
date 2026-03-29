@@ -96,6 +96,33 @@
     openTest: function (testId) {
       if (!testId || !window.DEEP_QUIZ || !window.DEEP_UI) return;
       if (testId === 'random') return this.openRandomTest();
+
+      /* ── Проверка isRunnable (интеграция из ветки Jules) ── */
+      var regEntry = window.DEEP_QUIZ._findTestInRegistry(testId);
+      if (regEntry && regEntry.isRunnable === false) {
+        window.DEEP_UI.openOverlay();
+        var app = document.getElementById("deep-tests-app");
+        if (app) {
+          var replacementHtml = '';
+          if (regEntry.replacement) {
+            replacementHtml = '<p class="deep-page-subtitle" style="margin:8px 0 0; opacity:0.5; font-size:12px;">Аналог: ' +
+              this.escapeHTML(regEntry.replacement) + '</p>';
+          }
+          app.innerHTML = '<div class="deep-tests-screen"><div class="deep-tests-scroll"><div class="deep-tests-quiz-intro">' +
+            '<div class="deep-page-kicker" style="color:var(--dt-warning)">В разработке</div>' +
+            '<h2 class="deep-page-title">' + this.escapeHTML(regEntry.title || testId) + '</h2>' +
+            '<p class="deep-page-subtitle" style="margin:8px 0 16px">Этот тест находится в стадии разработки и пока недоступен для прохождения. Мы работаем над ним — следите за обновлениями.</p>' +
+            replacementHtml +
+            '<div class="deep-tests-actions" style="margin-top:24px">' +
+              '<div class="deep-btn-group" style="gap:12px">' +
+                '<button class="deep-tests-btn deep-tests-btn-primary" onclick="window.DEEP_UI.closeModal()">Выбрать другой</button>' +
+                '<button class="deep-tests-btn deep-tests-btn-outline" onclick="window.DEEP_CORE.openRandomTest()">Случайный тест</button>' +
+              '</div>' +
+            '</div>' +
+          '</div></div></div>';
+        }
+        return;
+      }
       
       window.DEEP_UI.openOverlay();
       

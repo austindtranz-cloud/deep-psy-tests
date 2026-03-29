@@ -42,5 +42,5 @@ DEFAULT_BRAND_COLOR = "#E8D6B3"
 DEFAULT_BRAND_LOGO_URL = ""
 
 # ── Версионирование ──
-MCP_VERSION = "2.0.0"
-MCP_SERVER_NAME = "Deep Psy Engine"
+MCP_VERSION = "3.0.0"
+MCP_SERVER_NAME = "deep_psy_mcp"

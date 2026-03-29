@@ -337,6 +337,7 @@
     },
 
     renderQuiz: function (test, session) {
+      var categoryLabel = this._getCategoryLabel(test.id);
       var q = test.questions[session.currentIndex];
       var total = test.questions.filter((x) => !x.isIntro).length;
       var current = test.questions

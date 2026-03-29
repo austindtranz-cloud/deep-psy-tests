@@ -638,6 +638,12 @@
   function initSidebar() {
     cacheCurrentCategory();
     injectSidebar();
+
+    /* Event Bus: автообновление sidebar при изменении состояния тестов.
+       Интеграция из ветки Jules (deep-state-changed listener). */
+    document.addEventListener("deep-state-changed", function() {
+      renderSidebar();
+    });
   }
   
   if (document.readyState === "loading") {

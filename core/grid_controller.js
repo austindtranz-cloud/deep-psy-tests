@@ -274,6 +274,48 @@
       }
       
       return TPL.TEMPLATES.testCard(test, statusHtml, badge);
+    },
+
+    /* ── Event Bus: обновление статусов карточек при изменении состояния тестов ── */
+    _initEventListeners: function() {
+      var self = this;
+      document.addEventListener("deep-state-changed", function() {
+        /* Точечное обновление badge-статусов на карточках без полного ре-рендера grid */
+        document.querySelectorAll('.deep-tests-card[data-action="open-test"]').forEach(function(card) {
+          var testId = card.getAttribute('data-id');
+          if (!testId || !window.DEEP_QUIZ) return;
+          var statusEl = card.querySelector('.deep-tests-card-status');
+          var sess = window.DEEP_QUIZ.state.sessions[testId];
+          var ICONS = window.DEEP_TPL ? window.DEEP_TPL.ICONS : {};
+          
+          if (sess && sess.mode === "result") {
+            if (!statusEl) {
+              statusEl = document.createElement('span');
+              statusEl.className = 'deep-tests-card-status ok';
+              card.appendChild(statusEl);
+            } else {
+              statusEl.className = 'deep-tests-card-status ok';
+            }
+            statusEl.innerHTML = ICONS.check || '✓';
+          } else if (sess && (sess.mode === "quiz" || (sess.answers && Object.keys(sess.answers).length > 0))) {
+            if (!statusEl) {
+              statusEl = document.createElement('span');
+              statusEl.className = 'deep-tests-card-status wip';
+              card.appendChild(statusEl);
+            } else {
+              statusEl.className = 'deep-tests-card-status wip';
+            }
+            statusEl.innerHTML = ICONS.wip || '⏳';
+          }
+        });
+      });
     }
   };
+
+  /* Auto-init event listeners */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function() { window.DEEP_GRID._initEventListeners(); });
+  } else {
+    window.DEEP_GRID._initEventListeners();
+  }
 })();
