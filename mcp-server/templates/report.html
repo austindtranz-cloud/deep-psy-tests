@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ test_title }}</title>
+    <!-- Tailwind CSS (CDN для прототипа) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js для графиков -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Премиальная типографика -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#FAF7F0',
+                            DEFAULT: '#E8D6B3',
+                            dark: '#D8C39A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Оптимизация для PDF печати (Playwright) */
+        @media print {
+            body { 
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important; 
+            }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans p-8">
+    
+    <!-- СТРАНИЦА 1: Обложка -->
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 mb-8 min-h-[1050px] relative">
+        <div class="h-32 bg-brand w-full flex items-center px-10">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900 opacity-90">Deep Psy Engine</h1>
+        </div>
+        
+        <div class="p-10">
+            <div class="mt-20 mb-32 text-center">
+                <span class="inline-block px-4 py-1.5 bg-brand-light text-slate-800 rounded-full text-sm font-semibold tracking-wide mb-6">ОФИЦИАЛЬНЫЙ ОТЧЁТ</span>
+                <h2 class="text-5xl font-extrabold text-slate-900 mb-4 leading-tight">{{ test_title }}</h2>
+                <p class="text-xl text-slate-500">Клинический профиль & Интерпретация</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-8 mb-10 border-t border-slate-100 pt-10">
+                <div>
+                    <p class="text-sm text-slate-400 uppercase font-semibold tracking-wider mb-1">Идентификатор испытуемого</p>
+                    <p class="text-lg font-medium text-slate-800">{{ user_id | default('Анонимный клиент') }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-400 uppercase font-semibold tracking-wider mb-1">Дата прохождения</p>
+                    <p class="text-lg font-medium text-slate-800">{{ date }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-0 w-full text-center text-sm text-slate-400">
+            Сгенерировано платформой Deep Psy Engine
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- СТРАНИЦА 2: Данные и График -->
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 mb-8 p-10 min-h-[1050px]">
+        <h3 class="text-2xl font-bold text-slate-900 mb-6 border-b pb-4">Психологический профиль</h3>
+        
+        <!-- Контейнер для Chart.js -->
+        <div class="w-full flex justify-center mb-10 h-[500px]">
+            <canvas id="radarChart"></canvas>
+        </div>
+        
+        <!-- Карточки шкал -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-max">
+            {% for key, item in scores.results.items() %}
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium text-slate-700 text-sm">{{ item.title }}</span>
+                    <span class="font-bold text-slate-900">{{ item.score }} / {{ item.max }}</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2 mb-2">
+                    <div class="bg-brand h-2 rounded-full" style="width: {{ (item.score / item.max) * 100 }}%"></div>
+                </div>
+                <!-- Выводим лейбл (норма/отклонение) -->
+                <p class="text-xs font-medium text-slate-500">{{ item.label }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- СТРАНИЦА 3: AI Insights -->
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 mb-8 p-10 min-h-[1050px]">
+        <h3 class="text-2xl font-bold text-slate-900 mb-6 border-b pb-4">Клиническая интерпретация (AI Insight)</h3>
+        <!-- Текст, сгенерированный LLM, рендерится безопасно с сохранением HTML тегов -->
+        <div class="prose prose-slate max-w-none text-slate-700 text-base leading-relaxed">
+            {{ insights | safe }}
+        </div>
+    </div>
+
+    <!-- Инициализация графика (Chart.js) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            // Загружаем данные из шаблона Jinja2
+            const labels = [];
+            const data = [];
+            
+            {% for key, item in scores.results.items() %}
+                // Обрезаем длинные названия шкал (до первого пробела) для компактности на графике
+                labels.push('{{ key.split(" ")[0] | escapejs }}'); 
+                data.push({{ item.score }});
+            {% endfor %}
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: ' Т-Баллы',
+                        data: data,
+                        backgroundColor: 'rgba(232, 214, 179, 0.4)', // bg-brand с прозрачностью
+                        borderColor: '#C7B695', // Темнее для границ
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#8C7A59',
+                        pointHoverBackgroundColor: '#8C7A59',
+                        pointHoverBorderColor: '#fff',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            pointLabels: {
+                                color: '#334155', // slate-700
+                                font: { size: 12, family: "'Manrope', sans-serif", weight: '600' }
+                            },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: '#94a3b8' // slate-400
+                            },
+                            min: 30, // Минимум для Т-баллов
+                            max: 100 // Максимум для Т-баллов
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    // ВАЖНО: Отключаем анимации! Иначе Playwright может сделать снимок 
+                    // во время анимации, и график будет полупустым.
+                    animation: false 
+                }
+            });
+        });
+    </script>
+</body>
+</html>
